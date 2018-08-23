@@ -69,5 +69,6 @@ wunderground_icons = {
     "snow": "snow",
     "sunny": "day-sunny",
     "tstorms": "thunderstorm",
+    "thunderstorm": "thunderstorm",
     "unknown": "day-sunny"
 }

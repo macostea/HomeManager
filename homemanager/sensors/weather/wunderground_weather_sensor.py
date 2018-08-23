@@ -2,10 +2,11 @@ import requests
 import os
 from threading import Timer, Lock
 
+from homemanager.sensors.sensor import Sensor, SensorType
 from homemanager.sensors.weather.icon_mapping import wunderground_icons
 
 
-class WundergroundWeatherSensor:
+class WundergroundWeatherSensor(Sensor):
     __BASE_URL = "https://api.wunderground.com/api/"
 
     def __init__(self, location, icon_folder):
@@ -26,7 +27,15 @@ class WundergroundWeatherSensor:
     def icon_for_code(self, code):
         return os.path.join(self.__icon_folder, "wi-" + wunderground_icons[code] + ".svg")
 
-    def get_readings(self, future):
+    @property
+    def name(self):
+        return "WundergroundWeatherSensor"
+
+    @property
+    def types(self):
+        return {SensorType.WEATHER}
+
+    async def get_readings(self):
         self.__lock.acquire()
 
         if self.__current_conditions is None:
@@ -44,6 +53,5 @@ class WundergroundWeatherSensor:
         self.__lock.release()
 
         icon_code = self.__current_conditions["weather"].lower().replace(" ", "")
-        future.set_result((self.__current_conditions["temp_c"], self.__current_conditions["weather"], self.icon_for_code(icon_code)))
 
-        return future
+        return self.__current_conditions["temp_c"], self.__current_conditions["weather"], self.icon_for_code(icon_code)

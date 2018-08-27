@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data.Common;
+
 namespace HomeManagerWeb.Models
 {
     public class SensorReading<T> : ISensorReading<T>

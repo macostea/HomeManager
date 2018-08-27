@@ -20,7 +20,7 @@ namespace HomeManager_Web.Pages
 
         public void OnGet()
         {
-            var sensor = new TempSensor("living-room", this.tempRepository);
+            var sensor = new TempSensor("office", this.tempRepository);
             sensor.GetReadings().ForEach((obj) => Console.WriteLine(obj));
         }
     }

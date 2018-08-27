@@ -6,18 +6,16 @@ namespace HomeManagerWeb.Repository
 {
     public class TempSensorReadingsRepository : IRepository<ISensorReading<double>>
     {
-        public TempSensorReadingsRepository()
+        private readonly IDBContext db;
+
+        public TempSensorReadingsRepository(IDBContext db)
         {
+            this.db = db;
         }
 
         public List<ISensorReading<double>> GetList(Predicate<ISensorReading<double>> filter)
         {
-            var readings = new List<ISensorReading<double>>
-            {
-                new SensorReading<double>(DateTime.Now, 24.4),
-                new SensorReading<double>(DateTime.Now, 24.6),
-                new SensorReading<double>(DateTime.Now, 23.2)
-            };
+            var readings = this.db.QueryTemperature("SELECT * FROM temperature");
 
             return null == filter ? readings : readings.FindAll(filter);
         }

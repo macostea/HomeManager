@@ -12,15 +12,24 @@ namespace HomeManagerWeb.Repository
     {
         private readonly string connString = "Host=centos-local.mcostea.com;Username=postgres;Password=password;Database=sensors";
 
-        public List<ISensorReading<double>> QueryTemperature(string query)
+        public List<ISensorReading<double>> QueryTemperature(Dictionary<string, string> queryParameters)
         {
             var readings = new List<ISensorReading<double>>();
 
             using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand(query, conn))
+                using (var cmd = new NpgsqlCommand())
                 {
+                    cmd.Connection = conn;
+                    cmd.CommandText = "SELECT * FROM temperature where ";
+                    foreach (var entry in queryParameters)
+                    {
+                        cmd.CommandText += $"{entry.Key} = @{entry.Key} AND ";
+                        cmd.Parameters.AddWithValue($"@{entry.Key}", entry.Value);
+                    }
+                    cmd.CommandText = cmd.CommandText.Remove(cmd.CommandText.Length - 5); // Remove trailing AND (there should be a better way to do this)
+
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -28,6 +37,7 @@ namespace HomeManagerWeb.Repository
                             readings.Add(SensorReadingFactory.NewTemp(reader));
                         }
                     }
+
                 }
             }
 

@@ -5,6 +5,6 @@ namespace HomeManagerWeb.Repository
 {
     public interface IRepository<T>
     {
-        List<T> GetList(Predicate<T> filter);
+        List<T> GetList(string room, Predicate<T> filter);
     }
 }

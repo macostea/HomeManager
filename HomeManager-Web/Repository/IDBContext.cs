@@ -9,6 +9,6 @@ namespace HomeManagerWeb.Repository
 {
     public interface IDBContext
     {
-        List<ISensorReading<double>> QueryTemperature(string query);
+        List<ISensorReading<double>> QueryTemperature(Dictionary<string, string> queryParameters);
     }
 }

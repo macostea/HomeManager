@@ -36,6 +36,7 @@ namespace HomeManager_Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddScoped<IRepository<ISensorReading<double>>, TempSensorReadingsRepository>();
+            services.AddScoped<IDBContext, TimescaleDBContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

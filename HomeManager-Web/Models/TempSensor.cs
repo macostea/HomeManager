@@ -31,7 +31,7 @@ namespace HomeManagerWeb.Models
 
         public List<ISensorReading<double>> GetReadings(Predicate<ISensorReading<double>> filter)
         {
-            return this.repository.GetList(filter);
+            return this.repository.GetList(this.Location, filter);
         }
     }
 }

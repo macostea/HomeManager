@@ -13,5 +13,10 @@ namespace HomeManagerWeb.Models
             this.Time = time;
             this.Reading = reading;
         }
+
+        public override string ToString()
+        {
+            return $"Time: {this.Time}, Reading: {this.Reading}";
+        }
     }
 }

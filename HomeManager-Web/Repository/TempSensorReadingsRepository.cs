@@ -13,9 +13,14 @@ namespace HomeManagerWeb.Repository
             this.db = db;
         }
 
-        public List<ISensorReading<double>> GetList(Predicate<ISensorReading<double>> filter)
+        public List<ISensorReading<double>> GetList(string room, Predicate<ISensorReading<double>> filter)
         {
-            var readings = this.db.QueryTemperature("SELECT * FROM temperature");
+
+            var parameters = new Dictionary<string, string>
+            {
+                { "location", room }
+            };
+            var readings = this.db.QueryTemperature(parameters);
 
             return null == filter ? readings : readings.FindAll(filter);
         }

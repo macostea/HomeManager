@@ -1,11 +1,11 @@
-﻿using HomeManager.Models;
+﻿using HomeManager.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HomeManager.Repository
+namespace HomeManager.Common.Repository
 {
     public interface IDBContext
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 
-namespace HomeManager.Models
+namespace HomeManager.Common.Models
 {
     public class SensorReading<T> : ISensorReading<T>
     {

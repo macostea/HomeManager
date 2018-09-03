@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HomeManager.Models
+namespace HomeManager.Common.Models
 {
     public class SensorReadingFactory
     {

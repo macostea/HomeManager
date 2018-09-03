@@ -1,5 +1,5 @@
 ﻿using System;
-namespace HomeManager.Models
+namespace HomeManager.Common.Models
 {
     public interface ISensorReading<T>
     {

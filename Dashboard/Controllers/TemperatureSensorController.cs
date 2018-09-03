@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HomeManager.Models;
-using HomeManager.Repository;
+using HomeManager.Common.Models;
+using HomeManager.Common.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeManager.Controllers
+namespace HomeManager.Dashboard.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

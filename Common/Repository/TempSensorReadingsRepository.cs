@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HomeManager.Models;
+using HomeManager.Common.Models;
 
-namespace HomeManager.Repository
+namespace HomeManager.Common.Repository
 {
     public class TempSensorReadingsRepository : IRepository<ISensorReading<double>>
     {

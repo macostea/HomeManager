@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
-using HomeManager.Models;
+using HomeManager.Common.Models;
 using Npgsql;
 
-namespace HomeManager.Repository
+namespace HomeManager.Common.Repository
 {
     public class TimescaleDBContext : IDBContext
     {

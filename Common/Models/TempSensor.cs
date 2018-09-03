@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HomeManager.Repository;
+using HomeManager.Common.Repository;
 
-namespace HomeManager.Models
+namespace HomeManager.Common.Models
 {
     public class TempSensor : ISensor
     {

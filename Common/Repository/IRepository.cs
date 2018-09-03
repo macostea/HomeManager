@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HomeManager.Repository
+namespace HomeManager.Common.Repository
 {
     public interface IRepository<T>
     {

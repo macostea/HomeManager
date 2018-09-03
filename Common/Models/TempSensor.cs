@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using HomeManager.Common.Repository;
 
 namespace HomeManager.Common.Models
 {
-    public class TempSensor : ISensor
+    public class TempSensor : ISensor<double>
     {
         public String Location { get; }
         private readonly List<ISensorReading<double>> readings;
@@ -17,21 +18,26 @@ namespace HomeManager.Common.Models
             this.repository = repository;
         }
 
-        public List<ISensorReading<double>> GetLatestReadings()
+        public IEnumerable<ISensorReading<double>> GetLatestReadings()
         {
             DateTime start = DateTime.Now.Subtract(TimeSpan.FromDays(3));
             DateTime end = DateTime.Now;
             return this.GetReadings((obj) => obj.Time > start && obj.Time < end);
         }
 
-        public List<ISensorReading<double>> GetReadings()
+        public IEnumerable<ISensorReading<double>> GetReadings()
         {
             return this.GetReadings(null);
         }
 
-        public List<ISensorReading<double>> GetReadings(Predicate<ISensorReading<double>> filter)
+        public IEnumerable<ISensorReading<double>> GetReadings(Predicate<ISensorReading<double>> filter)
         {
             return this.repository.GetList(this.Location, filter);
+        }
+
+        public Task<bool> SaveReading(ISensorReading<double> reading)
+        {
+            throw new NotImplementedException();
         }
     }
 }

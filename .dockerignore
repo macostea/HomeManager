@@ -1,0 +1,5 @@
+Dockerfile
+**/bin
+**/obj
+**/packages
+**/.vs

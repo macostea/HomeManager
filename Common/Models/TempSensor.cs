@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 using HomeManager.Common.Repository;
 
 namespace HomeManager.Common.Models
@@ -37,7 +38,13 @@ namespace HomeManager.Common.Models
 
         public Task<bool> SaveReading(ISensorReading<double> reading)
         {
-            throw new NotImplementedException();
+            var task = new TaskFactory<bool>().StartNew(() =>
+            {
+                Thread.Sleep(2000);
+                return true;
+            });
+
+            return task;
         }
     }
 }

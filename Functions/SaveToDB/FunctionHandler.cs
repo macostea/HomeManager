@@ -11,7 +11,7 @@ namespace Function
     public class FunctionHandler
     {
         public async Task<string> Handle(string input) {
-            var inputDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(input);
+            var inputDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(input);
 
             var dBContext = new TimescaleDBContext();
             var repository = new TempSensorReadingsRepository(dBContext);
@@ -20,9 +20,9 @@ namespace Function
             switch (inputDictionary["type"])
             {
                 case "temperature":
-                    var reading = JsonConvert.DeserializeObject<SensorReading<double>>(inputDictionary["reading"]);
+                    var reading = JsonConvert.DeserializeObject<SensorReading<double>>(inputDictionary["reading"].ToString());
                     var location = inputDictionary["location"];
-                    var sensor = new TempSensor(location, repository);
+                    var sensor = new TempSensor(location.ToString(), repository);
 
                     return await sensor.SaveReading(reading) ? "worked" : "didn't work";
                     break;

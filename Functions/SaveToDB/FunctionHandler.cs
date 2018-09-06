@@ -25,9 +25,8 @@ namespace Function
                     var sensor = new TempSensor(location.ToString(), repository);
 
                     return await sensor.SaveReading(reading) ? "worked" : "didn't work";
-                    break;
             }
-            return "";
+            return "didn't work";
         }
     }
 }

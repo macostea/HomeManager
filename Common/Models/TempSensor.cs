@@ -40,8 +40,7 @@ namespace HomeManager.Common.Models
         {
             var task = new TaskFactory<bool>().StartNew(() =>
             {
-                Thread.Sleep(2000);
-                return true;
+                return this.repository.Add(reading);
             });
 
             return task;

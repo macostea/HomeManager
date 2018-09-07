@@ -7,10 +7,12 @@ namespace HomeManager.Common.Repository
     public class TempSensorReadingsRepository : IRepository<ISensorReading<double>>
     {
         private readonly IDBContext db;
+        private readonly ISensor sensor;
 
-        public TempSensorReadingsRepository(IDBContext db)
+        public TempSensorReadingsRepository(IDBContext db, ISensor sensor)
         {
             this.db = db;
+            this.sensor = sensor;
         }
 
         public bool Add(ISensorReading<double> obj)
@@ -18,16 +20,15 @@ namespace HomeManager.Common.Repository
             return this.db.AddTemperature(obj);
         }
 
-        public List<ISensorReading<double>> GetList(string room, Predicate<ISensorReading<double>> filter)
+        public IEnumerable<ISensorReading<double>> GetAll()
         {
 
-            var parameters = new Dictionary<string, string>
+            var parameters = new Dictionary<string, object>
             {
-                { "location", room }
+                { "sensor", sensor.Id }
             };
-            var readings = this.db.QueryTemperature(parameters);
 
-            return null == filter ? readings : readings.FindAll(filter);
+            return this.db.QueryTemperature(parameters);
         }
     }
 }

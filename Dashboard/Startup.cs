@@ -23,7 +23,6 @@ namespace HomeManager.Dashboard
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddScoped<IRepository<ISensorReading<double>>, TempSensorReadingsRepository>();
             services.AddScoped<IDBContext, TimescaleDBContext>();
 
 

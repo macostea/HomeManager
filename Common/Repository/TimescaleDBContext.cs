@@ -14,6 +14,40 @@ namespace HomeManager.Common.Repository
 
         public bool AddTemperature(ISensorReading<double> reading)
         {
+            return this.Add("temperature", new Dictionary<string, object>
+            {
+                { "time", reading.Time },
+                { "reading", reading.Reading },
+                { "sensor", 1}
+            });
+        }
+
+        public bool AddHumidity(ISensorReading<double> reading)
+        {
+            return this.Add("humidity", new Dictionary<string, object>
+            {
+                { "time", reading.Time },
+                { "reading", reading.Reading },
+                { "sensor", 1}
+            });
+        }
+
+        public bool AddSensor(ISensor sensor)
+        {
+            return this.Add("sensor", new Dictionary<string, object>
+            {
+                { "name", sensor.Name },
+                { "location", sensor.Location },
+                { "type", sensor.Type }
+            });
+        }
+
+        public IEnumerable<ISensorReading<double>> QueryTemperature(Dictionary<string, object> queryParameters) => this.Query<SensorReading<double>>("temperature", queryParameters);
+        public IEnumerable<ISensorReading<double>> QueryHumidity(Dictionary<string, object> queryParameters) => this.Query<SensorReading<double>>("humidity", queryParameters);
+        public IEnumerable<ISensor> QuerySensors(Dictionary<string, object> queryParameters) => this.Query<Sensor>("sensor", queryParameters);
+
+        private bool Add(string table, Dictionary<string, object> values)
+        {
             var rows = 0;
             using (var conn = new NpgsqlConnection(connString))
             {
@@ -21,10 +55,17 @@ namespace HomeManager.Common.Repository
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conn;
-                    cmd.CommandText = "INSERT INTO temperature(time, reading, sensor) VALUES (@time, @reading, 1)";
-                    cmd.Parameters.AddWithValue("@reading", reading.Reading);
-                    cmd.Parameters.AddWithValue("@time", reading.Time);
+                    var atKeys = new List<string>();
 
+                    foreach (var val in values)
+                    {
+                        atKeys.Add($"@{val.Key}");
+                        cmd.Parameters.AddWithValue($"@{val.Key}", val.Value);
+                    }
+
+                    values.Keys.ToList().ForEach((obj) => atKeys.Add($"@{obj}"));
+
+                    cmd.CommandText = $"INSERT INTO {table}({string.Join(", ", values.Keys)}) VALUES ({string.Join(", ", atKeys)})";
                     rows = cmd.ExecuteNonQuery();
                 }
             }
@@ -32,9 +73,9 @@ namespace HomeManager.Common.Repository
             return rows != 0;
         }
 
-        public List<ISensorReading<double>> QueryTemperature(Dictionary<string, string> queryParameters)
+        private IEnumerable<T> Query<T>(string table, Dictionary<string, object> queryParameters) where T : ITimescaleRepresentable, new()
         {
-            var readings = new List<ISensorReading<double>>();
+            var readings = new List<T>();
 
             using (var conn = new NpgsqlConnection(connString))
             {
@@ -42,22 +83,28 @@ namespace HomeManager.Common.Repository
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conn;
-                    cmd.CommandText = "SELECT * FROM temperature where ";
+
+                    var atKeys = new List<string>();
+                    var conditions = new List<string>();
                     foreach (var entry in queryParameters)
                     {
-                        cmd.CommandText += $"{entry.Key} = @{entry.Key} AND ";
+                        atKeys.Add($"@{entry.Key}");
+                        conditions.Add($"{entry.Key} = @{entry.Key}");
                         cmd.Parameters.AddWithValue($"@{entry.Key}", entry.Value);
                     }
-                    cmd.CommandText = cmd.CommandText.Remove(cmd.CommandText.Length - 5); // Remove trailing AND (there should be a better way to do this)
+
+                    cmd.CommandText = $"SELECT * FROM {table} WHERE {string.Join(" AND ", conditions)}";
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            readings.Add(SensorReadingFactory.NewTemp(reader));
+                            var obj = new T();
+                            obj.FromTimescaleReader(reader);
+
+                            readings.Add(obj);
                         }
                     }
-
                 }
             }
 

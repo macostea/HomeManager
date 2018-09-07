@@ -15,16 +15,19 @@ namespace HomeManager.Dashboard.Controllers
     {
         private readonly IRepository<ISensorReading<double>> tempRepository;
 
-        public TemperatureSensorController(IRepository<ISensorReading<double>> tempRepository) : base()
+        public TemperatureSensorController(IDBContext context) : base()
         {
-            this.tempRepository = tempRepository;
+            var sensor = new Sensor
+            {
+                Id = 1
+            };
+            this.tempRepository = new TempSensorReadingsRepository(context, sensor);
         }
 
         [HttpGet("[action]")]
         public IEnumerable<ISensorReading<double>> SensorReadings()
         {
-            var sensor = new TempSensor("office", this.tempRepository);
-            return sensor.GetReadings();
+            return this.tempRepository.GetAll();
         }
     }
 }

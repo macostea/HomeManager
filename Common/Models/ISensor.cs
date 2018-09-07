@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 namespace HomeManager.Common.Models
 {
-    public interface ISensor<T>
+    public interface ISensor : ITimescaleRepresentable
     {
-        IEnumerable<ISensorReading<T>> GetLatestReadings();
-        IEnumerable<ISensorReading<T>> GetReadings();
-        IEnumerable<ISensorReading<T>> GetReadings(Predicate<ISensorReading<T>> filter);
-
-        Task<bool> SaveReading(ISensorReading<T> reading);
+        int Id { get; }
+        String Name { get; }
+        String Location { get; }
+        String Type { get; }
     }
 }

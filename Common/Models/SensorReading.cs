@@ -5,8 +5,10 @@ namespace HomeManager.Common.Models
 {
     public class SensorReading<T> : ISensorReading<T>
     {
-        public DateTime Time { get; }
-        public T Reading { get; }
+        public DateTime Time { get; set; }
+        public T Reading { get; set; }
+
+        public SensorReading() { }
 
         public SensorReading(DateTime time, T reading)
         {
@@ -17,6 +19,12 @@ namespace HomeManager.Common.Models
         public override string ToString()
         {
             return $"Time: {this.Time}, Reading: {this.Reading}";
+        }
+
+        public void FromTimescaleReader(DbDataReader reader)
+        {
+            this.Time = reader.GetDateTime(0);
+            this.Reading = (T)reader.GetValue(1);
         }
     }
 }

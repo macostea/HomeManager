@@ -5,7 +5,7 @@ namespace HomeManager.Common.Repository
 {
     public interface IRepository<T>
     {
-        List<T> GetList(string room, Predicate<T> filter);
+        IEnumerable<T> GetAll();
         bool Add(T obj);
     }
 }

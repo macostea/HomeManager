@@ -9,7 +9,13 @@ namespace HomeManager.Common.Repository
 {
     public interface IDBContext
     {
-        List<ISensorReading<double>> QueryTemperature(Dictionary<string, string> queryParameters);
+        IEnumerable<ISensorReading<double>> QueryTemperature(Dictionary<string, object> queryParameters);
         bool AddTemperature(ISensorReading<double> reading);
+
+        IEnumerable<ISensorReading<double>> QueryHumidity(Dictionary<string, object> queryParameters);
+        bool AddHumidity(ISensorReading<double> reading);
+
+        IEnumerable<ISensor> QuerySensors(Dictionary<string, object> queryParameters);
+        bool AddSensor(ISensor sensor);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using HomeManager.Common.Models;
 
 namespace HomeManager.Common.Repository
@@ -13,12 +14,12 @@ namespace HomeManager.Common.Repository
             this.db = db;
         }
 
-        public bool Add(ISensor obj)
+        public Task<bool> Add(ISensor obj)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISensor> GetAll()
+        public Task<IEnumerable<ISensor>> GetAll()
         {
             throw new NotImplementedException();
         }

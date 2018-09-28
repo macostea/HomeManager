@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using HomeManager.Common.Models;
 
 namespace HomeManager.Common.Repository
@@ -15,12 +16,12 @@ namespace HomeManager.Common.Repository
             this.sensor = sensor;
         }
 
-        public bool Add(ISensorReading<double> obj)
+        public Task<bool> Add(ISensorReading<double> obj)
         {
             return this.db.AddTemperature(obj);
         }
 
-        public IEnumerable<ISensorReading<double>> GetAll()
+        public Task<IEnumerable<ISensorReading<double>>> GetAll()
         {
 
             var parameters = new Dictionary<string, object>

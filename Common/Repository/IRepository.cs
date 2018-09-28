@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HomeManager.Common.Repository
 {
     public interface IRepository<T>
     {
-        IEnumerable<T> GetAll();
-        bool Add(T obj);
+        Task<IEnumerable<T>> GetAll();
+        Task<bool> Add(T obj);
     }
 }

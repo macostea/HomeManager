@@ -10,21 +10,28 @@ namespace Function
 {
     public class FunctionHandler
     {
-        public async Task<string> Handle(string input) {
-            var inputDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(input);
+        public async Task<string> Handle(string input, string connString) {
+           var inputDictionary = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(input);
 
-            var dBContext = new TimescaleDBContext();
-            var repository = new TempSensorReadingsRepository(dBContext);
+            var dBContext = new TimescaleDBContext(connString);
+            var jsonSensor = inputDictionary["sensor"];
+            var jsonReading = inputDictionary["reading"];
 
+            var sensor = new Sensor()
+            {
+                Id = Convert.ToInt32(jsonSensor["id"]),
+                Type = (string)jsonSensor["type"]
+            };
 
-            switch (inputDictionary["type"])
+            switch (sensor.Type)
             {
                 case "temperature":
-                    var reading = JsonConvert.DeserializeObject<SensorReading<double>>(inputDictionary["reading"].ToString());
-                    var location = inputDictionary["location"];
-                    var sensor = new TempSensor(location.ToString(), repository);
+                    var repository = new TempSensorReadingsRepository(dBContext, sensor);
+                    var time = (DateTime)jsonReading["time"];
+                    var reading = (double)jsonReading["reading"];
+                    var sensorReading = new SensorReading<double>(time, reading);
 
-                    return await sensor.SaveReading(reading) ? "worked" : "didn't work";
+                    return await repository.Add(sensorReading) ? "worked" : "didn't work";
             }
             return "didn't work";
         }

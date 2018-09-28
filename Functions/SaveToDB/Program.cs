@@ -23,7 +23,15 @@ namespace SaveToDB
             string buffer = GetStdin();
             FunctionHandler f = new FunctionHandler();
 
-            string responseValue = await f.Handle(buffer);
+            var host = Environment.GetEnvironmentVariable("TIMESCALE_HOST") ?? "172.23.0.2";
+            var port = Environment.GetEnvironmentVariable("TIMESCALE_PORT") ?? "5432";
+            var username = Environment.GetEnvironmentVariable("TIMESCALE_USERNAME") ?? "postgres";
+            var password = Environment.GetEnvironmentVariable("TIMESCALE_PASSWORD") ?? "password";
+            var database = Environment.GetEnvironmentVariable("TIMESCALE_DATABASE") ?? "sensors";
+
+            var connString = $"Host={host};Port={port};Username={username};Password={password};Database={database}";
+
+            string responseValue = await f.Handle(buffer, connString);
 
             if (responseValue != null)
             {

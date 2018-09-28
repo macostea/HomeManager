@@ -12,9 +12,14 @@ namespace HomeManager.Common.Repository
     {
         private readonly string connString = "Host=172.23.0.2;Port=9009;Username=postgres;Password=password;Database=sensors";
 
-        public bool AddTemperature(ISensorReading<double> reading)
+        public TimescaleDBContext(String connString)
         {
-            return this.Add("temperature", new Dictionary<string, object>
+            this.connString = connString;
+        }
+
+        public async Task<bool> AddTemperature(ISensorReading<double> reading)
+        {
+            return await this.Add("temperature", new Dictionary<string, object>
             {
                 { "time", reading.Time },
                 { "reading", reading.Reading },
@@ -22,9 +27,9 @@ namespace HomeManager.Common.Repository
             });
         }
 
-        public bool AddHumidity(ISensorReading<double> reading)
+        public async Task<bool> AddHumidity(ISensorReading<double> reading)
         {
-            return this.Add("humidity", new Dictionary<string, object>
+            return await this.Add("humidity", new Dictionary<string, object>
             {
                 { "time", reading.Time },
                 { "reading", reading.Reading },
@@ -32,9 +37,9 @@ namespace HomeManager.Common.Repository
             });
         }
 
-        public bool AddSensor(ISensor sensor)
+        public async Task<bool> AddSensor(ISensor sensor)
         {
-            return this.Add("sensor", new Dictionary<string, object>
+            return await this.Add("sensor", new Dictionary<string, object>
             {
                 { "name", sensor.Name },
                 { "location", sensor.Location },
@@ -42,16 +47,17 @@ namespace HomeManager.Common.Repository
             });
         }
 
-        public IEnumerable<ISensorReading<double>> QueryTemperature(Dictionary<string, object> queryParameters) => this.Query<SensorReading<double>>("temperature", queryParameters);
-        public IEnumerable<ISensorReading<double>> QueryHumidity(Dictionary<string, object> queryParameters) => this.Query<SensorReading<double>>("humidity", queryParameters);
-        public IEnumerable<ISensor> QuerySensors(Dictionary<string, object> queryParameters) => this.Query<Sensor>("sensor", queryParameters);
+        public async Task<IEnumerable<ISensorReading<double>>> QueryTemperature(Dictionary<string, object> queryParameters) => await this.Query<SensorReading<double>>("temperature", queryParameters);
+        public async Task<IEnumerable<ISensorReading<double>>> QueryHumidity(Dictionary<string, object> queryParameters) => await this.Query<SensorReading<double>>("humidity", queryParameters);
+        public async Task<IEnumerable<ISensor>> QuerySensors(Dictionary<string, object> queryParameters) => await this.Query<Sensor>("sensor", queryParameters);
 
-        private bool Add(string table, Dictionary<string, object> values)
+        private async Task<bool> Add(string table, Dictionary<string, object> values)
         {
+
             var rows = 0;
             using (var conn = new NpgsqlConnection(connString))
             {
-                conn.Open();
+                await conn.OpenAsync();
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conn;
@@ -62,24 +68,22 @@ namespace HomeManager.Common.Repository
                         atKeys.Add($"@{val.Key}");
                         cmd.Parameters.AddWithValue($"@{val.Key}", val.Value);
                     }
-
-                    values.Keys.ToList().ForEach((obj) => atKeys.Add($"@{obj}"));
-
+                    
                     cmd.CommandText = $"INSERT INTO {table}({string.Join(", ", values.Keys)}) VALUES ({string.Join(", ", atKeys)})";
-                    rows = cmd.ExecuteNonQuery();
+                    rows = await cmd.ExecuteNonQueryAsync();
                 }
             }
 
             return rows != 0;
         }
 
-        private IEnumerable<T> Query<T>(string table, Dictionary<string, object> queryParameters) where T : ITimescaleRepresentable, new()
+        private async Task<IEnumerable<T>> Query<T>(string table, Dictionary<string, object> queryParameters) where T : ITimescaleRepresentable, new()
         {
             var readings = new List<T>();
 
             using (var conn = new NpgsqlConnection(connString))
             {
-                conn.Open();
+                await conn.OpenAsync();
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conn;
@@ -95,9 +99,9 @@ namespace HomeManager.Common.Repository
 
                     cmd.CommandText = $"SELECT * FROM {table} WHERE {string.Join(" AND ", conditions)}";
 
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             var obj = new T();
                             obj.FromTimescaleReader(reader);

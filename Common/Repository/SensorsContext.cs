@@ -8,5 +8,6 @@ namespace Common.Repository
     {
         public SensorsContext(DbContextOptions<SensorsContext> options) : base(options) { }
         public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<TemperatureSensorReading> TemperatureSensorReadings { get; set; }
     }
 }

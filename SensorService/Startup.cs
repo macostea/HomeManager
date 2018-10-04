@@ -29,9 +29,11 @@ namespace SensorService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddScoped<IRepository<Sensor>, TimescaleDBRepository<Sensor>>();
+            services.AddScoped<IRepository<Sensor>, SensorsRepository<Sensor>>();
+            services.AddScoped<IRepository<TemperatureSensorReading>, SensorsRepository<TemperatureSensorReading>>();
             var connectionString = Configuration.GetConnectionString("SensorsContext");
             services.AddEntityFrameworkNpgsql().AddDbContext<SensorsContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("SensorService")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

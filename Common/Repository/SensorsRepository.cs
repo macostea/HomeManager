@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Common.Repository
 {
-    public class TimescaleDBRepository<T>: IRepository<T> where T : EntityBase
+    public class SensorsRepository<T>: IRepository<T> where T : EntityBase
     {
         private readonly SensorsContext dbContext;
 
-        public TimescaleDBRepository(SensorsContext dbContext)
+        public SensorsRepository(SensorsContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -35,16 +35,16 @@ namespace Common.Repository
             return await this.dbContext.SaveChangesAsync() != 0;
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return this.dbContext.Set<T>().AsEnumerable();
+            return await this.dbContext.Set<T>().ToArrayAsync();
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate)
         {
-            return this.dbContext.Set<T>()
+            return await this.dbContext.Set<T>()
                        .Where(predicate)
-                       .AsEnumerable();
+                       .ToArrayAsync();
         }
 
         public async Task<T> GetById(int id)

@@ -9,10 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorListener", "SensorLis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveToDB", "Functions\SaveToDB\SaveToDB.csproj", "{638BF9A7-C6F4-479C-B8EE-6112A0ABC018}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{CCE53F04-0A97-4B06-AC89-F956175593D6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorService", "SensorService\SensorService.csproj", "{5B8C70BC-1CA9-4927-A7B2-5A0581558783}"
 EndProject
 Global
@@ -33,10 +29,6 @@ Global
 		{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{638BF9A7-C6F4-479C-B8EE-6112A0ABC018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{638BF9A7-C6F4-479C-B8EE-6112A0ABC018}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{638BF9A7-C6F4-479C-B8EE-6112A0ABC018}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{638BF9A7-C6F4-479C-B8EE-6112A0ABC018}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B8C70BC-1CA9-4927-A7B2-5A0581558783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B8C70BC-1CA9-4927-A7B2-5A0581558783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B8C70BC-1CA9-4927-A7B2-5A0581558783}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,6 +41,5 @@ Global
 		SolutionGuid = {925A5D1F-86B8-4C94-8CF7-D2AF4D6C4C42}
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{638BF9A7-C6F4-479C-B8EE-6112A0ABC018} = {CCE53F04-0A97-4B06-AC89-F956175593D6}
 	EndGlobalSection
 EndGlobal

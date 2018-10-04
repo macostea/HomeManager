@@ -18,8 +18,11 @@
     <Compile Remove="Class1.cs" />
     <Compile Remove="Models\SensorReadingFactory.cs" />
     <Compile Remove="Models\TempSensor.cs" />
+    <Compile Remove="Repository\TimescaleDBContext.cs" />
+    <Compile Remove="Models\ITimescaleRepresentable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="4.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.2" />
   </ItemGroup>
 </Project>

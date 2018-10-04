@@ -22,9 +22,9 @@ namespace SensorService.Controllers
 
         // GET: api/sensor
         [HttpGet]
-        public IEnumerable<Sensor> Get()
+        public async Task<IEnumerable<Sensor>> Get()
         {
-            return this.repository.GetAll();
+            return await this.repository.GetAll();
         }
 
         // GET api/sensor/5

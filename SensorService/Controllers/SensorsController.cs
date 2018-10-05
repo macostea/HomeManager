@@ -41,7 +41,7 @@ namespace SensorService.Controllers
             return !ModelState.IsValid
                 ? BadRequest(ModelState)
                 : (await this.repository.Add(sensor)
-                    ? CreatedAtRoute("GetSensors", new { Controller = "Sensors", id = sensor.Id }, sensor)
+                    ? CreatedAtRoute("GetSensors", new { Controller = "Sensors", id = sensor.SensorId }, sensor)
                     : (IActionResult)BadRequest());
         }
 

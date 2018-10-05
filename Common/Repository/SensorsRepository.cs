@@ -47,6 +47,16 @@ namespace Common.Repository
                        .ToArrayAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAll(ISpecification<T> spec)
+        {
+            var queryableResultWithIncludes = spec.Includes.Aggregate(this.dbContext.Set<T>().AsQueryable(),
+                                                                      (current, include) => current.Include(include));
+            var secondaryResult = spec.IncludeStrings.Aggregate(queryableResultWithIncludes,
+                                                                (current, include) => current.Include(include));
+
+            return spec.Criteria == null ? await secondaryResult.ToArrayAsync() : await secondaryResult.Where(spec.Criteria).ToArrayAsync();
+        }
+
         public async Task<T> GetById(int id)
         {
             return await this.dbContext.Set<T>().FindAsync(id);

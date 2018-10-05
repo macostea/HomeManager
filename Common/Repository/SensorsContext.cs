@@ -9,5 +9,12 @@ namespace Common.Repository
         public SensorsContext(DbContextOptions<SensorsContext> options) : base(options) { }
         public DbSet<Sensor> Sensors { get; set; }
         public DbSet<TemperatureSensorReading> TemperatureSensorReadings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasPostgresExtension("timescaledb");
+            modelBuilder.HasDefaultSchema("public");
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

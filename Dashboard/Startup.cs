@@ -1,5 +1,5 @@
-using HomeManager.Common.Models;
-using HomeManager.Common.Repository;
+using Common.Models;
+using Common.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,7 +23,6 @@ namespace HomeManager.Dashboard
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddScoped<IDBContext, TimescaleDBContext>();
 
 
             // In production, the React files will be served from this directory

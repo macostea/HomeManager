@@ -52,8 +52,8 @@ namespace SensorService.Controllers
             return !ModelState.IsValid
                 ? BadRequest(ModelState)
                 : (await this.repository.Edit(sensor)
-                    ? Ok()
-                    : (IActionResult)NotFound());
+                    ? Ok(sensor)
+                    : (IActionResult)BadRequest());
         }
 
         // DELETE api/sensor/5

@@ -178,5 +178,70 @@ namespace SensorServiceTests
             Assert.NotNull(contentResult);
 
         }
+
+        [Fact]
+        public async Task Delete_WhenCalled_ReturnsOk()
+        {
+            var mockedRepo = new Mock<IRepository<Sensor>>();
+
+            var controller = new SensorsController(mockedRepo.Object);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                SensorId = 3
+            };
+
+            mockedRepo.Setup(repo => repo.GetById(3)).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.Delete(newSensor)).ReturnsAsync(true);
+
+            var result = await controller.Delete(3);
+            var contentResult = result as OkResult;
+
+            Assert.NotNull(contentResult);
+        }
+
+        [Fact]
+        public async Task Delete_WhenCalled_BadObject_ReturnsBadRequest()
+        {
+            var mockedRepo = new Mock<IRepository<Sensor>>();
+
+            var controller = new SensorsController(mockedRepo.Object);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                SensorId = 3
+            };
+
+            mockedRepo.Setup(repo => repo.GetById(3)).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.Delete(newSensor)).ReturnsAsync(false);
+
+            var result = await controller.Delete(3);
+            var contentResult = result as BadRequestResult;
+
+            Assert.NotNull(contentResult);
+        }
+
+        [Fact]
+        public async Task Delete_WhenCalled_UnknownObject_ReturnsNotFound()
+        {
+            var mockedRepo = new Mock<IRepository<Sensor>>();
+
+            var controller = new SensorsController(mockedRepo.Object);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                SensorId = 3
+            };
+
+            mockedRepo.Setup(repo => repo.GetById(2)).ReturnsAsync((Sensor)null);
+
+            var result = await controller.Delete(2);
+            var contentResult = result as NotFoundResult;
+
+            Assert.NotNull(contentResult);
+        }
     }
 }

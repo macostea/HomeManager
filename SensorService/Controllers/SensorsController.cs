@@ -60,10 +60,12 @@ namespace SensorService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return await this.repository.GetById(id) != null 
-                ? (await this.repository.Delete(await this.repository.GetById(id)) 
+            var sensor = await this.repository.GetById(id);
+
+            return sensor != null 
+                ? (await this.repository.Delete(sensor) 
                     ? Ok()
-                    : (IActionResult)NotFound())
+                    : (IActionResult)BadRequest())
                 : NotFound();
         }
     }

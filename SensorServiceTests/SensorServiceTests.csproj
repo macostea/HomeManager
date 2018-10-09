@@ -6,13 +6,34 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>Custom</type>
+          <name>Test With Coverage</name>
+          <command>dotnet test /p:CollectCoverage=true 
+/p:CoverletOutputFormat=cobertura 
+/p:CoverletOutput=TestResults/Coverage/</command>
+        </Command>
+        <Command>
+          <type>Custom</type>
+          <name>Generate Report</name>
+          <command>dotnet reportgenerator "-reports:TestResults/Coverage/coverage.cobertura.xml" "-targetdir:TestResults/Coverage/Reports" -reportTypes:htmlInline "-assemblyfilters:-Common"
+</command>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-reportgenerator-cli" Version="4.0.0-rc8" />
     <PackageReference Include="Moq" Version="4.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.5" />
+    <PackageReference Include="coverlet.msbuild" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,5 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="SensorsRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="coverage.json" />
+    <None Remove="TestResults\Coverage.cobertura.xml" />
   </ItemGroup>
 </Project>

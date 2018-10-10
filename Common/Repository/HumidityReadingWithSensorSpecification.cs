@@ -5,8 +5,11 @@ namespace Common.Repository
 {
     public class HumidityReadingWithSensorSpecification : BaseSpecification<HumiditySensorReading>
     {
-        public HumidityReadingWithSensorSpecification(int readingId) : base(b => b.SensorId == readingId)
+        public int ReadingID { get; }
+
+        public HumidityReadingWithSensorSpecification(int readingId) : base(b => b.SensorReadingId == readingId)
         {
+            this.ReadingID = readingId;
             AddInclude(b => b.Sensor);
         }
 

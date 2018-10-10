@@ -62,14 +62,47 @@ namespace SensorServiceTests
 
             var controller = new SensorsController(mockedRepo.Object);
             var result = await controller.Get(1);
+            var contentResult = (result as OkObjectResult).Value as Sensor;
+            
 
-            Assert.NotNull(result);
-            Assert.Equal(result, sensors[0]);
+            Assert.NotNull(contentResult);
+            Assert.Equal(contentResult, sensors[0]);
 
             result = await controller.Get(2);
+            contentResult = (result as OkObjectResult).Value as Sensor;
 
             Assert.NotNull(result);
-            Assert.Equal(result, sensors[1]);
+            Assert.Equal(contentResult, sensors[1]);
+        }
+
+        [Fact]
+        public async Task GetById_WhenCalled_UnknownID_ReturnsNotFoundResult()
+        {
+            var mockedRepo = new Mock<IRepository<Sensor>>();
+
+            var sensors = new List<Sensor>
+            {
+                new Sensor()
+                {
+                    Name = "test_sensor_1",
+                    SensorId = 1
+                },
+                new Sensor()
+                {
+                    Name = "test_sensor_2",
+                    SensorId = 2
+                }
+            };
+
+            mockedRepo.Setup(repo => repo.GetById(1)).ReturnsAsync(sensors[0]);
+            mockedRepo.Setup(repo => repo.GetById(2)).ReturnsAsync(sensors[1]);
+
+            var controller = new SensorsController(mockedRepo.Object);
+            var result = await controller.Get(3);
+            var contentResult = result as NotFoundResult;
+
+
+            Assert.NotNull(contentResult);
         }
 
         [Fact]

@@ -29,9 +29,10 @@ namespace SensorService.Controllers
 
         // GET api/sensor/5
         [HttpGet("{id}", Name = "GetSensors")]
-        public async Task<Sensor> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return await this.repository.GetById(id);
+            var results = await this.repository.GetById(id);
+            return results == null ? NotFound() : (IActionResult)Ok(results);
         }
 
         // POST api/sensor

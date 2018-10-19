@@ -12,12 +12,12 @@ namespace HomeManager.SensorListener
             //var repository = new TempSensorReadingsRepository(dBContext);
             //var sensor = new TempSensor("office", repository);
 
-            //IQueueClient client = new RabbitMQClient(Environment.GetEnvironmentVariable("RABBITMQ_HOST"),
-            //                                         Environment.GetEnvironmentVariable("RABBITMQ_EXCHANGE"),
-            //                                         Environment.GetEnvironmentVariable("RABBITMQ_QUEUE"));
-            //client.RegisterListener(new TemperatureSensorListener(sensor));
+            IQueueClient client = new RabbitMQClient(Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
+                                                     Environment.GetEnvironmentVariable("RABBITMQ_EXCHANGE") ?? "SensorsExchange",
+                                                     Environment.GetEnvironmentVariable("RABBITMQ_QUEUE") ?? "SensorsQueue");
+            client.RegisterListener(new TemperatureSensorListener(Environment.GetEnvironmentVariable("SENSOR_SERVICE_URL") ?? "localhost"));
 
-            //client.Start();
+            client.Start();
         }
     }
 }

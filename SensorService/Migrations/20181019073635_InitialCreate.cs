@@ -11,9 +11,6 @@ namespace SensorService.Migrations
             migrationBuilder.EnsureSchema(
                 name: "public");
 
-            migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:PostgresExtension:timescaledb", "'timescaledb', '', ''");
-
             migrationBuilder.CreateTable(
                 name: "Sensors",
                 schema: "public",
@@ -23,11 +20,34 @@ namespace SensorService.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(nullable: true),
                     Location = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true)
+                    Type = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sensors", x => x.SensorId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HumiditySensorReadings",
+                schema: "public",
+                columns: table => new
+                {
+                    SensorReadingId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Time = table.Column<DateTime>(nullable: false),
+                    Reading = table.Column<double>(nullable: false),
+                    SensorId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HumiditySensorReadings", x => x.SensorReadingId);
+                    table.ForeignKey(
+                        name: "FK_HumiditySensorReadings_Sensors_SensorId",
+                        column: x => x.SensorId,
+                        principalSchema: "public",
+                        principalTable: "Sensors",
+                        principalColumn: "SensorId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,6 +74,12 @@ namespace SensorService.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_HumiditySensorReadings_SensorId",
+                schema: "public",
+                table: "HumiditySensorReadings",
+                column: "SensorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TemperatureSensorReadings_SensorId",
                 schema: "public",
                 table: "TemperatureSensorReadings",
@@ -62,6 +88,10 @@ namespace SensorService.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "HumiditySensorReadings",
+                schema: "public");
+
             migrationBuilder.DropTable(
                 name: "TemperatureSensorReadings",
                 schema: "public");

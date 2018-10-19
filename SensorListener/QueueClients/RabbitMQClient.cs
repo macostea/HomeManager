@@ -35,10 +35,10 @@ namespace HomeManager.SensorListener.QueueClients
                 
                 using (var channel = connection.CreateModel())
                 {
-                    channel.ExchangeDeclare(exchange: exchangeName, type: "topic");
+                    channel.ExchangeDeclare(exchange: exchangeName, type: "topic", durable: true);
 
                     channel.QueueDeclare(queue: this.queueName,
-                                            durable: false,
+                                            durable: true,
                                             exclusive: false,
                                             autoDelete: false,
                                             arguments: null);

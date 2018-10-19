@@ -6,6 +6,12 @@ using System.Data.Common;
 
 namespace Common.Models
 {
+    public enum SensorType
+    {
+        Temperature,
+        Humidity
+    }
+
     public class Sensor : EntityBase
     {
         [Key]
@@ -13,6 +19,6 @@ namespace Common.Models
         public int SensorId { get; set; }
         public String Name { get; set; }
         public String Location { get; set; }
-        public String Type { get; set; }
+        public SensorType Type { get; set; }
     }
 }

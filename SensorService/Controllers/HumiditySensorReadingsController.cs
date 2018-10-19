@@ -47,6 +47,12 @@ namespace SensorService.Controllers
                 return BadRequest(ModelState);
             }
 
+            var sensor = await this.sensorRepository.GetById(sensorReading.SensorId);
+            if (sensor.Type != SensorType.Humidity)
+            {
+                return BadRequest();
+            }
+
             return await this.repository.Add(sensorReading)
                              ? CreatedAtRoute("GetReadings", new { Controller = "TemperatureSensorReadings", id = sensorReading.SensorReadingId }, sensorReading)
                       : (IActionResult)BadRequest();

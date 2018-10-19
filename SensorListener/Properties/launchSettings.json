@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SensorListener": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "RABBITMQ_HOST": "foxey-lady-master.mcostea.com"
+      }
+    }
+  }
+}

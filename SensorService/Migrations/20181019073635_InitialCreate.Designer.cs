@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SensorService.Migrations
 {
     [DbContext(typeof(SensorsContext))]
-    [Migration("20181005104641_InitialCreate")]
+    [Migration("20181019073635_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,10 +18,27 @@ namespace SensorService.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("public")
-                .HasAnnotation("Npgsql:PostgresExtension:timescaledb", "'timescaledb', '', ''")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("Common.Models.HumiditySensorReading", b =>
+                {
+                    b.Property<int>("SensorReadingId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Reading");
+
+                    b.Property<int>("SensorId");
+
+                    b.Property<DateTime>("Time");
+
+                    b.HasKey("SensorReadingId");
+
+                    b.HasIndex("SensorId");
+
+                    b.ToTable("HumiditySensorReadings");
+                });
 
             modelBuilder.Entity("Common.Models.Sensor", b =>
                 {
@@ -32,7 +49,7 @@ namespace SensorService.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Type");
+                    b.Property<int>("Type");
 
                     b.HasKey("SensorId");
 
@@ -55,6 +72,14 @@ namespace SensorService.Migrations
                     b.HasIndex("SensorId");
 
                     b.ToTable("TemperatureSensorReadings");
+                });
+
+            modelBuilder.Entity("Common.Models.HumiditySensorReading", b =>
+                {
+                    b.HasOne("Common.Models.Sensor", "Sensor")
+                        .WithMany()
+                        .HasForeignKey("SensorId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Common.Models.TemperatureSensorReading", b =>

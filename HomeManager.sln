@@ -3,15 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dashboard.csproj", "{B544B485-5C08-414B-9ED2-C4064FF56D24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard", "Dashboard\Dashboard.csproj", "{B544B485-5C08-414B-9ED2-C4064FF56D24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorListener", "SensorListener\SensorListener.csproj", "{6F0C3631-0616-42F0-B9C9-5BE616BBA498}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorListener", "SensorListener\SensorListener.csproj", "{6F0C3631-0616-42F0-B9C9-5BE616BBA498}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorService", "SensorService\SensorService.csproj", "{5B8C70BC-1CA9-4927-A7B2-5A0581558783}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorService", "SensorService\SensorService.csproj", "{5B8C70BC-1CA9-4927-A7B2-5A0581558783}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorServiceTests", "SensorServiceTests\SensorServiceTests.csproj", "{C80B4953-7B1C-4516-91A0-8D26FB311C55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorServiceTests", "SensorServiceTests\SensorServiceTests.csproj", "{C80B4953-7B1C-4516-91A0-8D26FB311C55}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{713FB9E6-9219-4F58-B0FB-C249DA5A14DA}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nginx", "nginx", "{3349122C-46A5-4756-8C04-5709BAF40E13}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile.txt = Dockerfile.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conf.d", "conf.d", "{5027386D-E519-4AFC-876F-DE634C2DE618}"
+	ProjectSection(SolutionItems) = preProject
+		sensor-service.conf = sensor-service.conf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,9 +58,11 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3349122C-46A5-4756-8C04-5709BAF40E13} = {713FB9E6-9219-4F58-B0FB-C249DA5A14DA}
+		{5027386D-E519-4AFC-876F-DE634C2DE618} = {3349122C-46A5-4756-8C04-5709BAF40E13}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {925A5D1F-86B8-4C94-8CF7-D2AF4D6C4C42}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

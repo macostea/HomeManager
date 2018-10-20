@@ -1,17 +1,12 @@
 version: "3"
 services:
         nginx:
-                build:
-                        context: nginx
-                volumes:
-                        - ./nginx/conf.d:/etc/nginx/conf.d
+                image: mcostea/homemanager_nginx
                 ports:
                         - "80:80"
                         - "443:443"
         sensor-service:
-                build:
-                        context: .
-                        dockerfile: SensorService/Dockerfile
+                image: mcostea/homemanager_sensor-service
         postgres:
                 image: arm32v7/postgres
                 ports:

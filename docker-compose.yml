@@ -1,0 +1,26 @@
+version: "3"
+services:
+        nginx:
+                build:
+                        context: nginx
+                volumes:
+                        - ./nginx/conf.d:/etc/nginx/conf.d
+                ports:
+                        - "80:80"
+                        - "443:443"
+        sensor-service:
+                build:
+                        context: .
+                        dockerfile: SensorService/Dockerfile
+        postgres:
+                image: arm32v7/postgres
+                ports:
+                        - "5432:5432"
+                environment:
+                        POSTGRES_PASSWORD: password
+                volumes:
+                        - /media/datadisk0/timescale:/var/lib/postgresql/data
+                deploy:
+                        placement:
+                                 constraints:
+                                         - node.role == manager

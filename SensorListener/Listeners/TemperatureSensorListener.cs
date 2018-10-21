@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Common.Models;
+using Common.SensorServiceAPI;
+using Newtonsoft.Json;
+using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,10 +22,10 @@ namespace HomeManager.SensorListener.Listeners
 
         public async void ProcessMessageAsync(string message)
         {
-            await Task.Factory.StartNew(() =>
-            {
-                Console.WriteLine($"{this.Topic}: {message}");
-            });
+            var reading = JsonConvert.DeserializeObject<TemperatureSensorReading>(message);
+
+            var client = new SensorServiceAPI(this.SensorServiceURL);
+            var result = await client.CreateTemperatureReading(reading);
         }
     }
 }

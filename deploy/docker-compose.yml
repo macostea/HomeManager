@@ -19,3 +19,11 @@ services:
                         placement:
                                  constraints:
                                          - node.role == manager
+        rabbitmq:
+                image: mcostea/homemanager_rabbitmq
+                ports:
+                        - "15672:15672"
+                        - "1883:1883"
+                        - "5671:5671"
+                        - "5672:5672"
+                        - "8883:8883"

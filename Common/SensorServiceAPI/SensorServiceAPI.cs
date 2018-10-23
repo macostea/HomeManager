@@ -39,8 +39,21 @@ namespace Common.SensorServiceAPI
                 Resource = "api/TemperatureSensorReadings"
             };
             request.AddJsonBody(reading);
+            request.Method = Method.POST;
 
             return await Execute<TemperatureSensorReading>(request);
+        }
+
+        public async Task<HumiditySensorReading> CreateHumidityReading(HumiditySensorReading reading)
+        {
+            var request = new RestRequest
+            {
+                Resource = "api/HumiditySensorReadings"
+            };
+            request.AddJsonBody(reading);
+            request.Method = Method.POST;
+
+            return await Execute<HumiditySensorReading>(request);
         }
     }
 }

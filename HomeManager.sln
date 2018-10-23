@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard", "Dashboard\Dashboard.csproj", "{B544B485-5C08-414B-9ED2-C4064FF56D24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dashboard.csproj", "{B544B485-5C08-414B-9ED2-C4064FF56D24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorListener", "SensorListener\SensorListener.csproj", "{6F0C3631-0616-42F0-B9C9-5BE616BBA498}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorListener", "SensorListener\SensorListener.csproj", "{6F0C3631-0616-42F0-B9C9-5BE616BBA498}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorService", "SensorService\SensorService.csproj", "{5B8C70BC-1CA9-4927-A7B2-5A0581558783}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorService", "SensorService\SensorService.csproj", "{5B8C70BC-1CA9-4927-A7B2-5A0581558783}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorServiceTests", "SensorServiceTests\SensorServiceTests.csproj", "{C80B4953-7B1C-4516-91A0-8D26FB311C55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorServiceTests", "SensorServiceTests\SensorServiceTests.csproj", "{C80B4953-7B1C-4516-91A0-8D26FB311C55}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{713FB9E6-9219-4F58-B0FB-C249DA5A14DA}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conf.d", "conf.d", "{502738
 	ProjectSection(SolutionItems) = preProject
 		sensor-service.conf = sensor-service.conf
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTTestClient", "MQTTTestClient\MQTTTestClient.csproj", "{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{C80B4953-7B1C-4516-91A0-8D26FB311C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C80B4953-7B1C-4516-91A0-8D26FB311C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C80B4953-7B1C-4516-91A0-8D26FB311C55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

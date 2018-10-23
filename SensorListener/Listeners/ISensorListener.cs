@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace HomeManager.SensorListener.Listeners
+namespace SensorListener.Listeners
 {
     interface ISensorListener
     {
         string Topic { get; }
-        void ProcessMessageAsync(string message);
+        Task<bool> ProcessMessageAsync(string message);
     }
 }

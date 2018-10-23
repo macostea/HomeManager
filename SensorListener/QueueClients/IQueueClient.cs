@@ -1,9 +1,9 @@
-﻿using HomeManager.SensorListener.Listeners;
+﻿using SensorListener.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HomeManager.SensorListener.QueueClients
+namespace SensorListener.QueueClients
 {
     interface IQueueClient
     {

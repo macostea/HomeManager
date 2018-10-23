@@ -2,7 +2,6 @@
 using Common.SensorServiceAPI;
 using Newtonsoft.Json;
 using RestSharp;
-using SensorListener.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace SensorListener.Listeners
 {
-    class TemperatureSensorListener : SensorReadingListener
+    class HumiditySensorListener : SensorReadingListener
     {
-        public TemperatureSensorListener(string sensorServiceURL) : base("temperature", sensorServiceURL) {}
+        public HumiditySensorListener(string sensorServiceURL) : base("humidity", sensorServiceURL) {}
 
         public override async Task<bool> ProcessMessageAsync(string message)
         {
             try
             {
-                var reading = JsonConvert.DeserializeObject<TemperatureSensorReading>(message);
-                var result = await this.Client.CreateTemperatureReading(reading);
+                var reading = JsonConvert.DeserializeObject<HumiditySensorReading>(message);
+                var result = await this.Client.CreateHumidityReading(reading);
                 Console.WriteLine(result);
                 return true;
             }

@@ -4,9 +4,9 @@ using System.Text;
 using System.Threading;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using HomeManager.SensorListener.Listeners;
+using SensorListener.Listeners;
 
-namespace HomeManager.SensorListener.QueueClients
+namespace SensorListener.QueueClients
 {
     class RabbitMQClient : IQueueClient
     {

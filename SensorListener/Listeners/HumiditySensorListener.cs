@@ -18,6 +18,8 @@ namespace SensorListener.Listeners
             try
             {
                 var reading = JsonConvert.DeserializeObject<HumiditySensorReading>(message);
+                reading.Time = DateTime.UtcNow;
+
                 var result = await this.Client.CreateHumidityReading(reading);
                 Console.WriteLine(result);
                 return true;

@@ -19,7 +19,10 @@ namespace SensorListener.Listeners
             try
             {
                 var reading = JsonConvert.DeserializeObject<TemperatureSensorReading>(message);
+                reading.Time = DateTime.UtcNow;
+
                 var result = await this.Client.CreateTemperatureReading(reading);
+
                 Console.WriteLine(result);
                 return true;
             }

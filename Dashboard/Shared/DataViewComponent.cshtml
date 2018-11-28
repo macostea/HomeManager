@@ -1,0 +1,19 @@
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="text-muted">@Title</h5>
+            <div class="metric-value d-inline-block">
+                <h1 class="mb-1 text-primary">@CurrentValue</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions
+{
+    [Parameter]
+    private string Title { get; set; } = "N/A";
+
+    [Parameter]
+    private double CurrentValue { get; set; } = 0.0;
+}

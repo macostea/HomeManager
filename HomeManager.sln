@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conf.d", "conf.d", "{502738
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTTestClient", "MQTTTestClient\MQTTTestClient.csproj", "{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dashboard.csproj", "{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

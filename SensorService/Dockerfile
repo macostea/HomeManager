@@ -7,6 +7,7 @@ FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 COPY ["SensorService/SensorService.csproj", "SensorService/"]
 COPY ["Common/Common.csproj", "Common/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
 RUN dotnet restore "SensorService/SensorService.csproj"
 COPY . .
 WORKDIR "/src/SensorService"

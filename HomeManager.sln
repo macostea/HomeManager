@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2003
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorListener", "SensorListener\SensorListener.csproj", "{6F0C3631-0616-42F0-B9C9-5BE616BBA498}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorListener", "SensorListener\SensorListener.csproj", "{6F0C3631-0616-42F0-B9C9-5BE616BBA498}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{609E4BB2-5121-4F7D-822A-1BB0E2B3827E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorService", "SensorService\SensorService.csproj", "{5B8C70BC-1CA9-4927-A7B2-5A0581558783}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorService", "SensorService\SensorService.csproj", "{5B8C70BC-1CA9-4927-A7B2-5A0581558783}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorServiceTests", "SensorServiceTests\SensorServiceTests.csproj", "{C80B4953-7B1C-4516-91A0-8D26FB311C55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorServiceTests", "SensorServiceTests\SensorServiceTests.csproj", "{C80B4953-7B1C-4516-91A0-8D26FB311C55}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{713FB9E6-9219-4F58-B0FB-C249DA5A14DA}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,9 +26,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conf.d", "conf.d", "{502738
 		sensor-service.conf = sensor-service.conf
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTTestClient", "MQTTTestClient\MQTTTestClient.csproj", "{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTTTestClient", "MQTTTestClient\MQTTTestClient.csproj", "{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dashboard.csproj", "{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard", "Dashboard\Dashboard.csproj", "{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{8C43EDB4-7008-43EA-9136-7F17D36AEEEF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sensors", "Sensors", "{1D0E52FE-68D0-4AB6-94D6-35B0A2B3D4ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSensor", "WeatherSensor\WeatherSensor.csproj", "{A52BC044-D732-4560-AFF2-8EA6223D127D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +66,14 @@ Global
 		{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C43EDB4-7008-43EA-9136-7F17D36AEEEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C43EDB4-7008-43EA-9136-7F17D36AEEEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C43EDB4-7008-43EA-9136-7F17D36AEEEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C43EDB4-7008-43EA-9136-7F17D36AEEEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A52BC044-D732-4560-AFF2-8EA6223D127D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A52BC044-D732-4560-AFF2-8EA6223D127D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A52BC044-D732-4560-AFF2-8EA6223D127D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A52BC044-D732-4560-AFF2-8EA6223D127D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +81,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3349122C-46A5-4756-8C04-5709BAF40E13} = {713FB9E6-9219-4F58-B0FB-C249DA5A14DA}
 		{5027386D-E519-4AFC-876F-DE634C2DE618} = {3349122C-46A5-4756-8C04-5709BAF40E13}
+		{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE} = {1D0E52FE-68D0-4AB6-94D6-35B0A2B3D4ED}
+		{A52BC044-D732-4560-AFF2-8EA6223D127D} = {1D0E52FE-68D0-4AB6-94D6-35B0A2B3D4ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {925A5D1F-86B8-4C94-8CF7-D2AF4D6C4C42}

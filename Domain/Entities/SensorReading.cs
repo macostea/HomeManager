@@ -1,14 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
 
-namespace Common.Models
+namespace Domain.Entities
 {
-    public abstract class SensorReading<T> : EntityBase
+    public abstract class ScalarSensorReading<T> : EntityBase
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SensorReadingId { get; set; }
 
         public DateTime Time { get; set; }
@@ -17,9 +13,9 @@ namespace Common.Models
         public Sensor Sensor { get; set; }
         public int SensorId { get; set; }
 
-        protected SensorReading() {}
+        protected ScalarSensorReading() {}
 
-        protected SensorReading(DateTime time, T reading)
+        protected ScalarSensorReading(DateTime time, T reading)
         {
             this.Time = time;
             this.Reading = reading;

@@ -11,19 +11,15 @@
     <LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Repository\" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Class1.cs" />
-    <Compile Remove="Models\SensorReadingFactory.cs" />
-    <Compile Remove="Models\TempSensor.cs" />
     <Compile Remove="Repository\TimescaleDBContext.cs" />
-    <Compile Remove="Models\ITimescaleRepresentable.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.2" />
     <PackageReference Include="RestSharp" Version="106.5.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 </Project>

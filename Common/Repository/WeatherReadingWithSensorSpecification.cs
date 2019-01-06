@@ -3,17 +3,17 @@ using Domain.Entities;
 
 namespace Common.Repository
 {
-    public class HumidityReadingWithSensorSpecification : BaseSpecification<HumiditySensorReading>
+    public class WeatherReadingWithSensorSpecification : BaseSpecification<WeatherSensorReading>
     {
         public int ReadingID { get; }
 
-        public HumidityReadingWithSensorSpecification(int readingId) : base(b => b.SensorReadingId == readingId)
+        public WeatherReadingWithSensorSpecification(int readingId) : base(b => b.SensorReadingId == readingId)
         {
             this.ReadingID = readingId;
             AddInclude(b => b.Sensor);
         }
 
-        public HumidityReadingWithSensorSpecification() : base(null)
+        public WeatherReadingWithSensorSpecification() : base(null)
         {
             AddInclude(b => b.Sensor);
         }

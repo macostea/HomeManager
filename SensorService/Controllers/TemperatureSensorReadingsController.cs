@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.Models;
+using Domain.Entities;
 using Common.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +30,7 @@ namespace SensorService.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}", Name = "GetReadings")]
+        [HttpGet("{id}", Name = "GetTemperatureReadings")]
         public async Task<IActionResult> Get(int id)
         {
             var results = await this.repository.GetAll(new TempReadingWithSensorSpecification(id));
@@ -54,7 +53,7 @@ namespace SensorService.Controllers
             }
 
             return await this.repository.Add(sensorReading)
-                             ? CreatedAtRoute("GetReadings", new { Controller = "TemperatureSensorReadings", id = sensorReading.SensorReadingId }, sensorReading)
+                             ? CreatedAtRoute("GetTemperatureReadings", new { Controller = "TemperatureSensorReadings", id = sensorReading.SensorReadingId }, sensorReading)
                       : (IActionResult)BadRequest();
 
         }

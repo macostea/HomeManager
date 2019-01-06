@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Common.Models
+namespace Domain.Entities
 {
-    public class TemperatureSensorReading : SensorReading<double>
+    public class TemperatureSensorReading : ScalarSensorReading<double>
     {
         public TemperatureSensorReading() : base()
         {

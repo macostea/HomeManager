@@ -1,3 +1,5 @@
+@using Domain.Entities;
+
 <div class="col-md-6">
     <div class="card">
         <div class="card-body">
@@ -11,9 +13,12 @@
 
 @functions
 {
-    [Parameter]
-    private string Title { get; set; } = "N/A";
+        [Parameter]
+        private string Title { get; set; } = "N/A";
 
-    [Parameter]
-    private double CurrentValue { get; set; } = 0.0;
+        [Parameter]
+        private double CurrentValue { get; set; } = 0.0;
+
+        [Parameter]
+        private IEnumerable<SensorReading<double>> HistoricalValues { get; set; } = new List<SensorReading<double>>();
 }

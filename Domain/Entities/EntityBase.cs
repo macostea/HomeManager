@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Common.Models
+namespace Domain.Entities
 {
     public abstract class EntityBase
     {

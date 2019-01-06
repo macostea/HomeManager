@@ -1,5 +1,5 @@
 ﻿using System;
-using Common.Models;
+using Domain.Entities;
 
 namespace Common.Repository
 {

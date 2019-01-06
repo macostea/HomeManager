@@ -1,7 +1,7 @@
 ﻿using System;
-namespace Common.Models
+namespace Domain.Entities
 {
-    public class HumiditySensorReading : SensorReading<double>
+    public class HumiditySensorReading : ScalarSensorReading<double>
     {
         public HumiditySensorReading() : base()
         {

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Common.Models;
+﻿using System.Threading.Tasks;
 using Common.SensorServiceAPI;
-using Newtonsoft.Json;
 
 namespace SensorListener.Listeners
 {

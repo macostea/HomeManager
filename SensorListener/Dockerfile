@@ -5,6 +5,7 @@ FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 COPY SensorListener/SensorListener.csproj SensorListener/
 COPY Common/Common.csproj Common/
+COPY Domain/Domain.csproj Domain/
 RUN dotnet restore SensorListener/SensorListener.csproj
 COPY . .
 WORKDIR /src/SensorListener

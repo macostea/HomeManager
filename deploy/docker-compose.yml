@@ -32,3 +32,16 @@ services:
                         - "5671:5671"
                         - "5672:5672"
                         - "8883:8883"
+
+        weather-sensor:
+                image: mcostea/homemanager_weather-sensor
+                environment:
+                        WEATHER_LOCATION: "Cluj-Napoca"
+                        RABBITMQ_HOST: "home_manager_rabbitmq"
+                        SENSOR_ID: 5
+                secrets:
+                    - OPENWEATHERMAP_APPID
+ 
+secrets:
+    - OPENWEATHERMAP_APPID:
+        external: true

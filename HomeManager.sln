@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conf.d", "conf.d", "{502738
 		sensor-service.conf = sensor-service.conf
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTTTestClient", "MQTTTestClient\MQTTTestClient.csproj", "{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTTTestClient", "Sensors\MQTTTestClient\MQTTTestClient.csproj", "{5432BA65-0FAC-4167-B59D-8DADB7F1A6EE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard", "Dashboard\Dashboard.csproj", "{EC8E80FA-233F-444A-9D3B-3B79FFDC2A6F}"
 EndProject
@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sensors", "Sensors", "{1D0E52FE-68D0-4AB6-94D6-35B0A2B3D4ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSensor", "WeatherSensor\WeatherSensor.csproj", "{A52BC044-D732-4560-AFF2-8EA6223D127D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSensor", "Sensors\WeatherSensor\WeatherSensor.csproj", "{A52BC044-D732-4560-AFF2-8EA6223D127D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

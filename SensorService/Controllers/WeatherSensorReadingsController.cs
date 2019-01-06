@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace SensorService.Controllers
 {
     [Route("api/[controller]")]
-    public class HumiditySensorReadingsController : Controller
+    public class WeatherSensorReadingsController : Controller
     {
-        private readonly IRepository<HumiditySensorReading> repository;
+        private readonly IRepository<WeatherSensorReading> repository;
         private readonly IRepository<Sensor> sensorRepository;
 
-        public HumiditySensorReadingsController(IRepository<HumiditySensorReading> repository,
-                                                IRepository<Sensor> sensorRepository)
+        public WeatherSensorReadingsController(IRepository<WeatherSensorReading> repository,
+                                                   IRepository<Sensor> sensorRepository)
         {
             this.repository = repository;
             this.sensorRepository = sensorRepository;
@@ -24,22 +24,22 @@ namespace SensorService.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<IEnumerable<HumiditySensorReading>> Get()
+        public async Task<IEnumerable<WeatherSensorReading>> Get()
         {
-            return await this.repository.GetAll(new HumidityReadingWithSensorSpecification());
+            return await this.repository.GetAll(new WeatherReadingWithSensorSpecification());
         }
 
         // GET api/values/5
-        [HttpGet("{id}", Name = "GetHumidityReadings")]
+        [HttpGet("{id}", Name = "GetWeatherReadings")]
         public async Task<IActionResult> Get(int id)
         {
-            var results = await this.repository.GetAll(new HumidityReadingWithSensorSpecification(id));
+            var results = await this.repository.GetAll(new WeatherReadingWithSensorSpecification(id));
             return results == null || !results.Any() ? NotFound() : (IActionResult)Ok(results.First());
         }
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]HumiditySensorReading sensorReading)
+        public async Task<IActionResult> Post([FromBody]WeatherSensorReading sensorReading)
         {
             if (!ModelState.IsValid)
             {
@@ -47,19 +47,20 @@ namespace SensorService.Controllers
             }
 
             var sensor = await this.sensorRepository.GetById(sensorReading.SensorId);
-            if (sensor.Type != SensorType.Humidity)
+            if (sensor.Type != SensorType.Weather)
             {
                 return BadRequest();
             }
 
             return await this.repository.Add(sensorReading)
-                             ? CreatedAtRoute("GetHumidityReadings", new { Controller = "TemperatureSensorReadings", id = sensorReading.SensorReadingId }, sensorReading)
+                             ? CreatedAtRoute("GetWeatherReadings", new { Controller = "WeatherSensorReadings", id = sensorReading.SensorReadingId }, sensorReading)
                       : (IActionResult)BadRequest();
+
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody]HumiditySensorReading reading)
+        public async Task<IActionResult> Put([FromBody]WeatherSensorReading reading)
         {
             return !ModelState.IsValid
                 ? BadRequest(ModelState)

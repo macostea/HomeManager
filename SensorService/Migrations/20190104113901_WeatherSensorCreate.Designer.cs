@@ -3,15 +3,17 @@ using System;
 using Common.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SensorService.Migrations
 {
     [DbContext(typeof(SensorsContext))]
-    partial class SensorsContextModelSnapshot : ModelSnapshot
+    [Migration("20190104113901_WeatherSensorCreate")]
+    partial class WeatherSensorCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,9 +81,9 @@ namespace SensorService.Migrations
 
                     b.Property<string>("Condition");
 
-                    b.Property<int?>("ConditionCode");
+                    b.Property<int>("ConditionCode");
 
-                    b.Property<double?>("Humidity");
+                    b.Property<double>("Humidity");
 
                     b.Property<string>("IconURL");
 
@@ -89,13 +91,11 @@ namespace SensorService.Migrations
 
                     b.Property<double>("MinimumTemperature");
 
-                    b.Property<double?>("Pressure");
+                    b.Property<double>("Pressure");
 
                     b.Property<int>("SensorId");
 
                     b.Property<double>("Temperature");
-
-                    b.Property<DateTime>("Time");
 
                     b.HasKey("SensorReadingId");
 

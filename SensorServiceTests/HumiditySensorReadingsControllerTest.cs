@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Common.Models;
+using Domain.Entities;
 using Common.Repository;
 using Moq;
 using SensorService.Controllers;

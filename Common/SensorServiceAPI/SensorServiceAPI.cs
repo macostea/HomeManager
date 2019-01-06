@@ -1,4 +1,4 @@
-﻿using Common.Models;
+﻿using Domain.Entities;
 using RestSharp;
 using System;
 using System.Collections.Generic;

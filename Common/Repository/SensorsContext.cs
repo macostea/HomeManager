@@ -1,5 +1,6 @@
 ﻿using System;
-using Common.Models;
+using Common.Configurations;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Repository
@@ -16,6 +17,10 @@ namespace Common.Repository
         {
             //modelBuilder.HasPostgresExtension("timescaledb");
             modelBuilder.HasDefaultSchema("public");
+            modelBuilder.ApplyConfiguration<Sensor>(new SensorConfiguration());
+            modelBuilder.ApplyConfiguration<TemperatureSensorReading>(new TemperatureSensorReadingConfiguration());
+            modelBuilder.ApplyConfiguration<HumiditySensorReading>(new HumiditySensorReadingConfiguration());
+            modelBuilder.ApplyConfiguration<WeatherSensorReading>(new WeatherSensorReadingConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

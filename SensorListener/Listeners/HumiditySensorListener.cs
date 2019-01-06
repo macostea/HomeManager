@@ -1,10 +1,6 @@
-﻿using Common.Models;
-using Common.SensorServiceAPI;
+﻿using Domain.Entities;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SensorListener.Listeners

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Common.Utils;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -9,27 +10,10 @@ namespace Common.SensorServiceAPI
 {
     public class SensorServiceAPI
     {
-        public string BaseURL { get; }
+        public Uri BaseURL { get; }
         public SensorServiceAPI(string baseURL)
         {
-            this.BaseURL = baseURL;
-        }
-
-        public async Task<T> Execute<T>(RestRequest request) where T : new()
-        {
-            var client = new RestClient
-            {
-                BaseUrl = new Uri(BaseURL)
-            };
-            var response = await client.ExecuteTaskAsync<T>(request);
-
-            if (response.ErrorException != null)
-            {
-                const string message = "Error retrieving response.  Check inner details for more info.";
-                var twilioException = new ApplicationException(message, response.ErrorException);
-                throw twilioException;
-            }
-            return response.Data;
+            this.BaseURL = new Uri(baseURL);
         }
 
         public async Task<TemperatureSensorReading> CreateTemperatureReading(TemperatureSensorReading reading)
@@ -41,7 +25,7 @@ namespace Common.SensorServiceAPI
             request.AddJsonBody(reading);
             request.Method = Method.POST;
 
-            return await Execute<TemperatureSensorReading>(request);
+            return await Utilities.ExecuteRestRequest<TemperatureSensorReading>(this.BaseURL, request);
         }
 
         public async Task<HumiditySensorReading> CreateHumidityReading(HumiditySensorReading reading)
@@ -53,7 +37,19 @@ namespace Common.SensorServiceAPI
             request.AddJsonBody(reading);
             request.Method = Method.POST;
 
-            return await Execute<HumiditySensorReading>(request);
+            return await Utilities.ExecuteRestRequest<HumiditySensorReading>(this.BaseURL, request);
+        }
+
+        public async Task<WeatherSensorReading> CreateWeatherReading(WeatherSensorReading reading)
+        {
+            var request = new RestRequest
+            {
+                Resource = "api/WeatherSensorReadings"
+            };
+            request.AddJsonBody(reading);
+            request.Method = Method.POST;
+
+            return await Utilities.ExecuteRestRequest<WeatherSensorReading>(this.BaseURL, request);
         }
     }
 }

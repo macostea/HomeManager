@@ -72,6 +72,7 @@ void setupSensor() {
 
 void setup() {
   Serial.begin(115200);
+  delayMS = 900000;
  
   connect();
   setupSensor();
@@ -80,7 +81,7 @@ void setup() {
 bool publishTemperature(double temperature) {
   Adafruit_MQTT_Publish temperaturePublish = Adafruit_MQTT_Publish(&mqtt, "temperature");
 
-  bool result = temperaturePublish.publish("{\"sensorId\": 2, \"time\":\"2018-11-25T13:14:17Z\", \"reading\":21.0}");
+  bool result = temperaturePublish.publish("{\"sensorId\": 6, \"reading\":temperature}");
   if (result) {
     Serial.print("Successfully published message");
   } else {
@@ -92,8 +93,7 @@ void loop() {
   if (!mqtt.connected()) {
     connect();
   }
-
-  delay(delayMS);
+  
   sensors_event_t event;
   dht.temperature().getEvent(&event);
   if (isnan(event.temperature)) {
@@ -102,5 +102,8 @@ void loop() {
     Serial.print("Temperature: ");
     Serial.print(event.temperature);
     Serial.println(" *C");
+    publishTemperature(event.temperature);
   }
+
+  delay(delayMS);
 }

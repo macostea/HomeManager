@@ -10,7 +10,7 @@ services:
         sensor-listener:
                 image: mcostea/homemanager_sensor-listener
                 environment:
-                        RABBITMQ_HOST: "amqp://guest:guest@home_manager_rabbitmq"
+                        RABBITMQ_HOST: "home_manager_rabbitmq"
                         SENSOR_SERVICE_URL: "http://home_manager_sensor-service"
         postgres:
                 image: arm32v7/postgres

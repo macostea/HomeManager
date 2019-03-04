@@ -43,5 +43,5 @@ services:
                     - OPENWEATHERMAP_APPID
  
 secrets:
-    - OPENWEATHERMAP_APPID:
+    OPENWEATHERMAP_APPID:
         external: true

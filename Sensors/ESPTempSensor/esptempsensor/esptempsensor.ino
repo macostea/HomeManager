@@ -78,15 +78,22 @@ void setup() {
   setupSensor();
 }
 
-bool publishTemperature(double temperature) {
-  Adafruit_MQTT_Publish temperaturePublish = Adafruit_MQTT_Publish(&mqtt, "temperature");
+bool publish(const char *type, int sensorId, double reading) {
+  Adafruit_MQTT_Publish publisher = Adafruit_MQTT_Publish(&mqtt, type);
 
-  bool result = temperaturePublish.publish("{\"sensorId\": 6, \"reading\":temperature}");
+  String message = "{\"sensorId\":" + String(sensorId) + ", \"reading\":" + String(reading) + "}";
+
+  bool result = publisher.publish(message.c_str());
+  Serial.print(message.c_str());
   if (result) {
     Serial.print("Successfully published message");
   } else {
     Serial.print("Error publishing message");
   }
+}
+
+bool publishHumidity(double humidity) {
+  
 }
 
 void loop() {
@@ -102,7 +109,18 @@ void loop() {
     Serial.print("Temperature: ");
     Serial.print(event.temperature);
     Serial.println(" *C");
-    publishTemperature(event.temperature);
+    publish("temperature", 6, event.temperature);
+  }
+
+  dht.humidity().getEvent(&event);
+
+  if (isnan(event.relative_humidity)) {
+    Serial.println("Error reading humidity!");
+  } else {
+    Serial.print("Humidity: ");
+    Serial.print(event.relative_humidity);
+    Serial.println(" %");
+    publish("humidity", 7, event.relative_humidity);
   }
 
   delay(delayMS);

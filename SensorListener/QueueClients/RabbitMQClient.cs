@@ -14,10 +14,14 @@ namespace SensorListener.QueueClients
         private readonly string hostname;
         private readonly string exchangeName;
         private readonly string queueName;
+        private readonly string username;
+        private readonly string password;
 
-        public RabbitMQClient(string hostname, string exchangeName, string queueName)
+        public RabbitMQClient(string hostname, string username, string password, string exchangeName, string queueName)
         {
             this.hostname = hostname;
+            this.username = username;
+            this.password = password;
             this.exchangeName = exchangeName;
             this.queueName = queueName;
         }
@@ -29,7 +33,12 @@ namespace SensorListener.QueueClients
 
         public void Start()
         {
-            var factory = new ConnectionFactory() { HostName = this.hostname };
+            var factory = new ConnectionFactory()
+            {
+                HostName = this.hostname,
+                UserName = this.username,
+                Password = this.password
+            };
             using (var connection = factory.CreateConnection())
             {
                 

@@ -23,6 +23,7 @@ FROM build AS testrunner
 WORKDIR /src/SensorServiceTests
 RUN curl -s https://codecov.io/bash > codecov && \
 	chmod +x codecov
+RUN chmod 744 docker-entrypoint.sh
 ENTRYPOINT ["sh", "-c", "/src/SensorServiceTests/docker-entrypoint.sh"]
 
 FROM base AS final

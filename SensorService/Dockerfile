@@ -21,7 +21,9 @@ RUN dotnet publish "SensorService.csproj" -c Release -o /app
 # Test
 FROM build AS testrunner
 WORKDIR /src/SensorServiceTests
-ENTRYPOINT ["dotnet", "test", "--logger:trx"]
+RUN curl -s https://codecov.io/bash > codecov && \
+	chmod +x codecov
+ENTRYPOINT ["sh", "-c", "/src/SensorServiceTests/docker-entrypoint.sh"]
 
 FROM base AS final
 WORKDIR /app

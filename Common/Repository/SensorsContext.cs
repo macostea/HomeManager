@@ -12,7 +12,6 @@ namespace Common.Repository
         public DbSet<TemperatureSensorReading> TemperatureSensorReadings { get; set; }
         public DbSet<HumiditySensorReading> HumiditySensorReadings { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.HasPostgresExtension("timescaledb");

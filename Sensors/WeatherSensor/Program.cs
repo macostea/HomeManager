@@ -25,7 +25,8 @@ namespace WeatherSensor
             response.SensorId = Convert.ToInt32(Environment.GetEnvironmentVariable("SENSOR_ID"));
 
             var configuration = new MqttConfiguration();
-            var mqttClient = await MqttClient.CreateAsync(Environment.GetEnvironmentVariable("RABBITMQ_HOST"), configuration);
+            var rabbitmqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST");
+            var mqttClient = await MqttClient.CreateAsync(rabbitmqHost, configuration);
             var sessionState = await mqttClient.ConnectAsync();
 
             var message = new MqttApplicationMessage("weather", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response)));

@@ -75,7 +75,7 @@ steps:
     buildContext: '$(System.DefaultWorkingDirectory)'
 
 - bash: |
-   # Write your commands here   
+   # Write your commands here
    # Use the environment variables input below to pass secret variables to this script
    echo "mcostea/homemanager_nginx" > images.txt
    echo "mcostea/homemanager_rabbitmq" >> images.txt

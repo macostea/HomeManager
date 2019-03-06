@@ -2399,11 +2399,13 @@ clip-path: polygon(10% 25%, 10% 0, 35% 0%, 65% 0%, 90% 0, 90% 25%, 90% 50%, 91% 
 .product-qty input[type=number]::-webkit-outer-spin-button
 {
   -webkit-appearance: none;
+  -moz-appearance: none;
   margin: 0;
 }
 
 .product-qty input[type=number]
 {
+  -webkit-appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -2437,10 +2439,10 @@ clip-path: polygon(10% 25%, 10% 0, 35% 0%, 65% 0%, 90% 0, 90% 25%, 90% 50%, 91% 
   text-align: center;
   color: #333;
   font-size: 13px;
-  font-family: 'Circular Std Medium';
-  
+  font-family: 'Circular Std Medium';  
   line-height: 1.6;
   -webkit-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
   transform: translateX(-100%);
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3143,7 +3145,9 @@ btn-link
     display: -ms-flexbox;
     display: flex;
     -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
     -webkit-box-direction: normal;
+    -moz-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
     margin-bottom: 0;
@@ -3174,6 +3178,7 @@ btn-link
 .card-figure.has-hoverable:focus,
 .card-figure.has-hoverable:hover {
     -webkit-transform: translate3d(0, -.25rem, 0);
+    -ms-transform: translate3d(0, -.25rem, 0);
     transform: translate3d(0, -.25rem, 0);
     -webkit-box-shadow: 0 5px 15px 0 rgba(61, 70, 79, .15);
     box-shadow: 0 5px 15px 0 rgba(61, 70, 79, .15);
@@ -3226,6 +3231,7 @@ btn-link
     display: block;
     opacity: 0;
     -webkit-transform: translate3d(0, 100%, 0);
+    -ms-transform: translate3d(0, 100%, 0);
     transform: translate3d(0, 100%, 0);
     -webkit-transition: all .3s ease;
     transition: all .3s ease;
@@ -3234,6 +3240,7 @@ btn-link
 .card-figure:hover .figure-action {
     opacity: 1;
     -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
     transform: translateZ(0);
     z-index: 2;
 }
@@ -3247,6 +3254,8 @@ btn-link
     display: -ms-flexbox;
     display: flex;
     -webkit-box-align: start;
+    -moz-box-align: start;
+    -ms-box-align: start;
     -ms-flex-align: start;
     align-items: start;
     padding: .5rem;
@@ -3284,6 +3293,8 @@ btn-link
     display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
+    -moz-box-align: center;
+    -ms-box-align: center;
     -ms-flex-align: center;
     align-items: center;
     -webkit-box-pack: center;
@@ -3433,7 +3444,7 @@ btn-link
     padding: 30px;
     border: 1px solid #e6e6f2;
     border-radius: 4px;
-    border-top-left-radius: 0px
+    border-top-left-radius: 0;
 }
 
 
@@ -3534,7 +3545,7 @@ btn-link
 }
 
 .tab-vertical-outline .nav-tabs .nav-link {
-    border: 1px solid transparent;
+    border: 1px solid #c4c4cf;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
     background: #fff;
@@ -3544,7 +3555,6 @@ btn-link
     -webkit-border-radius: 4px 0 0 4px;
     -moz-border-radius: 4px 0 0 4px;
     border-radius: 4px 0 0 4px;
-    border: 1px solid #c4c4cf !important;
 }
 
 .tab-vertical-outline .nav-tabs .nav-link.active {
@@ -3962,12 +3972,11 @@ Pills vertical
     padding: .5rem .75rem;
     margin-left: 0;
     margin-right: 5px;
-    line-height: 1.25;
+    line-height: 1;
     color: #71748d;
     background-color: #fff;
     border: 1px solid #e6e6f2;
     border-radius: 3px;
-    line-height: 1;
 }
 
 .page-link:hover {
@@ -4539,6 +4548,7 @@ Vertical Timeline - by CodyHouse.co
         margin-left: -30px;
         /* Force Hardware Acceleration */
         -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
         transform: translateZ(0);
     }
     .cd-timeline__img.cd-timeline__img--bounce-in {
@@ -4646,6 +4656,7 @@ Vertical Timeline - by CodyHouse.co
         width: 45%;
         /* Force Hardware Acceleration */
         -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
         transform: translateZ(0);
     }
     .cd-timeline__content::before {
@@ -4840,6 +4851,8 @@ Vertical Timeline - by CodyHouse.co
     margin-bottom: 1.25rem;
     border-radius: .25rem;
     -webkit-box-align: stretch;
+    -moz-box-align: stretch;
+    -ms-box-align: stretch;
     -ms-flex-align: stretch;
     align-items: stretch;
     display: -webkit-box;
@@ -4916,6 +4929,8 @@ Vertical Timeline - by CodyHouse.co
     -ms-flex-wrap: none;
     flex-wrap: none;
     -webkit-box-align: center;
+    -moz-box-align: center;
+    -ms-box-align: center;
     -ms-flex-align: center;
     align-items: center;
     background: none;
@@ -4935,6 +4950,8 @@ Vertical Timeline - by CodyHouse.co
     display: block;
     text-align: left;
     -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -ms-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
     overflow: hidden;
@@ -5037,13 +5054,21 @@ Vertical Timeline - by CodyHouse.co
     display: -ms-flexbox;
     display: flex;
     -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -ms-box-orient: vertical;
     -webkit-box-direction: normal;
+    -moz-box-direction: normal;
+    -ms-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
     -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
     -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -ms-box-flex: 1;
     -ms-flex-positive: 1;
     flex-grow: 1;
     max-width: 100%;
@@ -5059,6 +5084,8 @@ Vertical Timeline - by CodyHouse.co
 .card-footer-item {
     padding: 12px 35px;
     -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -ms-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
     text-align: center;
@@ -5133,6 +5160,7 @@ Vertical Timeline - by CodyHouse.co
     width: 6px;
     background-image: url(../../images/drag-indicator.png);
     -webkit-transform: translate3d(-.5em, 0, 0);
+    -ms-transform: translate3d(-.5em, 0, 0);
     transform: translate3d(-.5em, 0, 0);
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -5191,6 +5219,8 @@ Vertical Timeline - by CodyHouse.co
     display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
+    -moz-box-align: center;
+    -ms-box-align: center;
     -ms-flex-align: center;
     align-items: center;
     background-color: #fff;
@@ -5244,8 +5274,8 @@ Vertical Timeline - by CodyHouse.co
     min-height: 30px;
     background: #f5f5f5;
     border: 1px dashed #b6bcbf;
-    box-sizing: border-box;
     -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .dd-empty {
@@ -5302,8 +5332,8 @@ Vertical Timeline - by CodyHouse.co
     line-height: 1.333333em;
     font-family: Consolas, monospace;
     padding: 5px;
-    box-sizing: border-box;
     -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .dd-hover>.dd-handle {

@@ -6610,14 +6610,14 @@ Media Query
     .nav-left-sidebar {
         width: 100%;
         position: relative;
-        top: 0px;
-        right: 0px;
+        top: 0;
+        right: 0;
     }
     .dashboard-wrapper {
-        margin-left: 0px;
+        margin-left: 0;
     }
     .dashboard-footer {
-        margin-left: 0px;
+        margin-left: 0;
     }
     .nav-left-sidebar .navbar-toggler {
         background-color: #fff;
@@ -6643,7 +6643,7 @@ Media Query
         left: 0;
         border-right: 1px solid #e6e6f2;
         margin-top: 0;
-        padding-bottom: 0px;
+        padding-bottom: 0;
         color: #404040;
     }
 
@@ -6685,15 +6685,15 @@ Media Query
     .nav-left-sidebar {
         width: 100%;
         position: relative;
-        top: 0px;
-        right: 0px;
+        top: 0;
+        right: 0;
     }
 
     .dashboard-wrapper {
-        margin-left: 0px;
+        margin-left: 0;
     }
     .dashboard-footer {
-        margin-left: 0px;
+        margin-left: 0;
     }
     .page-aside {
         background: none repeat scroll 0 0 #fff;
@@ -6701,10 +6701,10 @@ Media Query
         height: 100%;
         position: relative;
         top: 0;
-        left: 0px;
+        left: 0;
         border-right: transparent;
-        margin-top: 0px;
-        padding-bottom: 0px;
+        margin-top: 0;
+        padding-bottom: 0;
         color: #404040;
         border-bottom: 1px solid #e6e6f2;
     }

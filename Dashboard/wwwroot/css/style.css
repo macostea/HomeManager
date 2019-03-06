@@ -305,19 +305,19 @@ textarea.form-control {
 }
 
 input::-webkit-input-placeholder {
-    color: #71748d !important;
+    color: #71748d;
 }
 
 input:focus::-webkit-input-placeholder {
-    color: #5969ff !important;
+    color: #5969ff;
 }
 
 textarea::-webkit-input-placeholder {
-    color: #71748d !important;
+    color: #71748d;
 }
 
 textarea:focus::-webkit-input-placeholder {
-    color: #5969ff !important;
+    color: #5969ff;
 }
 
 .form-group {
@@ -836,67 +836,67 @@ Background Color / Color
 -------------------------*/
 
 .bg-primary {
-    background-color: #5969ff !important;
-    color: #fff !important;
+    background-color: #5969ff;
+    color: #fff;
 }
 
 .bg-brand {
-    background-color: #ffc750 !important;
+    background-color: #ffc750;
 }
 
 .bg-secondary {
-    background-color: #ff407b !important;
-    color: #fff !important;
+    background-color: #ff407b;
+    color: #fff;
 }
 
 .bg-success {
-    background-color: #2ec551 !important;
+    background-color: #2ec551;
 }
 
 .bg-danger {
-    background-color: #ef172c !important;
+    background-color: #ef172c;
 }
 
 .bg-warning {
-    background-color: #ffc108 !important;
+    background-color: #ffc108;
 }
 
 .bg-info {
-    background-color: #25d5f2 !important;
+    background-color: #25d5f2;
 }
 
 .bg-light {
-    background-color: #f9f9ff !important;
+    background-color: #f9f9ff;
 }
 
 .bg-dark {
-    background-color: #2e2f39 !important;
+    background-color: #2e2f39;
 }
 
 .bg-primary-light {
-    background-color: #dbdeff !important;
-    color: #fff !important;
+    background-color: #dbdeff;
+    color: #fff;
 }
 
 .bg-info-light {
-    background-color: #dffaff !important;
+    background-color: #dffaff;
     color: #fff;
 }
 
 .bg-secondary-light {
-    background-color: #ffdbe6 !important;
+    background-color: #ffdbe6;
 }
 
 .bg-danger-light {
-    background-color: #fbd3d5 !important;
+    background-color: #fbd3d5;
 }
 
 .bg-brand-light {
-    background-color: #fff2d5 !important;
+    background-color: #fff2d5;
 }
 
 .bg-success-light {
-    background-color: #c5fad3 !important;
+    background-color: #c5fad3;
 }
 
 
@@ -913,23 +913,23 @@ Borders
 }
 
 .border {
-    border: 1px solid #e6e6f2 !important;
+    border: 1px solid #e6e6f2;
 }
 
 .border-top {
-    border-top: 1px solid #e6e6f2 !important;
+    border-top: 1px solid #e6e6f2;
 }
 
 .border-bottom {
-    border-bottom: 1px solid #e6e6f2 !important;
+    border-bottom: 1px solid #e6e6f2;
 }
 
 .border-left {
-    border-left: 1px solid #e6e6f2 !important;
+    border-left: 1px solid #e6e6f2;
 }
 
 .border-right {
-    border-right: 1px solid #e6e6f2 !important
+    border-right: 1px solid #e6e6f2
 }
 
 
@@ -938,47 +938,47 @@ Borders
 -------------------------*/
 
 .text-primary {
-    color: #5969ff !important;
+    color: #5969ff;
 }
 
 .text-brand {
-    color: #ffc750 !important;
+    color: #ffc750;
 }
 
 .text-secondary {
-    color: #ff407b !important;
+    color: #ff407b;
 }
 
 .text-success {
-    color: #2ec551 !important;
+    color: #2ec551;
 }
 
 .text-danger {
-    color: #ef172c !important;
+    color: #ef172c;
 }
 
 .text-warning {
-    color: #ffc108 !important;
+    color: #ffc108;
 }
 
 .text-info {
-    color: #25d5f2 !important;
+    color: #25d5f2;
 }
 
 .text-light {
-    color: #f0f0f8 !important;
+    color: #f0f0f8;
 }
 
 .text-dark {
-    color: #3d405c !important;
+    color: #3d405c;
 }
 
 .text-gray {
-    color: #868aa5 !important;
+    color: #868aa5;
 }
 
 .text-muted {
-    color: #7171a6 !important;
+    color: #7171a6;
 }
 
 .rating-color {
@@ -991,23 +991,23 @@ Borders
 -------------------------*/
 
 .border-top-primary {
-    border-top-color: #5969ff !important;
+    border-top-color: #5969ff;
 }
 
 .border-3 {
-    border-width: 3px !important;
+    border-width: 3px;
 }
 
 .border-secondary {
-    border-color: #ff407b !important;
+    border-color: #ff407b;
 }
 
 .border-brand {
-    border-color: #ffc750 !important;
+    border-color: #ffc750;
 }
 
 .border-info {
-    border-color: #25d5f2 !important;
+    border-color: #25d5f2;
 }
 
 
@@ -1016,11 +1016,11 @@ Fontawesome size
 -------------------------*/
 
 .fa-sm {
-    font-size: 24px !important;
+    font-size: 24px;
 }
 
 .fa-xs {
-    font-size: 11px !important;
+    font-size: 11px;
 }
 
 
@@ -1880,7 +1880,7 @@ Container / Wrapper
     position: relative;
     left: 0;
     margin-left: 264px;
-    min-height: 870px !important;
+    min-height: 870px;
 }
 
 .dashboard-content {
@@ -2188,7 +2188,7 @@ Pageheader
 /* -------------- traffic sales -------------------*/
 
 .traffic-sales-content {
-    padding: 20px !important;
+    padding: 20px;
 }
 
 .traffic-sales-amount {
@@ -2200,7 +2200,7 @@ Pageheader
 /* -------------- country sales -------------------*/
 
 .country-sales-content {
-    padding: 20px !important;
+    padding: 20px;
 }
 
 
@@ -3073,15 +3073,15 @@ btn-link
 }
 
 .btn-primary-link {
-    color: #5969ff !important;
+    color: #5969ff;
 }
 
 .btn-brand-link {
-    color: #ffc750 !important;
+    color: #ffc750;
 }
 
 .btn-secondary-link {
-    color: #ff407b !important;
+    color: #ff407b;
 }
 
 
@@ -3480,14 +3480,14 @@ btn-link
 
 .tab-vertical .nav-tabs .nav-link.active {
     color: #5969ff;
-    background-color: #fff !important;
-    border-color: transparent !important;
+    background-color: #fff;
+    border-color: transparent;
 }
 
 .tab-vertical .nav-tabs .nav-link {
     border: 1px solid transparent;
-    border-top-left-radius: 4px !important;
-    border-top-right-radius: 0 !important;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 0;
 }
 
 .tab-vertical .tab-content {
@@ -3516,15 +3516,15 @@ btn-link
 }
 
 .tab-outline .nav-tabs .nav-link.active {
-    color: #5969ff !important;
-    background-color: transparent !important;
-    border-color: #c4c4cf #c4c4cf #efeff6 !important;
+    color: #5969ff;
+    background-color: transparent;
+    border-color: #c4c4cf #c4c4cf #efeff6;
 }
 
 .tab-outline .nav-tabs .nav-link:focus,
 .nav-tabs .nav-link:hover {
     border-color: transparent;
-    color: #5969ff !important;
+    color: #5969ff;
 }
 
 .tab-outline .tab-content {
@@ -3563,15 +3563,15 @@ btn-link
 
 .tab-vertical-outline .nav-tabs .nav-link.active {
     color: #5969ff;
-    border: 1px solid #c4c4cf !important;
+    border: 1px solid #c4c4cf;
     background: transparent;
-    border-right: 1px solid #efeff6 !important;
+    border-right: 1px solid #efeff6;
 }
 
 .tab-vertical-outline .nav-tabs .nav-link {
     border: 1px solid transparent;
-    border-top-left-radius: 4px !important;
-    border-top-right-radius: 0 !important;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 0;
 }
 
 .tab-vertical-outline .tab-content {
@@ -3611,9 +3611,9 @@ btn-link
 }
 
 .simple-card .nav-tabs .nav-link.active {
-    color: #5969ff !important;
-    background-color: transparent !important;
-    border-color: #e9e9f2 #e9e9f2 #fff !important;
+    color: #5969ff;
+    background-color: transparent;
+    border-color: #e9e9f2 #e9e9f2 #fff;
 }
 
 .simple-card .tab-content {
@@ -3643,9 +3643,9 @@ btn-link
 }
 
 .simple-outline-card .nav-tabs .nav-link.active {
-    color: #5969ff !important;
-    background-color: transparent !important;
-    border-color: #c4c4cf #c4c4cf #efeff6 !important;
+    color: #5969ff;
+    background-color: transparent;
+    border-color: #c4c4cf #c4c4cf #efeff6;
 }
 
 .simple-outline-card .tab-content {
@@ -4373,7 +4373,7 @@ Pills vertical
 
 tr.group,
 tr.group:hover {
-    background-color: #5969ff !important;
+    background-color: #5969ff;
     color: #fff;
     font-family: 'Circular Std Medium';
     font-size: 18px;
@@ -5339,7 +5339,7 @@ Vertical Timeline - by CodyHouse.co
 }
 
 .dd-hover>.dd-handle {
-    background: #5969ff !important;
+    background: #5969ff;
 }
 
 
@@ -6371,7 +6371,7 @@ Vertical Timeline - by CodyHouse.co
 }
 
 .align-items-center {
-    align-items: center !important;
+    align-items: center;
 }
 
 .chat-team-sidebar .nav {
@@ -6598,7 +6598,7 @@ Media Query
         text-align: center;
         width: 100%;
         border-bottom: 1px solid #dee2e6;
-        border-right: transparent !important;
+        border-right: transparent;
     }
      
 
@@ -6615,7 +6615,7 @@ Media Query
         text-align: center;
         width: 100%;
         border-bottom: 1px solid #dee2e6;
-        border-right: transparent !important;
+        border-right: transparent;
     }
 
 }
@@ -6684,7 +6684,7 @@ Media Query
         text-align: center;
         width: 100%;
         border-bottom: 1px solid #dee2e6;
-        border-right: transparent !important;
+        border-right: transparent;
     }
 
 
@@ -6752,11 +6752,11 @@ Media Query
         text-align: center;
         width: 100%;
         border-bottom: 1px solid #dee2e6;
-        border-right: transparent !important;
+        border-right: transparent;
     }
     .user-social-media:last-child {
         border-bottom: transparent;
-        border-right: transparent !important;
+        border-right: transparent;
     }
     .dashboard-influence .progress {
         width: 74%;

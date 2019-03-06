@@ -3,6 +3,8 @@ WORKDIR /app
 EXPOSE 80
 #EXPOSE 44357
 
+
+# Dependencies
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 COPY ["SensorService/SensorService.csproj", "SensorService/"]
@@ -11,10 +13,18 @@ COPY ["Domain/Domain.csproj", "Domain/"]
 RUN dotnet restore "SensorService/SensorService.csproj"
 COPY . .
 WORKDIR "/src/SensorService"
-RUN dotnet build "SensorService.csproj" -c Release -o /app
 
+# Build and publish
 FROM build AS publish
 RUN dotnet publish "SensorService.csproj" -c Release -o /app
+
+# Test
+FROM build AS testrunner
+WORKDIR /src/SensorServiceTests
+RUN curl -s https://codecov.io/bash > codecov && \
+	chmod +x codecov
+RUN chmod 744 docker-entrypoint.sh
+ENTRYPOINT ["sh", "-c", "/src/SensorServiceTests/docker-entrypoint.sh"]
 
 FROM base AS final
 WORKDIR /app

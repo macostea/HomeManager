@@ -5360,8 +5360,8 @@ Vertical Timeline - by CodyHouse.co
     background: linear-gradient(top, #fafafa 0%, #eee 100%);
     -webkit-border-radius: 3px;
     border-radius: 3px;
-    box-sizing: border-box;
     -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .dd3-content:hover {

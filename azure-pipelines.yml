@@ -1,5 +1,5 @@
 pool:
-  name: Defaulta
+  name: Default
 
 steps:
 - task: Docker@1

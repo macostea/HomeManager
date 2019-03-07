@@ -53,6 +53,7 @@ steps:
     command: 'Run an image'
     imageName: 'mcostea/homemanager_sensor-service:test'
     envVars: 'CODECOV_TOKEN=22560ceb-5679-418d-be9c-8d61262de8ff'
+    runInBackground: false
 
 - task: Docker@1
   displayName: 'Build sensor listener'

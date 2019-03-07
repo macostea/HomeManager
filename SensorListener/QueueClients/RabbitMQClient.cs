@@ -41,7 +41,6 @@ namespace SensorListener.QueueClients
             };
             using (var connection = factory.CreateConnection())
             {
-                
                 using (var channel = connection.CreateModel())
                 {
                     channel.ExchangeDeclare(exchange: exchangeName, type: "topic", durable: true);
@@ -65,7 +64,7 @@ namespace SensorListener.QueueClients
 
                         var listener = this.listeners[ea.RoutingKey];
 
-                        if (null != listener)
+                        if (listener != null)
                         {
                             listener.ProcessMessageAsync(message);
                         }

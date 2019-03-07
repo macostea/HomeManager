@@ -43,7 +43,7 @@ services:
                         SENSOR_ID: 5
                 secrets:
                     - OPENWEATHERMAP_APPID
- 
+
 secrets:
     OPENWEATHERMAP_APPID:
         external: true

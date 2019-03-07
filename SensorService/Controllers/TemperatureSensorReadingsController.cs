@@ -55,7 +55,6 @@ namespace SensorService.Controllers
             return await this.repository.Add(sensorReading)
                              ? CreatedAtRoute("GetTemperatureReadings", new { Controller = "TemperatureSensorReadings", id = sensorReading.SensorReadingId }, sensorReading)
                       : (IActionResult)BadRequest();
-
         }
 
         // PUT api/values/5

@@ -8,7 +8,7 @@ using RestSharp;
 
 namespace WeatherSensor.Client
 {
-    public class OpenWeatherMapResponseObject
+    public struct OpenWeatherMapResponseObject
     {
         public List<Dictionary<string, object>> Weather { get; set; }
         public Dictionary<string, object> Main { get; set; }

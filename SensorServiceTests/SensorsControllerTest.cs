@@ -62,7 +62,6 @@ namespace SensorServiceTests
             var controller = new SensorsController(mockedRepo.Object);
             var result = await controller.Get(1);
             var contentResult = (result as OkObjectResult).Value as Sensor;
-            
 
             Assert.NotNull(contentResult);
             Assert.Equal(contentResult, sensors[0]);
@@ -99,7 +98,6 @@ namespace SensorServiceTests
             var controller = new SensorsController(mockedRepo.Object);
             var result = await controller.Get(3);
             var contentResult = result as NotFoundResult;
-
 
             Assert.NotNull(contentResult);
         }
@@ -208,7 +206,6 @@ namespace SensorServiceTests
             var contentResult = result as BadRequestResult;
 
             Assert.NotNull(contentResult);
-
         }
 
         [Fact]

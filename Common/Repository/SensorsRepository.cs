@@ -45,11 +45,6 @@ namespace Common.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<T>> GetAll(ISpecification<T> spec)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<T> GetById(int id)
         {
             return await this.dbController.Connection.GetAsync<T>(id);

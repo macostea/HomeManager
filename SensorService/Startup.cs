@@ -33,7 +33,7 @@ namespace SensorService
             services.AddTransient<IRepository<HumiditySensorReading>, SensorsRepository<HumiditySensorReading>>();
             services.AddTransient<IRepository<WeatherSensorReading>, SensorsRepository<WeatherSensorReading>>();
             var connectionString = Configuration.GetConnectionString("SensorsContext");
-            services.AddEntityFrameworkNpgsql().AddDbContext<SensorsContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("SensorService")));
+            //services.AddEntityFrameworkNpgsql().AddDbContext<SensorsContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("SensorService")));
 
             services.AddSwaggerGen(c =>
             {

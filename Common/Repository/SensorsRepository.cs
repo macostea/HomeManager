@@ -3,63 +3,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Dapper.Contrib.Extensions;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Common.Repository
 {
     public class SensorsRepository<T>: IRepository<T> where T : EntityBase
     {
-        private readonly SensorsContext dbContext;
+        private readonly DBController dbController;
 
-        public SensorsRepository(SensorsContext dbContext)
+        public SensorsRepository(DBController dbController)
         {
-            this.dbContext = dbContext;
+            this.dbController = dbController;
         }
 
         public async Task<bool> Add(T obj)
         {
-            await this.dbContext.Set<T>().AddAsync(obj);
-            return await this.dbContext.SaveChangesAsync() != 0;
+            var res = await this.dbController.Connection.InsertAsync<T>(obj);
+            return res != 0;
         }
 
         public async Task<bool> Delete(T entity)
         {
-            this.dbContext.Set<T>().Remove(entity);
-            return await this.dbContext.SaveChangesAsync() != 0;
+            var res = await this.dbController.Connection.DeleteAsync<T>(entity);
+            return res;
         }
 
         public async Task<bool> Edit(T entity)
         {
-            this.dbContext.Entry(entity).State = EntityState.Modified;
-            return await this.dbContext.SaveChangesAsync() != 0;
+            var res = await this.dbController.Connection.UpdateAsync<T>(entity);
+            return res;
         }
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await this.dbContext.Set<T>().ToArrayAsync();
+            return await this.dbController.Connection.GetAllAsync<T>();
         }
 
         public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate)
         {
-            return await this.dbContext.Set<T>()
-                       .Where(predicate)
-                       .ToArrayAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<T>> GetAll(ISpecification<T> spec)
         {
-            var queryableResultWithIncludes = spec.Includes.Aggregate(this.dbContext.Set<T>().AsQueryable(),
-                                                                      (current, include) => current.Include(include));
-            var secondaryResult = spec.IncludeStrings.Aggregate(queryableResultWithIncludes,
-                                                                (current, include) => current.Include(include));
-
-            return spec.Criteria == null ? await secondaryResult.ToArrayAsync() : await secondaryResult.Where(spec.Criteria).ToArrayAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<T> GetById(int id)
         {
-            return await this.dbContext.Set<T>().FindAsync(id);
+            return await this.dbController.Connection.GetAsync<T>(id);
         }
     }
 }

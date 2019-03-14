@@ -15,7 +15,7 @@ services:
                         RABBITMQ_PASSWORD: "rabbit"
                         SENSOR_SERVICE_URL: "http://home_manager_sensor-service"
         postgres:
-                image: arm32v7/postgres
+                image: mcostea/timescaledb 
                 ports:
                         - "5432:5432"
                 environment:

@@ -8,6 +8,5 @@ namespace Domain.Entities
     {
         public String Name { get; set; }
         public String Type { get; set; }
-        public Room Room { get; set; }
     }
 }

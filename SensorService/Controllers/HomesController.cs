@@ -13,42 +13,65 @@ namespace SensorService.Controllers
     [Route("api/[controller]")]
     public class HomesController : Controller
     {
-        private readonly IRepository<Home> repository;
+        private readonly IHomeRepository homeRepository;
 
-        public HomesController(IRepository<Home> repository)
+        public HomesController(IHomeRepository homeRepository)
         {
-            this.repository = repository;
+            this.homeRepository = homeRepository;
         }
         // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            
+            return Ok(await this.homeRepository.GetHomes());
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            return Ok(await this.homeRepository.GetHome(id));
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> Post([FromBody]Home value)
         {
+            await this.homeRepository.AddHome(value);
+            return Ok(value);
         }
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        // PUT api/<controller>
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody]Home value)
         {
+            await this.homeRepository.EditHome(value);
+            return Ok(value);
         }
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var home = await this.homeRepository.GetHome(id);
+            await this.homeRepository.DeleteHome(id);
+
+            return Ok(home);
+        }
+
+        [HttpGet("{id}/room")]
+        public async Task<IActionResult> GetRooms(int id)
+        {
+            var home = await this.homeRepository.GetHome(id);
+            var rooms = await this.homeRepository.GetRooms(home);
+            return Ok(rooms);
+        }
+
+        [HttpPost("{id}/room")]
+        public async Task<IActionResult> AddRoom(int id, [FromBody]Room room)
+        {
+            await this.homeRepository.AddRoom(id, room);
+            return Ok(room);
         }
     }
 }

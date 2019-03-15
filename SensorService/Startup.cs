@@ -1,4 +1,5 @@
-﻿using Common.Repository;
+﻿using System.Data;
+using Common.Repository;
 using Domain.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SensorService
@@ -28,12 +30,9 @@ namespace SensorService
                 {
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 });
-            services.AddTransient<IRepository<Sensor>, SensorsRepository<Sensor>>();
-            services.AddTransient<IRepository<TemperatureSensorReading>, SensorsRepository<TemperatureSensorReading>>();
-            services.AddTransient<IRepository<HumiditySensorReading>, SensorsRepository<HumiditySensorReading>>();
-            services.AddTransient<IRepository<WeatherSensorReading>, SensorsRepository<WeatherSensorReading>>();
             var connectionString = Configuration.GetConnectionString("SensorsContext");
-            //services.AddEntityFrameworkNpgsql().AddDbContext<SensorsContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("SensorService")));
+            services.AddTransient<IDbConnection>(s => new NpgsqlConnection(connectionString));
+            services.AddTransient<IHomeRepository, HomeRepository>();
 
             services.AddSwaggerGen(c =>
             {

@@ -11,61 +11,35 @@ namespace SensorService.Controllers
     [Route("api/[controller]")]
     public class SensorsController : Controller
     {
-        private readonly IRepository<Sensor> repository;
+        private readonly IHomeRepository repository;
 
-        public SensorsController(IRepository<Sensor> repository)
+        public SensorsController(IHomeRepository repository)
         {
             this.repository = repository;
         }
 
-        // GET: api/sensor
-        [HttpGet]
-        public async Task<IEnumerable<Sensor>> Get()
-        {
-            return await this.repository.GetAll();
-        }
-
-        // GET api/sensor/5
-        [HttpGet("{id}", Name = "GetSensors")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var results = await this.repository.GetById(id);
-            return results == null ? NotFound() : (IActionResult)Ok(results);
-        }
-
-        // POST api/sensor
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Sensor sensor)
-        {
-            return !ModelState.IsValid
-                ? BadRequest(ModelState)
-                : (await this.repository.Add(sensor)
-                    ? CreatedAtRoute("GetSensors", new { Controller = "Sensors", id = sensor.SensorId }, sensor)
-                    : (IActionResult)BadRequest());
-        }
-
-        // PUT api/sensor/5
+        // PUT api/sensor
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]Sensor sensor)
         {
-            return !ModelState.IsValid
-                ? BadRequest(ModelState)
-                : (await this.repository.Edit(sensor)
-                    ? Ok(sensor)
-                    : (IActionResult)BadRequest());
+            await this.repository.EditSensor(sensor);
+            return Ok(sensor);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var sensor = await this.repository.GetSensor(id);
+            return Ok(sensor);
         }
 
         // DELETE api/sensor/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var sensor = await this.repository.GetById(id);
-
-            return sensor != null 
-                ? (await this.repository.Delete(sensor) 
-                    ? Ok()
-                    : (IActionResult)BadRequest())
-                : NotFound();
+            var sensor = await this.repository.GetSensor(id);
+            await this.repository.DeleteSensor(id);
+            return Ok(sensor);
         }
     }
 }

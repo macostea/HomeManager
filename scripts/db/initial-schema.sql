@@ -5,7 +5,7 @@
 -- Dumped from database version 10.6
 -- Dumped by pg_dump version 11.2
 
--- Started on 2019-03-14 15:31:13 EET
+-- Started on 2019-03-15 17:52:17 EET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -26,7 +26,7 @@ CREATE EXTENSION IF NOT EXISTS timescaledb WITH SCHEMA public;
 
 
 --
--- TOC entry 3205 (class 0 OID 0)
+-- TOC entry 3207 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION timescaledb; Type: COMMENT; Schema: -; Owner: 
 --
@@ -49,7 +49,8 @@ CREATE TABLE public.environment (
     temperature double precision,
     humidity double precision,
     motion boolean,
-    sensor_id bigint
+    sensor_id bigint,
+    room_id bigint
 );
 
 
@@ -71,7 +72,7 @@ CREATE SEQUENCE public.environment_id_seq
 ALTER TABLE public.environment_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3206 (class 0 OID 0)
+-- TOC entry 3208 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: environment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -111,7 +112,7 @@ CREATE SEQUENCE public.homes_id_seq
 ALTER TABLE public.homes_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3207 (class 0 OID 0)
+-- TOC entry 3209 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: homes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -149,7 +150,7 @@ CREATE SEQUENCE public.rooms_id_seq
 ALTER TABLE public.rooms_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3208 (class 0 OID 0)
+-- TOC entry 3210 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: rooms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -187,7 +188,7 @@ CREATE SEQUENCE public.sensors_id_seq
 ALTER TABLE public.sensors_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3209 (class 0 OID 0)
+-- TOC entry 3211 (class 0 OID 0)
 -- Dependencies: 236
 -- Name: sensors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -255,7 +256,7 @@ ALTER TABLE ONLY public.rooms
 
 
 --
--- TOC entry 3070 (class 2606 OID 17108)
+-- TOC entry 3071 (class 2606 OID 17108)
 -- Name: sensors sensors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -264,7 +265,15 @@ ALTER TABLE ONLY public.sensors
 
 
 --
--- TOC entry 3071 (class 2606 OID 17088)
+-- TOC entry 3069 (class 1259 OID 17124)
+-- Name: fki_fk_rooms; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fk_rooms ON public.environment USING btree (room_id);
+
+
+--
+-- TOC entry 3072 (class 2606 OID 17088)
 -- Name: rooms fk_homes; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -273,7 +282,7 @@ ALTER TABLE ONLY public.rooms
 
 
 --
--- TOC entry 3073 (class 2606 OID 17109)
+-- TOC entry 3075 (class 2606 OID 17109)
 -- Name: sensors fk_room; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -282,7 +291,16 @@ ALTER TABLE ONLY public.sensors
 
 
 --
--- TOC entry 3072 (class 2606 OID 17114)
+-- TOC entry 3073 (class 2606 OID 17119)
+-- Name: environment fk_rooms; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.environment
+    ADD CONSTRAINT fk_rooms FOREIGN KEY (room_id) REFERENCES public.rooms(id);
+
+
+--
+-- TOC entry 3074 (class 2606 OID 17114)
 -- Name: environment fk_sensors; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -290,7 +308,7 @@ ALTER TABLE ONLY public.environment
     ADD CONSTRAINT fk_sensors FOREIGN KEY (sensor_id) REFERENCES public.sensors(id);
 
 
--- Completed on 2019-03-14 15:31:13 EET
+-- Completed on 2019-03-15 17:52:17 EET
 
 --
 -- PostgreSQL database dump complete

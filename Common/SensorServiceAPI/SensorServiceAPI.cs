@@ -16,40 +16,45 @@ namespace Common.SensorServiceAPI
             this.BaseURL = new Uri(baseURL);
         }
 
-    //    public async Task<TemperatureSensorReading> CreateTemperatureReading(TemperatureSensorReading reading)
-    //    {
-    //        var request = new RestRequest
-    //        {
-    //            Resource = "api/TemperatureSensorReadings"
-    //        };
-    //        request.AddJsonBody(reading);
-    //        request.Method = Method.POST;
+        public async Task<Environment> CreateEnvironmentReading(Sensor sensor, Environment environment)
+        {
 
-    //        return await Utilities.ExecuteRestRequest<TemperatureSensorReading>(this.BaseURL, request);
-    //    }
+        }
 
-    //    public async Task<HumiditySensorReading> CreateHumidityReading(HumiditySensorReading reading)
-    //    {
-    //        var request = new RestRequest
-    //        {
-    //            Resource = "api/HumiditySensorReadings"
-    //        };
-    //        request.AddJsonBody(reading);
-    //        request.Method = Method.POST;
+        //    public async Task<TemperatureSensorReading> CreateTemperatureReading(TemperatureSensorReading reading)
+        //    {
+        //        var request = new RestRequest
+        //        {
+        //            Resource = "api/TemperatureSensorReadings"
+        //        };
+        //        request.AddJsonBody(reading);
+        //        request.Method = Method.POST;
 
-    //        return await Utilities.ExecuteRestRequest<HumiditySensorReading>(this.BaseURL, request);
-    //    }
+        //        return await Utilities.ExecuteRestRequest<TemperatureSensorReading>(this.BaseURL, request);
+        //    }
 
-    //    public async Task<WeatherSensorReading> CreateWeatherReading(WeatherSensorReading reading)
-    //    {
-    //        var request = new RestRequest
-    //        {
-    //            Resource = "api/WeatherSensorReadings"
-    //        };
-    //        request.AddJsonBody(reading);
-    //        request.Method = Method.POST;
+        //    public async Task<HumiditySensorReading> CreateHumidityReading(HumiditySensorReading reading)
+        //    {
+        //        var request = new RestRequest
+        //        {
+        //            Resource = "api/HumiditySensorReadings"
+        //        };
+        //        request.AddJsonBody(reading);
+        //        request.Method = Method.POST;
 
-    //        return await Utilities.ExecuteRestRequest<WeatherSensorReading>(this.BaseURL, request);
-    //    }
+        //        return await Utilities.ExecuteRestRequest<HumiditySensorReading>(this.BaseURL, request);
+        //    }
+
+        //    public async Task<WeatherSensorReading> CreateWeatherReading(WeatherSensorReading reading)
+        //    {
+        //        var request = new RestRequest
+        //        {
+        //            Resource = "api/WeatherSensorReadings"
+        //        };
+        //        request.AddJsonBody(reading);
+        //        request.Method = Method.POST;
+
+        //        return await Utilities.ExecuteRestRequest<WeatherSensorReading>(this.BaseURL, request);
+        //    }
     }
 }

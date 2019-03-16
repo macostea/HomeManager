@@ -38,6 +38,13 @@ namespace SensorService.Controllers
             return Ok(room);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetBySensor([FromQuery(Name = "sensorId")]int sensorId)
+        {
+            var room = await this.homeRepository.GetRoomBySensorId(sensorId);
+            return Ok(room);
+        }
+
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

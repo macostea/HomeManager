@@ -72,8 +72,9 @@ namespace Common.Repository
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
             {
                 sensor.Type,
-                room_id = roomId
+                RoomId = roomId
             });
+            // TODO: Return affected id for all these requests
 
             return affectedRows != 0;
         }
@@ -238,6 +239,17 @@ namespace Common.Repository
             var rooms = await dbConnection.QueryAsync<Room>(sql, new { HomeId = home.Id });
             return rooms.ToList();
         }
+
+        public async Task<Room> GetRoomBySensorId(int sensorId)
+        {
+            var sql = "SELECT rooms.id, name, home_id FROM rooms " +
+                "JOIN sensors " +
+                "ON rooms.id = sensors.room_id " +
+                "WHERE sensors.id = @Id";
+            var room = await dbConnection.QueryFirstAsync<Room>(sql, new { Id = sensorId });
+            return room;
+        }
+
 
         public async Task<Sensor> GetSensor(int id)
         {

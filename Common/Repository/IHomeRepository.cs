@@ -24,6 +24,8 @@ namespace Common.Repository
         Task<Room> GetRoom(int id);
         Task<bool> DeleteRoom(int id);
 
+        Task<Room> GetRoomBySensorId(int sensorId);
+
         Task<IEnumerable<Sensor>> GetSensors(Room room);
         Task<bool> AddSensor(int roomId, Sensor sensor);
 

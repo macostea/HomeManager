@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Common.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,7 +23,12 @@ namespace SensorService.Controllers
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]Sensor sensor)
         {
-            await this.repository.EditSensor(sensor);
+            var resultOk = await this.repository.EditSensor(sensor);
+            if (!resultOk)
+            {
+                return BadRequest();
+            }
+
             return Ok(sensor);
         }
 
@@ -30,6 +36,10 @@ namespace SensorService.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var sensor = await this.repository.GetSensor(id);
+            if (sensor == null)
+            {
+                return NotFound();
+            }
             return Ok(sensor);
         }
 
@@ -38,7 +48,17 @@ namespace SensorService.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var sensor = await this.repository.GetSensor(id);
-            await this.repository.DeleteSensor(id);
+            if (sensor == null)
+            {
+                return NotFound();
+            }
+
+            var resultOk = await this.repository.DeleteSensor(id);
+            if (!resultOk)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
             return Ok(sensor);
         }
     }

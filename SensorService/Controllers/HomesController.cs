@@ -37,8 +37,8 @@ namespace SensorService.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Home value)
         {
-            await this.homeRepository.AddHome(value);
-            return Ok(value);
+            var insertedHome = await this.homeRepository.AddHome(value);
+            return Ok(insertedHome);
         }
 
         // PUT api/<controller>
@@ -70,8 +70,8 @@ namespace SensorService.Controllers
         [HttpPost("{id}/room")]
         public async Task<IActionResult> AddRoom(int id, [FromBody]Room room)
         {
-            await this.homeRepository.AddRoom(id, room);
-            return Ok(room);
+            var insertedRoom = await this.homeRepository.AddRoom(id, room);
+            return Ok(insertedRoom);
         }
     }
 }

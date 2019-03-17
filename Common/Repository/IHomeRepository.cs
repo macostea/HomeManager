@@ -10,14 +10,14 @@ namespace Common.Repository
     public interface IHomeRepository
     {
         Task<IEnumerable<Home>> GetHomes();
-        Task<bool> AddHome(Home home);
+        Task<Home> AddHome(Home home);
         Task<bool> EditHome(Home home);
 
         Task<Home> GetHome(int id);
         Task<bool> DeleteHome(int id);
 
         Task<IEnumerable<Room>> GetRooms(Home home);
-        Task<bool> AddRoom(int homeId, Room room);
+        Task<Room> AddRoom(int homeId, Room room);
 
         Task<bool> EditRoom(Room room);
 
@@ -27,10 +27,10 @@ namespace Common.Repository
         Task<Room> GetRoomBySensorId(int sensorId);
 
         Task<IEnumerable<Sensor>> GetSensors(Room room);
-        Task<bool> AddSensor(int roomId, Sensor sensor);
+        Task<Sensor> AddSensor(int roomId, Sensor sensor);
 
         Task<IEnumerable<Environment>> GetEnvironmentReadings(int roomId, DateTime startDate, DateTime endDate);
-        Task<bool> AddEnvironmentReading(int roomId, int sensorId, Environment environment);
+        Task<Environment> AddEnvironmentReading(int roomId, int sensorId, Environment environment);
 
         Task<bool> EditSensor(Sensor sensor);
 

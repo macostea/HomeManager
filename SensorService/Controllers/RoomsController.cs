@@ -80,8 +80,8 @@ namespace SensorService.Controllers
         [HttpPost("{id}/sensor/{sensorId}/environment")]
         public async Task<IActionResult> PostEnvironment(int id, int sensorId, [FromBody]Environment environment)
         {
-            await this.homeRepository.AddEnvironmentReading(id, sensorId, environment);
-            return Ok(environment);
+            var insertedEnvironment = await this.homeRepository.AddEnvironmentReading(id, sensorId, environment);
+            return Ok(insertedEnvironment);
         }
     }
 }

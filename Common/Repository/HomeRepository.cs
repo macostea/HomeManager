@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using Domain.Entities;
+using Microsoft.Extensions.Logging;
 using Environment = Domain.Entities.Environment;
 
 namespace Common.Repository
@@ -14,69 +15,99 @@ namespace Common.Repository
     public class HomeRepository: IHomeRepository
     {
         private readonly IDbConnection dbConnection;
+        private readonly ILogger<HomeRepository> logger;
 
-        public HomeRepository(IDbConnection dbConnection)
+        public HomeRepository(IDbConnection dbConnection, ILogger<HomeRepository> logger)
         {
             this.dbConnection = dbConnection;
+            this.logger = logger;
         }
 
-        public async Task<bool> AddEnvironmentReading(int roomId, int sensorId, Environment environment)
+        public async Task<Environment> AddEnvironmentReading(int roomId, int sensorId, Environment environment)
         {
-            string sql = "INSERT INTO environment (timestamp, temperature, humidity, motion, sensor_id, room_id) VALUES (@Timestamp, @Temperature, @Humidity, @Motion, @SensorId, @RoomId)";
+            string sql = "INSERT INTO environment (timestamp, temperature, humidity, motion, sensor_id, room_id) VALUES (@Timestamp, @Temperature, @Humidity, @Motion, @SensorId, @RoomId) RETURNING *";
 
-            var affectedRows = await dbConnection.ExecuteAsync(sql, new
+            Environment insertedEnvironment = null;
+            try
             {
-                environment.Timestamp,
-                environment.Temperature,
-                environment.Humidity,
-                environment.Motion,
-                SensorId = sensorId,
-                RoomId = roomId
-            });
+                insertedEnvironment = await dbConnection.QueryFirstAsync<Environment>(sql, new
+                {
+                    environment.Timestamp,
+                    environment.Temperature,
+                    environment.Humidity,
+                    environment.Motion,
+                    SensorId = sensorId,
+                    RoomId = roomId
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert environment");
+            }
 
-            return affectedRows != 0;
+            return insertedEnvironment;
         }
 
-        public async Task<bool> AddHome(Home home)
+        public async Task<Home> AddHome(Home home)
         {
-            string sql = "INSERT INTO homes (name, address, city, country) VALUES (@Name, @Address, @City, @Country)";
+            string sql = "INSERT INTO homes (name, address, city, country) VALUES (@Name, @Address, @City, @Country) RETURNING *";
 
-            var affectedRows = await dbConnection.ExecuteAsync(sql, new
+            Home insertedHome = null;
+            try
             {
-                home.Name,
-                home.Address,
-                home.City,
-                home.Country
-            });
+                insertedHome = await dbConnection.QueryFirstAsync<Home>(sql, new
+                {
+                    home.Name,
+                    home.Address,
+                    home.City,
+                    home.Country
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert home");
+            }
 
-            return affectedRows != 0;
+
+            return insertedHome;
         }
 
-        public async Task<bool> AddRoom(int homeId, Room room)
+        public async Task<Room> AddRoom(int homeId, Room room)
         {
-            var sql = "INSERT INTO rooms (name, home_id) VALUES (@Name, @HomeId)";
+            var sql = "INSERT INTO rooms (name, home_id) VALUES (@Name, @HomeId) RETURNING *";
 
-            var affectedRows = await dbConnection.ExecuteAsync(sql, new
+            Room insertedRoom = null;
+            try
             {
-                room.Name,
-                HomeId = homeId
-            });
+                insertedRoom = await dbConnection.QueryFirstAsync<Room>(sql, new
+                {
+                    room.Name,
+                    HomeId = homeId
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert room");
+            }
 
-            return affectedRows != 0;
+            return insertedRoom;
         }
 
-        public async Task<bool> AddSensor(int roomId, Sensor sensor)
+        public async Task<Sensor> AddSensor(int roomId, Sensor sensor)
         {
-            var sql = "INSERT INTO sensors (type, room_id) VALUES (@Type, @RoomId)";
+            var sql = "INSERT INTO sensors (type, room_id) VALUES (@Type, @RoomId) RETURNING *";
 
-            var affectedRows = await dbConnection.ExecuteAsync(sql, new
+            Sensor insertedSensor = null;
+            try
             {
-                sensor.Type,
-                RoomId = roomId
-            });
-            // TODO: Return affected id for all these requests
+                insertedSensor = await dbConnection.QueryFirstAsync<Sensor>(sql, new
+                {
+                    sensor.Type,
+                    RoomId = roomId
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert sensor");
+            }
 
-            return affectedRows != 0;
+            return insertedSensor;
         }
 
         public async Task<bool> DeleteEnvironment(int id)
@@ -191,7 +222,15 @@ namespace Common.Repository
         {
             var sql = "SELECT * FROM environment WHERE id = @Id";
 
-            var env = await dbConnection.QueryFirstAsync<Environment>(sql, new { Id = id });
+            Environment env = null;
+            try
+            {
+                env = await dbConnection.QueryFirstAsync<Environment>(sql, new { Id = id });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get environment");
+            }
+
             return env;
         }
 
@@ -199,20 +238,36 @@ namespace Common.Repository
         {
             var sql = "SELECT * FROM environment WHERE room_id = @RoomId AND timestamp >= @StartDate AND timestamp <= @EndDate";
 
-            var envs = await dbConnection.QueryAsync<Environment>(sql, new
+            IEnumerable<Environment> envs = null;
+            try
             {
-                RoomId = roomId,
-                StartDate = startDate,
-                EndDate = endDate
-            });
-            return envs.ToList();
+                envs = await dbConnection.QueryAsync<Environment>(sql, new
+                {
+                    RoomId = roomId,
+                    StartDate = startDate,
+                    EndDate = endDate
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get environments");
+            }
+
+            return envs;
         }
 
         public async Task<Home> GetHome(int id)
         {
             var sql = "SELECT * FROM homes WHERE id = @Id";
 
-            var home = await dbConnection.QueryFirstAsync<Home>(sql, new { Id = id });
+            Home home = null;
+            try
+            {
+                home = await dbConnection.QueryFirstAsync<Home>(sql, new { Id = id });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get home");
+            }
+
             return home;
         }
 
@@ -220,15 +275,31 @@ namespace Common.Repository
         {
             var sql = "SELECT * FROM homes";
 
-            var homes = await dbConnection.QueryAsync<Home>(sql);
-            return homes.ToList();
+            IEnumerable<Home> homes = null;
+            try
+            {
+                homes = await dbConnection.QueryAsync<Home>(sql);
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get homes");
+            }
+
+            return homes;
         }
 
         public async Task<Room> GetRoom(int id)
         {
             var sql = "SELECT * FROM rooms WHERE id = @Id";
 
-            var room = await dbConnection.QueryFirstAsync<Room>(sql, new { Id = id });
+            Room room = null;
+            try
+            {
+                room = await dbConnection.QueryFirstAsync<Room>(sql, new { Id = id });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get room");
+            }
+
             return room;
         }
 
@@ -236,8 +307,16 @@ namespace Common.Repository
         {
             var sql = "SELECT * FROM rooms WHERE home_id = @HomeId";
 
-            var rooms = await dbConnection.QueryAsync<Room>(sql, new { HomeId = home.Id });
-            return rooms.ToList();
+            IEnumerable<Room> rooms = null;
+            try
+            {
+                rooms = await dbConnection.QueryAsync<Room>(sql, new { HomeId = home.Id });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get rooms");
+            }
+            
+            return rooms;
         }
 
         public async Task<Room> GetRoomBySensorId(int sensorId)
@@ -246,7 +325,16 @@ namespace Common.Repository
                 "JOIN sensors " +
                 "ON rooms.id = sensors.room_id " +
                 "WHERE sensors.id = @Id";
-            var room = await dbConnection.QueryFirstAsync<Room>(sql, new { Id = sensorId });
+
+            Room room = null;
+            try
+            {
+                room = await dbConnection.QueryFirstAsync<Room>(sql, new { Id = sensorId });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get room");
+            }
+
             return room;
         }
 
@@ -255,7 +343,15 @@ namespace Common.Repository
         {
             var sql = "SELECT * FROM sensors WHERE id = @Id";
 
-            var sensor = await dbConnection.QueryFirstAsync<Sensor>(sql, new { Id = id });
+            Sensor sensor = null;
+            try
+            {
+                sensor = await dbConnection.QueryFirstAsync<Sensor>(sql, new { Id = id });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get sensor");
+            }
+
             return sensor;
         }
 
@@ -263,8 +359,16 @@ namespace Common.Repository
         {
             var sql = "SELECT * FROM sensors WHERE room_id = @RoomId";
 
-            var sensors = await dbConnection.QueryAsync<Sensor>(sql, new { RoomId = room.Id });
-            return sensors.ToList();
+            IEnumerable<Sensor> sensors = null;
+            try
+            {
+                sensors = await dbConnection.QueryAsync<Sensor>(sql, new { RoomId = room.Id });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get sensors");
+            }
+
+            return sensors;
         }
     }
 }

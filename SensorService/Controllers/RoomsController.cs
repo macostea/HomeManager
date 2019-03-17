@@ -14,7 +14,6 @@ namespace SensorService.Controllers
     [Route("api/[controller]")]
     public class RoomsController : Controller
     {
-
         private readonly IHomeRepository homeRepository;
 
         public RoomsController(IHomeRepository homeRepository)

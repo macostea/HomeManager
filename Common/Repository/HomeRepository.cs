@@ -66,7 +66,6 @@ namespace Common.Repository
                 this.logger.LogError(e, "Cannot insert home");
             }
 
-
             return insertedHome;
         }
 
@@ -337,7 +336,6 @@ namespace Common.Repository
 
             return room;
         }
-
 
         public async Task<Sensor> GetSensor(int id)
         {

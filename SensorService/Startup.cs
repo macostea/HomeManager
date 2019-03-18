@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using SensorService.Validation;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SensorService
@@ -25,7 +26,10 @@ namespace SensorService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
+            services.AddMvc(config =>
+            {
+                config.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
+            })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options =>
                 {

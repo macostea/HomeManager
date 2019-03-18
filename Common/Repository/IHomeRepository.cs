@@ -19,6 +19,9 @@ namespace Common.Repository
         Task<IEnumerable<Room>> GetRooms(Home home);
         Task<Room> AddRoom(int homeId, Room room);
 
+        Task<IEnumerable<Weather>> GetWeather(int homeId, DateTime startDate, DateTime endDate);
+        Task<Weather> AddWeather(int homeId, Weather weather);
+
         Task<bool> EditRoom(Room room);
 
         Task<Room> GetRoom(int id);
@@ -28,6 +31,11 @@ namespace Common.Repository
 
         Task<IEnumerable<Sensor>> GetSensors(Room room);
         Task<Sensor> AddSensor(int roomId, Sensor sensor);
+
+        Task<bool> EditWeather(Weather weather);
+
+        Task<Weather> GetWeather(int id);
+        Task<bool> DeleteWeather(int id);
 
         Task<IEnumerable<Environment>> GetEnvironmentReadings(int roomId, DateTime startDate, DateTime endDate);
         Task<Environment> AddEnvironmentReading(int roomId, int sensorId, Environment environment);

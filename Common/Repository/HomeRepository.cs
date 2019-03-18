@@ -4,8 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Common.Mappings;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Dapper.FluentMap;
 using Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Environment = Domain.Entities.Environment;
@@ -367,6 +369,112 @@ namespace Common.Repository
             }
 
             return sensors;
+        }
+
+        public async Task<IEnumerable<Weather>> GetWeather(int homeId, DateTime startDate, DateTime endDate)
+        {
+            var sql = "SELECT * FROM weather WHERE home_id = @HomeId AND timestamp >= @StartDate AND timestamp <= @EndDate";
+
+            IEnumerable<Weather> weather = null;
+            try
+            {
+                weather = await dbConnection.QueryAsync<Weather>(sql, new
+                {
+                    HomeId = homeId,
+                    StartDate = startDate,
+                    EndDate = endDate
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get weather");
+            }
+
+            return weather;
+        }
+
+        public async Task<Weather> AddWeather(int homeId, Weather weather)
+        {
+            var sql = "INSERT INTO weather (timestamp, temperature, pressure, humidity, minimum_temperature, maximum_temperature, condition_code, condition, icon_url, home_id) " +
+                "VALUES (@Timestamp, @Temperature, @Pressure, @Humidity, @MinimumTemperature, @MaximumTemperature, @ConditionCode, @Condition, @IconURL, @HomeId) " +
+                "RETURNING *";
+
+            Weather insertedWeather = null;
+            try
+            {
+                insertedWeather = await dbConnection.QueryFirstAsync<Weather>(sql, new
+                {
+                    weather.Timestamp,
+                    weather.Temperature,
+                    weather.Pressure,
+                    weather.Humidity,
+                    weather.MinimumTemperature,
+                    weather.MaximumTemperature,
+                    weather.ConditionCode,
+                    weather.Condition,
+                    weather.IconURL,
+                    HomeId = homeId
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert weather");
+            }
+
+            return weather;
+        }
+
+        public async Task<bool> EditWeather(Weather weather)
+        {
+            var sql = "UPDATE weather SET " +
+                "timestamp = @Timestamp, " +
+                "temperature = @Temperature, " +
+                "pressure = @Pressure, " +
+                "humidity = @Humidity, " +
+                "minimumTemperature = @MinimumTemperature," +
+                "maximumTemperature = @MaximumTemperature, " +
+                "conditionCode = @ConditionCode, " +
+                "conditions = @Condition, " +
+                "iconURL = @IconURL " +
+                "WHERE id = @Id";
+            var affectedRows = await dbConnection.ExecuteAsync(sql, new
+            {
+                weather.Timestamp,
+                weather.Temperature,
+                weather.Pressure,
+                weather.Humidity,
+                weather.MinimumTemperature,
+                weather.MaximumTemperature,
+                weather.ConditionCode,
+                weather.Condition,
+                weather.IconURL,
+                weather.Id
+            });
+
+            return affectedRows != 0;
+        }
+
+        public async Task<Weather> GetWeather(int id)
+        {
+            var sql = "SELECT * FROM weather WHERE id = @Id";
+
+            Weather weather = null;
+            try
+            {
+                weather = await dbConnection.QueryFirstAsync<Weather>(sql, new { Id = id });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get weather");
+            }
+
+            return weather;
+        }
+
+        public async Task<bool> DeleteWeather(int id)
+        {
+            var sql = "DELETE FROM weather WHERE id = @Id";
+
+            var affectedRows = await dbConnection.ExecuteAsync(sql, new { Id = id });
+
+            return affectedRows != 0;
         }
     }
 }

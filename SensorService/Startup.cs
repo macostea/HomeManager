@@ -1,5 +1,8 @@
 ﻿using System.Data;
+using Common.Mappings;
 using Common.Repository;
+using Dapper;
+using Dapper.FluentMap;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +34,12 @@ namespace SensorService
             var connectionString = Configuration.GetConnectionString("SensorsContext");
             services.AddTransient<IDbConnection>(s => new NpgsqlConnection(connectionString));
             services.AddTransient<IHomeRepository, HomeRepository>();
+
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new WeatherMap());
+            });
+            SqlMapper.AddTypeHandler(new UriTypeHandler());
 
             services.AddSwaggerGen(c =>
             {

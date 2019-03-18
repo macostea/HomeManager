@@ -70,7 +70,7 @@ namespace SensorService.Controllers
         }
 
         [HttpGet("{id}/environment")]
-        public async Task<IActionResult> GetEnvironment(int id, DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> GetEnvironment(int id, [FromQuery]DateTime startDate, [FromQuery]DateTime endDate)
         {
             var envs = await this.homeRepository.GetEnvironmentReadings(id, startDate, endDate);
             return Ok(envs);

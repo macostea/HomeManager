@@ -40,40 +40,17 @@ namespace Common.SensorServiceAPI
             return await Utilities.ExecuteRestRequest<Environment>(this.BaseURL, envRequest);
         }
 
-        //    public async Task<TemperatureSensorReading> CreateTemperatureReading(TemperatureSensorReading reading)
-        //    {
-        //        var request = new RestRequest
-        //        {
-        //            Resource = "api/TemperatureSensorReadings"
-        //        };
-        //        request.AddJsonBody(reading);
-        //        request.Method = Method.POST;
+        public async Task<Weather> CreateWeatherReading(int homeId, Weather weather)
+        {
+            var weatherRequest = new RestRequest
+            {
+                Resource = "api/homes/{homeId}/weather"
+            };
+            weatherRequest.AddUrlSegment("homeId", homeId);
+            weatherRequest.Method = Method.POST;
+            weatherRequest.AddJsonBody(weather);
 
-        //        return await Utilities.ExecuteRestRequest<TemperatureSensorReading>(this.BaseURL, request);
-        //    }
-
-        //    public async Task<HumiditySensorReading> CreateHumidityReading(HumiditySensorReading reading)
-        //    {
-        //        var request = new RestRequest
-        //        {
-        //            Resource = "api/HumiditySensorReadings"
-        //        };
-        //        request.AddJsonBody(reading);
-        //        request.Method = Method.POST;
-
-        //        return await Utilities.ExecuteRestRequest<HumiditySensorReading>(this.BaseURL, request);
-        //    }
-
-        //    public async Task<WeatherSensorReading> CreateWeatherReading(WeatherSensorReading reading)
-        //    {
-        //        var request = new RestRequest
-        //        {
-        //            Resource = "api/WeatherSensorReadings"
-        //        };
-        //        request.AddJsonBody(reading);
-        //        request.Method = Method.POST;
-
-        //        return await Utilities.ExecuteRestRequest<WeatherSensorReading>(this.BaseURL, request);
-        //    }
+            return await Utilities.ExecuteRestRequest<Weather>(this.BaseURL, weatherRequest);
+        }
     }
 }

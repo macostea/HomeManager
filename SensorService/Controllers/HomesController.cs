@@ -73,5 +73,19 @@ namespace SensorService.Controllers
             var insertedRoom = await this.homeRepository.AddRoom(id, room);
             return Ok(insertedRoom);
         }
+
+        [HttpPost("{id}/weather")]
+        public async Task<IActionResult> AddWeather(int id, [FromBody]Weather weather)
+        {
+            var insertedWeather = await this.homeRepository.AddWeather(id, weather);
+            return Ok(insertedWeather);
+        }
+
+        [HttpGet("{id}/weather")]
+        public async Task<IActionResult> GetWeather(int id, [FromQuery]DateTime startDate, [FromQuery]DateTime endDate)
+        {
+            var weather = await this.homeRepository.GetWeather(id, startDate, endDate);
+            return Ok(weather);
+        }
     }
 }

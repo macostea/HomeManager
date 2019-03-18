@@ -6,13 +6,13 @@ using SensorListener.Model;
 
 namespace SensorListener.Listeners
 {
-    public class SensorReadingListener: ISensorListener
+    public class WeatherReadingListener: ISensorListener
     {
         public string Topic { get; }
         public string SensorServiceURL { get; }
         protected SensorServiceAPI Client { get; }
 
-        public SensorReadingListener(string topic, string sensorServiceURL)
+        public WeatherReadingListener(string topic, string sensorServiceURL)
         {
             this.Topic = topic;
             this.SensorServiceURL = sensorServiceURL;
@@ -23,10 +23,10 @@ namespace SensorListener.Listeners
         {
             try
             {
-                var reading = JsonConvert.DeserializeObject<EnvironmentMessage>(message);
-                reading.Environment.Timestamp = DateTime.UtcNow;
-
-                var result = await this.Client.CreateEnvironmentReading(reading.SensorId, reading.Environment);
+                var reading = JsonConvert.DeserializeObject<WeatherMessage>(message);
+                reading.Weather.Timestamp = DateTime.UtcNow;
+                
+                var result = await this.Client.CreateWeatherReading(reading.HomeId, reading.Weather);
 
                 Console.WriteLine(result);
                 return true;

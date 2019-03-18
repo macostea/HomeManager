@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SensorListener.Model
 {
-    class QueueMessage
+    class EnvironmentMessage
     {
         public int SensorId { get; set; }
         public Environment Environment { get; set; }

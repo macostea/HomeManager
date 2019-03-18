@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Common.Utils;
@@ -28,7 +27,7 @@ namespace WeatherSensor.Client
             this.APIKey = apiKey;
         }
 
-        public async Task<WeatherSensorReading> GetCurrentConditions()
+        public async Task<Weather> GetCurrentConditions()
         {
             var request = new RestRequest
             {
@@ -42,7 +41,7 @@ namespace WeatherSensor.Client
             request.Method = Method.GET;
 
             var conditions = await Utilities.ExecuteRestRequest<OpenWeatherMapResponseObject>(this.BaseURL, request);
-            var sensorReading = new WeatherSensorReading()
+            var sensorReading = new Weather()
             {
                 Temperature = Convert.ToDouble(conditions.Main["temp"]),
                 Pressure = Convert.ToDouble(conditions.Main["pressure"]),

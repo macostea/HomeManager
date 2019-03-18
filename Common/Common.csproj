@@ -24,8 +24,12 @@
     <PackageReference Include="Dapper" Version="1.60.1" />
     <PackageReference Include="Npgsql" Version="4.0.5" />
     <PackageReference Include="Dapper.Contrib" Version="1.60.1" />
+    <PackageReference Include="Dapper.FluentMap" Version="1.7.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mappings\" />
   </ItemGroup>
 </Project>

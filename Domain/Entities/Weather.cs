@@ -13,10 +13,5 @@ namespace Domain.Entities
         public int ConditionCode { get; set; }
         public string Condition { get; set; }
         public Uri IconURL { get; set; }
-
-        public Weather()
-        {
-
-        }
     }
 }

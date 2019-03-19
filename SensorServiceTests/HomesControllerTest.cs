@@ -561,6 +561,5 @@ namespace SensorServiceTests
 
             Assert.NotNull(contentResult);
         }
-
     }
 }

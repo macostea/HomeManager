@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Mqtt;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,19 +18,25 @@ namespace WeatherSensor
                 openweathermapAppid = await System.IO.File.ReadAllTextAsync("/run/secrets/OPENWEATHERMAP_APPID");
             }
 
+            // TODO: Location could be received from SensorService via Home ID
             var client = new OpenWeatherMapClient(
                 Environment.GetEnvironmentVariable("WEATHER_LOCATION"),
                 openweathermapAppid
             );
             var response = await client.GetCurrentConditions();
-            response.SensorId = Convert.ToInt32(Environment.GetEnvironmentVariable("SENSOR_ID"));
+
+            var messageDict = new Dictionary<string, object>
+            {
+                ["homeId"] = Convert.ToInt32(Environment.GetEnvironmentVariable("HOME_ID")),
+                ["weather"] = response
+            };
 
             var configuration = new MqttConfiguration();
             var rabbitmqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST");
             var mqttClient = await MqttClient.CreateAsync(rabbitmqHost, configuration);
             var sessionState = await mqttClient.ConnectAsync();
 
-            var message = new MqttApplicationMessage("weather", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response)));
+            var message = new MqttApplicationMessage("weather", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageDict)));
             await mqttClient.PublishAsync(message, MqttQualityOfService.AtMostOnce);
 
             await mqttClient.DisconnectAsync();

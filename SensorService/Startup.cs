@@ -1,11 +1,15 @@
-﻿using Common.Repository;
-using Domain.Entities;
+﻿using System.Data;
+using Common.Mappings;
+using Common.Repository;
+using Dapper;
+using Dapper.FluentMap;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+using SensorService.Validation;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SensorService
@@ -22,18 +26,24 @@ namespace SensorService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
+            services.AddMvc(config =>
+            {
+                config.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
+            })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options =>
                 {
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 });
-            services.AddTransient<IRepository<Sensor>, SensorsRepository<Sensor>>();
-            services.AddTransient<IRepository<TemperatureSensorReading>, SensorsRepository<TemperatureSensorReading>>();
-            services.AddTransient<IRepository<HumiditySensorReading>, SensorsRepository<HumiditySensorReading>>();
-            services.AddTransient<IRepository<WeatherSensorReading>, SensorsRepository<WeatherSensorReading>>();
             var connectionString = Configuration.GetConnectionString("SensorsContext");
-            services.AddEntityFrameworkNpgsql().AddDbContext<SensorsContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("SensorService")));
+            services.AddTransient<IDbConnection>(s => new NpgsqlConnection(connectionString));
+            services.AddTransient<IHomeRepository, HomeRepository>();
+
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new WeatherMap());
+            });
+            SqlMapper.AddTypeHandler(new UriTypeHandler());
 
             services.AddSwaggerGen(c =>
             {

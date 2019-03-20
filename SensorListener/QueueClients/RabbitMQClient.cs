@@ -43,10 +43,10 @@ namespace SensorListener.QueueClients
             {
                 using (var channel = connection.CreateModel())
                 {
-                    channel.ExchangeDeclare(exchange: exchangeName, type: "topic", durable: true);
+                    channel.ExchangeDeclare(exchange: exchangeName, type: "topic", durable: false);
 
                     channel.QueueDeclare(queue: this.queueName,
-                                            durable: true,
+                                            durable: false,
                                             exclusive: false,
                                             autoDelete: false,
                                             arguments: null);
@@ -62,9 +62,9 @@ namespace SensorListener.QueueClients
                         var body = ea.Body;
                         var message = Encoding.UTF8.GetString(body);
 
-                        var listener = this.listeners[ea.RoutingKey];
+                        var listenerFound = this.listeners.TryGetValue(ea.RoutingKey, out ISensorListener listener);
 
-                        if (listener != null)
+                        if (listenerFound)
                         {
                             listener.ProcessMessageAsync(message);
                         }

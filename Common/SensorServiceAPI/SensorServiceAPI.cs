@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Environment = Domain.Entities.Environment;
 
 namespace Common.SensorServiceAPI
 {
@@ -16,40 +17,40 @@ namespace Common.SensorServiceAPI
             this.BaseURL = new Uri(baseURL);
         }
 
-        public async Task<TemperatureSensorReading> CreateTemperatureReading(TemperatureSensorReading reading)
+        public async Task<Environment> CreateEnvironmentReading(int sensorId, Environment environment)
         {
-            var request = new RestRequest
+            var roomRequest = new RestRequest
             {
-                Resource = "api/TemperatureSensorReadings"
+                Resource = "api/rooms"
             };
-            request.AddJsonBody(reading);
-            request.Method = Method.POST;
+            roomRequest.Method = Method.GET;
+            roomRequest.AddParameter("sensorId", sensorId);
 
-            return await Utilities.ExecuteRestRequest<TemperatureSensorReading>(this.BaseURL, request);
+            var room = await Utilities.ExecuteRestRequest<Room>(this.BaseURL, roomRequest);
+
+            var envRequest = new RestRequest
+            {
+                Resource = "api/rooms/{roomId}/sensor/{sensorId}/environment"
+            };
+            envRequest.AddUrlSegment("roomId", room.Id);
+            envRequest.AddUrlSegment("sensorId", sensorId);
+            envRequest.Method = Method.POST;
+            envRequest.AddJsonBody(environment);
+
+            return await Utilities.ExecuteRestRequest<Environment>(this.BaseURL, envRequest);
         }
 
-        public async Task<HumiditySensorReading> CreateHumidityReading(HumiditySensorReading reading)
+        public async Task<Weather> CreateWeatherReading(int homeId, Weather weather)
         {
-            var request = new RestRequest
+            var weatherRequest = new RestRequest
             {
-                Resource = "api/HumiditySensorReadings"
+                Resource = "api/homes/{homeId}/weather"
             };
-            request.AddJsonBody(reading);
-            request.Method = Method.POST;
+            weatherRequest.AddUrlSegment("homeId", homeId);
+            weatherRequest.Method = Method.POST;
+            weatherRequest.AddJsonBody(weather);
 
-            return await Utilities.ExecuteRestRequest<HumiditySensorReading>(this.BaseURL, request);
-        }
-
-        public async Task<WeatherSensorReading> CreateWeatherReading(WeatherSensorReading reading)
-        {
-            var request = new RestRequest
-            {
-                Resource = "api/WeatherSensorReadings"
-            };
-            request.AddJsonBody(reading);
-            request.Method = Method.POST;
-
-            return await Utilities.ExecuteRestRequest<WeatherSensorReading>(this.BaseURL, request);
+            return await Utilities.ExecuteRestRequest<Weather>(this.BaseURL, weatherRequest);
         }
     }
 }

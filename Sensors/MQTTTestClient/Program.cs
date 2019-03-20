@@ -15,14 +15,18 @@ namespace MQTTTestClient
             var client = await MqttClient.CreateAsync("foxey-lady-master.mcostea.com", configuration);
             var sessionState = await client.ConnectAsync();
 
-            var tempReading = new Dictionary<string, object>
+            var env = new Dictionary<string, object>
             {
-                { "sensorId", 2 },
-                { "time", "2018-10-23T13:14:17Z"},
-                { "reading", 21.0 }
+                { "sensorId", 3 },
+                { "environment", new Dictionary<string, object>
+                    {
+                        { "temperature", 22 },
+                        { "humidity", 32 }
+                    }
+                }
             };
 
-            var message = new MqttApplicationMessage("temperature", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(tempReading)));
+            var message = new MqttApplicationMessage("environment", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(env)));
             await client.PublishAsync(message, MqttQualityOfService.AtMostOnce);
 
             await client.DisconnectAsync();

@@ -40,7 +40,7 @@ services:
                 environment:
                         WEATHER_LOCATION: "Cluj-Napoca"
                         RABBITMQ_HOST: "home_manager_rabbitmq"
-                        SENSOR_ID: 5
+                        HOME_ID: 1
                 secrets:
                     - OPENWEATHERMAP_APPID
 

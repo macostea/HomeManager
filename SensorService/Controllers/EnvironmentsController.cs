@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Common.Repository;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,14 +22,23 @@ namespace SensorService.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await this.homeRepository.GetEnvironment(id));
+            var env = await this.homeRepository.GetEnvironment(id);
+            if (env == null)
+            {
+                return NotFound();
+            }
+            return Ok(env);
         }
 
         // PUT api/values/5
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]Environment value)
         {
-            await this.homeRepository.EditEnvironment(value);
+            var success = await this.homeRepository.EditEnvironment(value);
+            if (!success)
+            {
+                return BadRequest();
+            }
             return Ok(value);
         }
 
@@ -37,7 +47,16 @@ namespace SensorService.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var env = await this.homeRepository.GetEnvironment(id);
-            await this.homeRepository.DeleteEnvironment(id);
+            if (env == null)
+            {
+                return NotFound();
+            }
+            var success = await this.homeRepository.DeleteEnvironment(id);
+            if (!success)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
             return Ok(env);
         }
     }

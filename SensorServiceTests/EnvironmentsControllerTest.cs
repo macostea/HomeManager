@@ -85,7 +85,6 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetEnvironment(2)).ReturnsAsync(envs[1]);
             mockedRepo.Setup(repo => repo.GetEnvironment(3)).ReturnsAsync((Environment)null);
 
-
             var controller = new EnvironmentsController(mockedRepo.Object);
             var result = await controller.Get(3);
             var contentResult = result as NotFoundResult;
@@ -176,6 +175,5 @@ namespace SensorServiceTests
             Assert.NotNull(contentResult);
             Assert.Equal(StatusCodes.Status500InternalServerError, contentResult.StatusCode);
         }
-
     }
 }

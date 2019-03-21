@@ -5,8 +5,16 @@ services:
                 ports:
                         - "80:80"
                         - "443:443"
+                logging:
+                  driver: gcplogs
+                  options:
+                    gcp-project: home-manager-4516778
         sensor-service:
                 image: mcostea/homemanager_sensor-service
+                logging:
+                  driver: gcplogs
+                  options:
+                    gcp-project: home-manager-4516778
         sensor-listener:
                 image: mcostea/homemanager_sensor-listener
                 environment:
@@ -14,6 +22,10 @@ services:
                         RABBITMQ_USERNAME: "rabbit"
                         RABBITMQ_PASSWORD: "rabbit"
                         SENSOR_SERVICE_URL: "http://home_manager_sensor-service"
+                logging:
+                  driver: gcplogs
+                  options:
+                    gcp-project: home-manager-4516778
         postgres:
                 image: mcostea/timescaledb 
                 ports:
@@ -26,6 +38,10 @@ services:
                         placement:
                                  constraints:
                                          - node.role == manager
+                logging:
+                  driver: gcplogs
+                  options:
+                    gcp-project: home-manager-4516778
         rabbitmq:
                 image: mcostea/homemanager_rabbitmq
                 ports:
@@ -34,15 +50,19 @@ services:
                         - "5671:5671"
                         - "5672:5672"
                         - "8883:8883"
+                logging:
+                  driver: gcplogs
+                  options:
+                    gcp-project: home-manager-4516778
 
-        weather-sensor:
-                image: mcostea/homemanager_weather-sensor
-                environment:
-                        WEATHER_LOCATION: "Cluj-Napoca"
-                        RABBITMQ_HOST: "home_manager_rabbitmq"
-                        HOME_ID: 1
-                secrets:
-                    - OPENWEATHERMAP_APPID
+#        weather-sensor:
+#image: mcostea/homemanager_weather-sensor
+#environment:
+#      WEATHER_LOCATION: "Cluj-Napoca"
+#      RABBITMQ_HOST: "home_manager_rabbitmq"
+#      HOME_ID: 1
+#secrets:
+#  - OPENWEATHERMAP_APPID
 
 secrets:
     OPENWEATHERMAP_APPID:

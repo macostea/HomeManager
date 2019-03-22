@@ -55,14 +55,18 @@ services:
                   options:
                     gcp-project: home-manager-4516778
 
-#        weather-sensor:
-#image: mcostea/homemanager_weather-sensor
-#environment:
-#      WEATHER_LOCATION: "Cluj-Napoca"
-#      RABBITMQ_HOST: "home_manager_rabbitmq"
-#      HOME_ID: 1
-#secrets:
-#  - OPENWEATHERMAP_APPID
+        weather-sensor:
+          image: mcostea/homemanager_weather-sensor
+          environment:
+            WEATHER_LOCATION: "Cluj-Napoca"
+            RABBITMQ_HOST: "home_manager_rabbitmq"
+            HOME_ID: 1
+          secrets:
+            - OPENWEATHERMAP_APPID
+          deploy:
+            restart_policy:
+              condition: any
+              delay: 1h
 
 secrets:
     OPENWEATHERMAP_APPID:

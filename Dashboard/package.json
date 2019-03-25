@@ -1,0 +1,47 @@
+{
+  "name": "dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "24.0.11",
+    "@types/node": "11.11.6",
+    "@types/react": "16.8.8",
+    "@types/react-dom": "16.8.3",
+    "@types/react-router": "^4.4.5",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/reactstrap": "^7.1.3",
+    "@types/recharts": "^1.1.15",
+    "awesome-bootstrap-checkbox": "^1.0.1",
+    "bootstrap": "^4.3.1",
+    "classnames": "file:node_modules/classnames",
+    "font-awesome": "^4.7.0",
+    "glyphicons-halflings": "^1.9.1",
+    "jquery": "^3.3.1",
+    "messenger": "0.0.9",
+    "node-sass": "^4.11.0",
+    "popper": "^1.0.1",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "2.1.8",
+    "reactstrap": "^7.1.0",
+    "recharts": "^1.5.0",
+    "typescript": "3.3.4000"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

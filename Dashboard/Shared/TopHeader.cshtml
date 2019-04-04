@@ -1,0 +1,31 @@
+﻿<header class="main-header">
+    <NavLink class="logo" href="" Match="NavLinkMatch.All">
+        <Icon Name="IconName.Dashboard"></Icon> H
+    </NavLink>
+    <div class="top-header">
+        <div class="header-content">
+            <ul class="header-nav">
+                <li class="header-nav-item">
+                    <a href="#">
+                        <WeatherComponent CurrentCondition="@_currentCondition"/>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+@functions {
+    public Weather _currentCondition { get; set; }
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+
+        _currentCondition = new Weather
+        {
+            ConditionCode = 800,
+            Temperature = 16.46
+        };
+    }
+}

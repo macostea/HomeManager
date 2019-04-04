@@ -1,0 +1,41 @@
+﻿
+
+<aside class="main-sidebar">
+    <nav class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <NavLink class="sidebar-link" href="stats">
+                    <i class="fas fa-tachometer-alt"></i>
+                </NavLink>
+            </li>
+            <li class="sidebar-item">
+                <NavLink class="sidebar-link" href="counter">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                </NavLink>
+            </li>
+            <li class="sidebar-item">
+                <NavLink class="sidebar-link" href="fetchdata">
+                    <i class="fas fa-list" aria-hidden="true"></i>
+                </NavLink>
+            </li>
+            <li class="sidebar-item">
+                <NavLink class="sidebar-link" href="todo">
+                    <i class="fas fa-list" aria-hidden="true"></i>
+                </NavLink>
+            </li>
+        </ul>
+        </nav>
+</aside>
+
+
+
+@functions {
+    bool collapseNavMenu = true;
+
+    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

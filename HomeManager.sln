@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sensors", "Sensors", "{1D0E52FE-68D0-4AB6-94D6-35B0A2B3D4ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSensor", "Sensors\WeatherSensor\WeatherSensor.csproj", "{A52BC044-D732-4560-AFF2-8EA6223D127D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherSensor", "Sensors\WeatherSensor\WeatherSensor.csproj", "{A52BC044-D732-4560-AFF2-8EA6223D127D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

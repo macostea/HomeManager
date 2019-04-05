@@ -14,11 +14,24 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="0.9.0-preview3-19154-02" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.9.0-preview3-19154-02" PrivateAssets="all" />
+    <PackageReference Include="Toolbelt.Blazor.TimeZoneKit" Version="4.0.0.2" />
 
     <DotNetCliToolReference Include="Microsoft.AspNetCore.Blazor.Cli" Version="0.9.0-preview3-19154-02" />
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
 
     <Watch Include="**\*.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Shared\TimeComponent.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Watch Remove="Shared\TimeComponent.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Shared\TimeComponent.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,6 +13,11 @@
                         <WeatherComponent CurrentCondition="@CurrentCondition"/>
                     </a>
                 </li>
+                <li class="header-nav-item">
+                    <a href="#">
+                        <TimeComponent />
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -20,15 +25,31 @@
 
 @functions {
     public Weather CurrentCondition { get; set; }
+    private Timer timer;
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        CurrentCondition = new Weather()
+        {
+            Temperature = 0,
+            ConditionCode = 0
+        };
+
+        timer = new Timer(1 * 1000 * 60 * 60);
+        timer.AutoReset = true;
+        timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
+        {
+            await Store.GetWeather();
+            this.CurrentCondition = Store.Weather[Store.Home].Last();
+        });
+
+        this.timer.Start();
+    }
 
     protected override async Task OnInitAsync()
     {
-        //var timer = new Timer(1 * 1000 * 60 * 60);
-        //timer.AutoReset = true;
-        //timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
-        //{
         await Store.GetWeather();
         this.CurrentCondition = Store.Weather[Store.Home].Last();
-        //});
     }
 }

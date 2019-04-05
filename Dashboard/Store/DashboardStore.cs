@@ -31,12 +31,13 @@ namespace Dashboard.Store
             };
             this.Http = http;
             this.BaseUri = new Uri("http://sensor-service.mcostea.com");
+            this.Weather = new Dictionary<Home, IList<Weather>>();
         }
         public async Task GetWeather()
         {
             var builder = new UriBuilder(this.BaseUri)
             {
-                Path = string.Format($"api/homes/{0}/weather", this.Home.Id)
+                Path = string.Format("api/homes/{0}/weather", this.Home.Id)
             };
             var query = HttpUtility.ParseQueryString(builder.Query);
             var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
@@ -47,8 +48,6 @@ namespace Dashboard.Store
             var weather = await this.Http.GetJsonAsync<IList<Weather>>(builder.ToString());
 
             this.Weather[Home] = weather;
-
-            Console.WriteLine(weather);
         }
     }
 }

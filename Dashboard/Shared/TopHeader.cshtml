@@ -1,4 +1,7 @@
-﻿<header class="main-header">
+﻿@using System.Timers
+@inject DashboardStore Store
+
+<header class="main-header">
     <NavLink class="logo" href="" Match="NavLinkMatch.All">
         <Icon Name="IconName.Dashboard"></Icon> H
     </NavLink>
@@ -7,7 +10,7 @@
             <ul class="header-nav">
                 <li class="header-nav-item">
                     <a href="#">
-                        <WeatherComponent CurrentCondition="@_currentCondition"/>
+                        <WeatherComponent CurrentCondition="@CurrentCondition"/>
                     </a>
                 </li>
             </ul>
@@ -16,16 +19,16 @@
 </header>
 
 @functions {
-    public Weather _currentCondition { get; set; }
+    public Weather CurrentCondition { get; set; }
 
-    protected override void OnInit()
+    protected override async Task OnInitAsync()
     {
-        base.OnInit();
-
-        _currentCondition = new Weather
-        {
-            ConditionCode = 800,
-            Temperature = 16.46
-        };
+        //var timer = new Timer(1 * 1000 * 60 * 60);
+        //timer.AutoReset = true;
+        //timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
+        //{
+        await Store.GetWeather();
+        this.CurrentCondition = Store.Weather[Store.Home].Last();
+        //});
     }
 }

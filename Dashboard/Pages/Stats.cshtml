@@ -1,7 +1,114 @@
 ﻿@page "/stats"
+@using System.Timers
+@using Microsoft.AspNetCore.Blazor.Services
+@inject IJSRuntime JsRuntime
+@inject DashboardStore Store
 
 <section class="content-header">
     <h1>Current stats</h1>
 </section>
 
-<section class="content"></section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <canvas id="temperature" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box">
+                <canvas id="humidity" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+@functions {
+    private Dictionary<Room, IList<Environment>> Rooms;
+    private Timer timer;
+
+    protected override async Task OnAfterRenderAsync()
+    {
+        await this.Store.GetRooms();
+        await this.Store.RefreshAllRooms();
+        this.Rooms = this.Store.Rooms;
+
+        // Setup temperature chart
+        var labels = this.Rooms.Keys.Select(r => r.Name);
+        var data = this.Rooms.Values.Select(e => e.Last().Temperature);
+
+        var config = new Dictionary<string, object>()
+        {
+            { "canvasId", "temperature" },
+            { "type", "bar" },
+            { "data", new Dictionary<string, object>() {
+                { "labels", labels},
+                { "datasets", new List<object>()
+                    {
+                        new Dictionary<string, object>()
+                        {
+                            { "label", "Temperature C" },
+                            { "data", data }
+                        }
+                    }
+                }
+            } },
+            { "options", new Dictionary<string, object>() {
+                { "plugins", new Dictionary<string, object>() {
+                    { "colorschemes", new Dictionary<string, object>()
+                    {
+                        { "scheme", "office.Kilter6" }
+                    } }
+                } }
+            } }
+        };
+
+        await JsRuntime.InvokeAsync<bool>("ChartJsInterop.SetupChart", Json.Serialize(config));
+
+        // Setup humidity chart
+        data = this.Rooms.Values.Select(e => e.Last().Humidity);
+        config = new Dictionary<string, object>()
+        {
+            { "canvasId", "humidity" },
+            { "type", "bar" },
+            { "data", new Dictionary<string, object>() {
+                { "labels", labels},
+                { "datasets", new List<object>()
+                    {
+                        new Dictionary<string, object>()
+                        {
+                            { "label", "Humidity %" },
+                            { "data", data }
+                        }
+                    }
+                }
+            } },
+            { "options", new Dictionary<string, object>() {
+                { "plugins", new Dictionary<string, object>() {
+                    { "colorschemes", new Dictionary<string, object>()
+                    {
+                        { "scheme", "office.Kilter6" }
+                    } }
+                } }
+            } }
+        };
+
+        await JsRuntime.InvokeAsync<bool>("ChartJsInterop.SetupChart", Json.Serialize(config));
+    }
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+
+        timer = new Timer(15 * 1000 * 60);
+        timer.AutoReset = true;
+        timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
+        {
+            await this.Store.RefreshAllRooms();
+            this.Rooms = this.Store.Rooms;
+            this.StateHasChanged();
+        });
+
+        this.timer.Start();
+    }
+}

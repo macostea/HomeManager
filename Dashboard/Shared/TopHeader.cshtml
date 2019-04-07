@@ -42,6 +42,7 @@
         {
             await Store.GetWeather();
             this.CurrentCondition = Store.Weather[Store.Home].Last();
+            this.StateHasChanged();
         });
 
         this.timer.Start();

@@ -14,16 +14,73 @@ namespace Dashboard.Store
     public class DashboardStore
     {
         public Home Home { get; set; }
-        public Dictionary<Room, IList<Environment>> Rooms { get; set; }
-        public Dictionary<Home, IList<Weather>> Weather { get; set; }
+        private Dictionary<Room, IList<Environment>> _rooms = new Dictionary<Room, IList<Environment>>();
+        private Dictionary<Home, IList<Weather>> _weather = new Dictionary<Home, IList<Weather>>();
+        private IList<Room> _roomList = new List<Room>();
+
+        public Dictionary<Room, IList<Environment>> Rooms
+        {
+            get
+            {
+                lock (_rooms)
+                {
+                    return _rooms;
+                }
+            }
+            set
+            {
+                lock (_rooms)
+                {
+                    _rooms = value;
+                }
+            }
+        }
+        public Dictionary<Home, IList<Weather>> Weather
+        {
+            get
+            {
+                lock (_weather)
+                {
+                    return _weather;
+                }
+            }
+            set
+            {
+                lock (_weather)
+                {
+                    _weather = value;
+                }
+            }
+        }
+
         public HttpClient Http { get; private set; }
         public Uri BaseUri { get; private set; }
 
-        private IList<Room> rooms;
+        public IList<Action<DashboardStore>> Observers { get; private set; } = new List<Action<DashboardStore>>();
+
+        private IList<Room> RoomList
+        {
+            get
+            {
+                lock (_roomList)
+                {
+                    return _roomList;
+                }
+            }
+            set
+            {
+                lock (_roomList)
+                {
+                    _roomList = value;
+                }
+            }
+        }
         
 
         public DashboardStore(HttpClient http)
         {
+            Console.WriteLine("Init Dashboard Store starting");
+
             this.Home = new Home
             {
                 Id = 1,
@@ -33,9 +90,15 @@ namespace Dashboard.Store
             };
             this.Http = http;
             this.BaseUri = new Uri("http://sensor-service.mcostea.com");
-            this.Weather = new Dictionary<Home, IList<Weather>>();
-            this.Rooms = new Dictionary<Room, IList<Environment>>();
+
+            Console.WriteLine("Init Dashboard Store Complete");
         }
+
+        public void RegisterObserver(Action<DashboardStore> callback)
+        {
+            this.Observers.Add(callback);
+        }
+
         public async Task GetWeather()
         {
             var builder = new UriBuilder(this.BaseUri)
@@ -50,7 +113,12 @@ namespace Dashboard.Store
             builder.Query = query.ToString();
             var weather = await this.Http.GetJsonAsync<IList<Weather>>(builder.ToString());
 
-            this.Weather[Home] = weather;
+            lock (Weather)
+            {
+                this.Weather[Home] = weather;
+            }
+
+            this.NotifyObservers();
         }
 
         public async Task GetRooms()
@@ -61,7 +129,7 @@ namespace Dashboard.Store
             };
 
             var rooms = await this.Http.GetJsonAsync<IList<Room>>(builder.ToString());
-            this.rooms = rooms;
+            this.RoomList = rooms;
         }
 
         public async Task GetEnvironment(Room room)
@@ -78,15 +146,32 @@ namespace Dashboard.Store
             builder.Query = query.ToString();
             var environment = await this.Http.GetJsonAsync<IList<Environment>>(builder.ToString());
 
-            this.Rooms[room] = environment;
+            lock (Rooms)
+            {
+                this.Rooms[room] = environment;
+            }
         }
 
         public async Task RefreshAllRooms()
         {
-            this.Rooms.Clear();
-            foreach (var room in this.rooms)
+            lock (Rooms)
+            {
+                this.Rooms.Clear();
+            }
+
+            foreach (var room in this.RoomList)
             {
                 await this.GetEnvironment(room);
+            }
+
+            this.NotifyObservers();
+        }
+
+        protected void NotifyObservers()
+        {
+            foreach (var observer in this.Observers)
+            {
+                observer(this);
             }
         }
     }

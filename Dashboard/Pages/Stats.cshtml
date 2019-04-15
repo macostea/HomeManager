@@ -12,12 +12,12 @@
     <div class="row">
         <div class="col-md-6">
             <div class="box">
-                <canvas id="temperature" width="400" height="400"></canvas>
+                <canvas id="temperature" width="400" height="400">@Rooms</canvas>
             </div>
         </div>
         <div class="col-md-6">
             <div class="box">
-                <canvas id="humidity" width="400" height="400"></canvas>
+                <canvas id="humidity" width="400" height="400">@Rooms</canvas>
             </div>
         </div>
     </div>
@@ -29,11 +29,11 @@
 
     protected override async Task OnAfterRenderAsync()
     {
-        await this.Store.GetRooms();
-        await this.Store.RefreshAllRooms();
-        this.Rooms = this.Store.Rooms;
-
+        if (this.Rooms == null || !this.Rooms.Any()) {
+            return;
+        }
         // Setup temperature chart
+        Console.WriteLine(this.Rooms);
         var labels = this.Rooms.Keys.Select(r => r.Name);
         var data = this.Rooms.Values.Select(e => e.Last().Temperature);
 
@@ -96,19 +96,27 @@
         await JsRuntime.InvokeAsync<bool>("ChartJsInterop.SetupChart", Json.Serialize(config));
     }
 
-    protected override void OnInit()
+    protected override async Task OnInitAsync()
     {
-        base.OnInit();
+        this.Store.RegisterObserver((sender) => {
+            if (sender.Rooms.Any()) {
+                this.Rooms = sender.Rooms;
+                Console.WriteLine(this.Rooms);
+                this.StateHasChanged();
+            }
+        });
 
         timer = new Timer(15 * 1000 * 60);
         timer.AutoReset = true;
         timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
         {
+            await this.Store.GetRooms();
             await this.Store.RefreshAllRooms();
-            this.Rooms = this.Store.Rooms;
-            this.StateHasChanged();
         });
 
         this.timer.Start();
+
+        await this.Store.GetRooms();
+        await this.Store.RefreshAllRooms();
     }
 }

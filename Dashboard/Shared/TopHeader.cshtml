@@ -27,9 +27,17 @@
     public Weather CurrentCondition { get; set; }
     private Timer timer;
 
-    protected override void OnInit()
+    protected override async Task OnInitAsync()
     {
         base.OnInit();
+
+        Store.RegisterObserver((sender) => {
+            if (sender.Weather.ContainsKey(sender.Home)) {
+                this.CurrentCondition = sender.Weather[sender.Home].Last();
+                this.StateHasChanged();
+            }
+        });
+
         CurrentCondition = new Weather()
         {
             Temperature = 0,
@@ -41,16 +49,10 @@
         timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
         {
             await Store.GetWeather();
-            this.CurrentCondition = Store.Weather[Store.Home].Last();
-            this.StateHasChanged();
         });
 
         this.timer.Start();
-    }
 
-    protected override async Task OnInitAsync()
-    {
         await Store.GetWeather();
-        this.CurrentCondition = Store.Weather[Store.Home].Last();
     }
 }

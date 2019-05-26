@@ -1,4 +1,4 @@
-﻿@using System.Timers
+﻿@implements IObserver<Weather>
 @inject DashboardStore Store
 
 <header class="main-header">
@@ -10,7 +10,10 @@
             <ul class="header-nav">
                 <li class="header-nav-item">
                     <a href="#">
-                        <WeatherComponent CurrentCondition="@CurrentCondition"/>
+                        @if (CurrentCondition != null)
+                        {
+                            <WeatherComponent CurrentCondition="@CurrentCondition" />
+                        }
                     </a>
                 </li>
                 <li class="header-nav-item">
@@ -25,34 +28,30 @@
 
 @functions {
     public Weather CurrentCondition { get; set; }
-    private Timer timer;
+    private IDisposable cancelSubscription;
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
         base.OnInit();
 
-        Store.RegisterObserver((sender) => {
-            if (sender.Weather.ContainsKey(sender.Home)) {
-                this.CurrentCondition = sender.Weather[sender.Home].Last();
-                this.StateHasChanged();
-            }
-        });
+        cancelSubscription = Store.Subscribe(this);
+    }
 
-        CurrentCondition = new Weather()
-        {
-            Temperature = 0,
-            ConditionCode = 0
-        };
+    public virtual void OnCompleted()
+    {
+        Console.WriteLine("Finished all weather updates");
+        cancelSubscription.Dispose();
+    }
 
-        timer = new Timer(1 * 1000 * 60 * 60);
-        timer.AutoReset = true;
-        timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
-        {
-            await Store.GetWeather();
-        });
+    public virtual void OnError(Exception e)
+    {
+        Console.WriteLine("Error getting weather update");
+        Console.WriteLine(e.Message);
+    }
 
-        this.timer.Start();
-
-        await Store.GetWeather();
+    public virtual void OnNext(Weather weather)
+    {
+        this.CurrentCondition = weather;
+        this.StateHasChanged();
     }
 }

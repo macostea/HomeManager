@@ -1,7 +1,5 @@
 ﻿@page "/stats"
-@using System.Timers
-@using Microsoft.AspNetCore.Blazor.Services
-@inject IJSRuntime JsRuntime
+@implements IObserver<Dictionary<Room, Environment>>
 @inject DashboardStore Store
 
 <section class="content-header">
@@ -10,113 +8,54 @@
 
 <section class="content">
     <div class="row">
-        <div class="col-md-6">
-            <div class="box">
-                <canvas id="temperature" width="400" height="400">@Rooms</canvas>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="box">
-                <canvas id="humidity" width="400" height="400">@Rooms</canvas>
-            </div>
-        </div>
+        @if (Rooms != null)
+        {
+            @foreach (var room in Rooms.Keys)
+            {
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">@room.Name</h3>
+                        </div>
+                        <div class="box-body">
+                            <p>@Rooms[room].Temperature C</p>
+                            <p>@Rooms[room].Humidity %</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
     </div>
 </section>
 
 @functions {
-    private Dictionary<Room, IList<Environment>> Rooms;
-    private Timer timer;
+    private Dictionary<Room, Environment> Rooms;
+    private IDisposable cancelSubscription;
 
-    protected override async Task OnAfterRenderAsync()
+    protected override void OnInit()
     {
-        if (this.Rooms == null || !this.Rooms.Any()) {
-            return;
-        }
-        // Setup temperature chart
-        Console.WriteLine(this.Rooms);
-        var labels = this.Rooms.Keys.Select(r => r.Name);
-        var data = this.Rooms.Values.Select(e => e.Last().Temperature);
-
-        var config = new Dictionary<string, object>()
-        {
-            { "canvasId", "temperature" },
-            { "type", "bar" },
-            { "data", new Dictionary<string, object>() {
-                { "labels", labels},
-                { "datasets", new List<object>()
-                    {
-                        new Dictionary<string, object>()
-                        {
-                            { "label", "Temperature C" },
-                            { "data", data }
-                        }
-                    }
-                }
-            } },
-            { "options", new Dictionary<string, object>() {
-                { "plugins", new Dictionary<string, object>() {
-                    { "colorschemes", new Dictionary<string, object>()
-                    {
-                        { "scheme", "office.Kilter6" }
-                    } }
-                } }
-            } }
-        };
-
-        await JsRuntime.InvokeAsync<bool>("ChartJsInterop.SetupChart", Json.Serialize(config));
-
-        // Setup humidity chart
-        data = this.Rooms.Values.Select(e => e.Last().Humidity);
-        config = new Dictionary<string, object>()
-        {
-            { "canvasId", "humidity" },
-            { "type", "bar" },
-            { "data", new Dictionary<string, object>() {
-                { "labels", labels},
-                { "datasets", new List<object>()
-                    {
-                        new Dictionary<string, object>()
-                        {
-                            { "label", "Humidity %" },
-                            { "data", data }
-                        }
-                    }
-                }
-            } },
-            { "options", new Dictionary<string, object>() {
-                { "plugins", new Dictionary<string, object>() {
-                    { "colorschemes", new Dictionary<string, object>()
-                    {
-                        { "scheme", "office.Kilter6" }
-                    } }
-                } }
-            } }
-        };
-
-        await JsRuntime.InvokeAsync<bool>("ChartJsInterop.SetupChart", Json.Serialize(config));
+        cancelSubscription = Store.Subscribe(this);
+        Console.WriteLine("Subscribed to environment messages");
+        Console.WriteLine(cancelSubscription);
     }
 
-    protected override async Task OnInitAsync()
+    public virtual void OnCompleted()
     {
-        this.Store.RegisterObserver((sender) => {
-            if (sender.Rooms.Any()) {
-                this.Rooms = sender.Rooms;
-                Console.WriteLine(this.Rooms);
-                this.StateHasChanged();
-            }
-        });
+        Console.WriteLine("Finished all environment updates");
+        cancelSubscription.Dispose();
+    }
 
-        timer = new Timer(15 * 1000 * 60);
-        timer.AutoReset = true;
-        timer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
-        {
-            await this.Store.GetRooms();
-            await this.Store.RefreshAllRooms();
-        });
+    public virtual void OnError(Exception e)
+    {
+        Console.WriteLine("Error getting environment update");
+        Console.WriteLine(e.Message);
+    }
 
-        this.timer.Start();
-
-        await this.Store.GetRooms();
-        await this.Store.RefreshAllRooms();
+    public virtual void OnNext(Dictionary<Room, Environment> rooms)
+    {
+        this.Rooms = rooms;
+        Console.WriteLine(this.Rooms);
+        this.StateHasChanged();
     }
 }

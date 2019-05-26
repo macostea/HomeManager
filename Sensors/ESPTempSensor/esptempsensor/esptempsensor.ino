@@ -7,7 +7,7 @@
 
 #define WLAN_SSID ""
 #define WLAN_PASS ""
-#define CONNECTION_ATTEMPTS 3
+#define CONNECTION_ATTEMPTS 20
 #define SLEEP_TIME_SECONDS 900
 
 #define MQTT_SERVER "192.168.0.11"
@@ -16,6 +16,8 @@
 
 #define DHTPIN D5
 #define DHTTYPE DHT11
+
+#define SENSOR_ID 1
 
 WiFiClient client;
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, 1883, MQTT_USERNAME, MQTT_PASS);
@@ -29,6 +31,7 @@ bool MQTT_connect() {
 
   // Stop if already connected.
   if (mqtt.connected()) {
+    Serial.println("Already connected, don't try to connect again");
     return true;
   }
 
@@ -82,7 +85,7 @@ void deepSleep(int seconds) {
 }
 
 bool publish(const char *type, int sensorId, double temperature, double humidity) {
-  Adafruit_MQTT_Publish publisher = Adafruit_MQTT_Publish(&mqtt, type);
+  Adafruit_MQTT_Publish publisher = Adafruit_MQTT_Publish(&mqtt, type, 1);
 
   String message = "{\"sensorId\":" + String(sensorId) + ", \"environment\":{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}}";
 
@@ -93,11 +96,16 @@ bool publish(const char *type, int sensorId, double temperature, double humidity
   } else {
     Serial.print("Error publishing message");
   }
+
+  return result;
 }
 
 void readAndPublish() {
   if (!mqtt.connected()) {
-    connect();
+    if (!connect()) {
+      Serial.println("Could not connect to MQTT broker, sleeping...");
+      deepSleep(SLEEP_TIME_SECONDS);
+    }
   }
   
   sensors_event_t event;
@@ -124,11 +132,17 @@ void readAndPublish() {
     humidity = event.relative_humidity;
   }
 
-  publish("environment", 1, temperature, humidity);
+  bool result = publish("environment", SENSOR_ID, temperature, humidity);
+  if (!result) {
+    Serial.println("Could not publish MQTT message");
+  }
 }
 
 void setup() {
   Serial.begin(115200);
+  Serial.setTimeout(2000);
+
+  Serial.println("Device wake up");
  
   if (!connect()) {
     Serial.println("Could not connect to MQTT broker, sleeping...");
@@ -136,7 +150,8 @@ void setup() {
   }
   setupSensor();
   readAndPublish();
-  
+
+  Serial.println("Done sending, sleeping...");
   deepSleep(SLEEP_TIME_SECONDS);
 }
 

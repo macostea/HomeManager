@@ -30,10 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Shared\TimeComponent.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 

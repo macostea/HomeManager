@@ -1,0 +1,27 @@
+﻿@using System.Timers
+@using System.Globalization;
+
+<div>@currentTime</div>
+
+
+@functions {
+    private string currentTime { get; set; }
+    private Timer timer;
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+
+        string formatInfo = CultureInfo.GetCultureInfo("ro-RO").DateTimeFormat.FullDateTimePattern;
+
+        timer = new Timer(1 * 1000);
+        timer.AutoReset = true;
+        timer.Elapsed += new ElapsedEventHandler((sender, args) =>
+        {
+            currentTime = DateTime.Now.ToString(formatInfo);
+            this.StateHasChanged();
+        });
+
+        timer.Start();
+    }
+}

@@ -1,0 +1,57 @@
+﻿@implements IObserver<Weather>
+@inject DashboardStore Store
+
+<header class="main-header">
+    <NavLink class="logo" href="" Match="NavLinkMatch.All">
+        <Icon Name="IconName.Dashboard"></Icon> H
+    </NavLink>
+    <div class="top-header">
+        <div class="header-content">
+            <ul class="header-nav">
+                <li class="header-nav-item">
+                    <a href="#">
+                        @if (CurrentCondition != null)
+                        {
+                            <WeatherComponent CurrentCondition="@CurrentCondition" />
+                        }
+                    </a>
+                </li>
+                <li class="header-nav-item">
+                    <a href="#">
+                        <TimeComponent />
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+@functions {
+    public Weather CurrentCondition { get; set; }
+    private IDisposable cancelSubscription;
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+
+        cancelSubscription = Store.Subscribe(this);
+    }
+
+    public virtual void OnCompleted()
+    {
+        Console.WriteLine("Finished all weather updates");
+        cancelSubscription.Dispose();
+    }
+
+    public virtual void OnError(Exception e)
+    {
+        Console.WriteLine("Error getting weather update");
+        Console.WriteLine(e.Message);
+    }
+
+    public virtual void OnNext(Weather weather)
+    {
+        this.CurrentCondition = weather;
+        this.StateHasChanged();
+    }
+}

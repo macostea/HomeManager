@@ -1,0 +1,7 @@
+﻿<div class="weather-component">
+    <i class="owf owf-@CurrentCondition.ConditionCode"></i> <span>@CurrentCondition.Temperature °C</span>
+</div>
+
+@functions {
+    [Parameter] Weather CurrentCondition { get; set; }
+}

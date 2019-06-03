@@ -27,7 +27,7 @@ services:
                   options:
                     gcp-project: home-manager-4516778
         postgres:
-                image: mcostea/timescaledb 
+                image: mcostea/timescaledb:latest-pg10
                 ports:
                         - "5432:5432"
                 environment:

@@ -6,7 +6,7 @@ namespace SensorListener.Model
 {
     class EnvironmentMessage
     {
-        public int SensorId { get; set; }
+        public string SensorId { get; set; }
         public Environment Environment { get; set; }
     }
 }

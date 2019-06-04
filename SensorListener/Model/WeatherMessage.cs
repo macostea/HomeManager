@@ -5,7 +5,7 @@ namespace SensorListener.Model
 {
     public class WeatherMessage
     {
-        public int HomeId { get; set; }
+        public string HomeId { get; set; }
         public Weather Weather { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace SensorService.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             var sensor = await this.repository.GetSensor(id);
             if (sensor == null)
@@ -45,7 +45,7 @@ namespace SensorService.Controllers
 
         // DELETE api/sensor/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var sensor = await this.repository.GetSensor(id);
             if (sensor == null)

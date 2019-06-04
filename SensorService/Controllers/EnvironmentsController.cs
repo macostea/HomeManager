@@ -20,7 +20,7 @@ namespace SensorService.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             var env = await this.homeRepository.GetEnvironment(id);
             if (env == null)
@@ -44,7 +44,7 @@ namespace SensorService.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var env = await this.homeRepository.GetEnvironment(id);
             if (env == null)

@@ -24,7 +24,7 @@ namespace SensorService.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             var room = await this.homeRepository.GetRoom(id);
 
@@ -48,7 +48,7 @@ namespace SensorService.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBySensor([FromQuery(Name = "sensorId")]int sensorId)
+        public async Task<IActionResult> GetBySensor([FromQuery(Name = "sensorId")]string sensorId)
         {
             var room = await this.homeRepository.GetRoomBySensorId(sensorId);
             if (room == null)
@@ -60,7 +60,7 @@ namespace SensorService.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var room = await this.homeRepository.GetRoom(id);
             if (room == null)
@@ -77,7 +77,7 @@ namespace SensorService.Controllers
         }
 
         [HttpGet("{id}/sensor")]
-        public async Task<IActionResult> GetSensors(int id)
+        public async Task<IActionResult> GetSensors(string id)
         {
             var room = await this.homeRepository.GetRoom(id);
             if (room == null)
@@ -89,7 +89,7 @@ namespace SensorService.Controllers
         }
 
         [HttpPost("{id}/sensor")]
-        public async Task<IActionResult> PostSensor(int id, [FromBody]Sensor sensor)
+        public async Task<IActionResult> PostSensor(string id, [FromBody]Sensor sensor)
         {
             var room = await this.homeRepository.GetRoom(id);
             if (room == null)
@@ -106,7 +106,7 @@ namespace SensorService.Controllers
         }
 
         [HttpGet("{id}/environment")]
-        public async Task<IActionResult> GetEnvironment(int id, [FromQuery]DateTime startDate, [FromQuery]DateTime endDate)
+        public async Task<IActionResult> GetEnvironment(string id, [FromQuery]DateTime startDate, [FromQuery]DateTime endDate)
         {
             var invalidDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             if (!ModelState.IsValid || startDate.Equals(endDate) || startDate.Equals(invalidDate) || endDate.Equals(invalidDate))
@@ -125,7 +125,7 @@ namespace SensorService.Controllers
         }
 
         [HttpPost("{id}/sensor/{sensorId}/environment")]
-        public async Task<IActionResult> PostEnvironment(int id, int sensorId, [FromBody]Environment environment)
+        public async Task<IActionResult> PostEnvironment(string id, string sensorId, [FromBody]Environment environment)
         {
             var room = await this.homeRepository.GetRoom(id);
             if (room == null)

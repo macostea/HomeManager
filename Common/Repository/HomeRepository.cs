@@ -25,7 +25,7 @@ namespace Common.Repository
             this.logger = logger;
         }
 
-        public async Task<Environment> AddEnvironmentReading(int roomId, int sensorId, Environment environment)
+        public async Task<Environment> AddEnvironmentReading(string roomId, string sensorId, Environment environment)
         {
             string sql = "INSERT INTO environment (timestamp, temperature, humidity, motion, sensor_id, room_id) VALUES (@Timestamp, @Temperature, @Humidity, @Motion, @SensorId, @RoomId) RETURNING *";
 
@@ -71,7 +71,7 @@ namespace Common.Repository
             return insertedHome;
         }
 
-        public async Task<Room> AddRoom(int homeId, Room room)
+        public async Task<Room> AddRoom(string homeId, Room room)
         {
             var sql = "INSERT INTO rooms (name, home_id) VALUES (@Name, @HomeId) RETURNING *";
 
@@ -91,7 +91,7 @@ namespace Common.Repository
             return insertedRoom;
         }
 
-        public async Task<Sensor> AddSensor(int roomId, Sensor sensor)
+        public async Task<Sensor> AddSensor(string roomId, Sensor sensor)
         {
             var sql = "INSERT INTO sensors (type, room_id) VALUES (@Type, @RoomId) RETURNING *";
 
@@ -111,7 +111,7 @@ namespace Common.Repository
             return insertedSensor;
         }
 
-        public async Task<bool> DeleteEnvironment(int id)
+        public async Task<bool> DeleteEnvironment(string id)
         {
             var sql = "DELETE FROM environment WHERE id = @Id";
 
@@ -120,7 +120,7 @@ namespace Common.Repository
             return affectedRows != 0;
         }
 
-        public async Task<bool> DeleteHome(int id)
+        public async Task<bool> DeleteHome(string id)
         {
             var sql = "DELETE FROM homes WHERE id = @Id";
 
@@ -129,7 +129,7 @@ namespace Common.Repository
             return affectedRows != 0;
         }
 
-        public async Task<bool> DeleteRoom(int id)
+        public async Task<bool> DeleteRoom(string id)
         {
             var sql = "DELETE FROM rooms WHERE id = @Id";
 
@@ -138,7 +138,7 @@ namespace Common.Repository
             return affectedRows != 0;
         }
 
-        public async Task<bool> DeleteSensor(int id)
+        public async Task<bool> DeleteSensor(string id)
         {
             var sql = "DELETE FROM sensors WHERE id = @Id";
 
@@ -219,7 +219,7 @@ namespace Common.Repository
             return affectedRows != 0;
         }
 
-        public async Task<Environment> GetEnvironment(int id)
+        public async Task<Environment> GetEnvironment(string id)
         {
             var sql = "SELECT * FROM environment WHERE id = @Id";
 
@@ -235,7 +235,7 @@ namespace Common.Repository
             return env;
         }
 
-        public async Task<IEnumerable<Environment>> GetEnvironmentReadings(int roomId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<Environment>> GetEnvironmentReadings(string roomId, DateTime startDate, DateTime endDate)
         {
             var sql = "SELECT * FROM environment WHERE room_id = @RoomId AND timestamp >= @StartDate AND timestamp <= @EndDate";
 
@@ -256,7 +256,7 @@ namespace Common.Repository
             return envs;
         }
 
-        public async Task<Home> GetHome(int id)
+        public async Task<Home> GetHome(string id)
         {
             var sql = "SELECT * FROM homes WHERE id = @Id";
 
@@ -288,7 +288,7 @@ namespace Common.Repository
             return homes;
         }
 
-        public async Task<Room> GetRoom(int id)
+        public async Task<Room> GetRoom(string id)
         {
             var sql = "SELECT * FROM rooms WHERE id = @Id";
 
@@ -320,7 +320,7 @@ namespace Common.Repository
             return rooms;
         }
 
-        public async Task<Room> GetRoomBySensorId(int sensorId)
+        public async Task<Room> GetRoomBySensorId(string sensorId)
         {
             var sql = "SELECT rooms.id, name, home_id FROM rooms " +
                 "JOIN sensors " +
@@ -339,7 +339,7 @@ namespace Common.Repository
             return room;
         }
 
-        public async Task<Sensor> GetSensor(int id)
+        public async Task<Sensor> GetSensor(string id)
         {
             var sql = "SELECT * FROM sensors WHERE id = @Id";
 
@@ -371,7 +371,7 @@ namespace Common.Repository
             return sensors;
         }
 
-        public async Task<IEnumerable<Weather>> GetWeather(int homeId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<Weather>> GetWeather(string homeId, DateTime startDate, DateTime endDate)
         {
             var sql = "SELECT * FROM weather WHERE home_id = @HomeId AND timestamp >= @StartDate AND timestamp <= @EndDate";
 
@@ -392,7 +392,7 @@ namespace Common.Repository
             return weather;
         }
 
-        public async Task<Weather> AddWeather(int homeId, Weather weather)
+        public async Task<Weather> AddWeather(string homeId, Weather weather)
         {
             var sql = "INSERT INTO weather (timestamp, temperature, pressure, humidity, minimum_temperature, maximum_temperature, condition_code, condition, icon_url, home_id) " +
                 "VALUES (@Timestamp, @Temperature, @Pressure, @Humidity, @MinimumTemperature, @MaximumTemperature, @ConditionCode, @Condition, @IconURL, @HomeId) " +
@@ -452,7 +452,7 @@ namespace Common.Repository
             return affectedRows != 0;
         }
 
-        public async Task<Weather> GetWeather(int id)
+        public async Task<Weather> GetWeather(string id)
         {
             var sql = "SELECT * FROM weather WHERE id = @Id";
 
@@ -468,7 +468,7 @@ namespace Common.Repository
             return weather;
         }
 
-        public async Task<bool> DeleteWeather(int id)
+        public async Task<bool> DeleteWeather(string id)
         {
             var sql = "DELETE FROM weather WHERE id = @Id";
 

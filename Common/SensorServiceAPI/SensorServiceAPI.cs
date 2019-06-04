@@ -17,7 +17,7 @@ namespace Common.SensorServiceAPI
             this.BaseURL = new Uri(baseURL);
         }
 
-        public async Task<Environment> CreateEnvironmentReading(int sensorId, Environment environment)
+        public async Task<Environment> CreateEnvironmentReading(string sensorId, Environment environment)
         {
             var roomRequest = new RestRequest
             {
@@ -40,7 +40,7 @@ namespace Common.SensorServiceAPI
             return await Utilities.ExecuteRestRequest<Environment>(this.BaseURL, envRequest);
         }
 
-        public async Task<Weather> CreateWeatherReading(int homeId, Weather weather)
+        public async Task<Weather> CreateWeatherReading(string homeId, Weather weather)
         {
             var weatherRequest = new RestRequest
             {

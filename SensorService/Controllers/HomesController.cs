@@ -29,7 +29,7 @@ namespace SensorService.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             var home = await this.homeRepository.GetHome(id);
             if (home == null)
@@ -67,7 +67,7 @@ namespace SensorService.Controllers
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var home = await this.homeRepository.GetHome(id);
             if (home == null)
@@ -86,7 +86,7 @@ namespace SensorService.Controllers
         }
 
         [HttpGet("{id}/room")]
-        public async Task<IActionResult> GetRooms(int id)
+        public async Task<IActionResult> GetRooms(string id)
         {
             var home = await this.homeRepository.GetHome(id);
             if (home == null)
@@ -99,7 +99,7 @@ namespace SensorService.Controllers
         }
 
         [HttpPost("{id}/room")]
-        public async Task<IActionResult> AddRoom(int id, [FromBody]Room room)
+        public async Task<IActionResult> AddRoom(string id, [FromBody]Room room)
         {
             var home = await this.homeRepository.GetHome(id);
             if (home == null)
@@ -115,7 +115,7 @@ namespace SensorService.Controllers
         }
 
         [HttpPost("{id}/weather")]
-        public async Task<IActionResult> AddWeather(int id, [FromBody]Weather weather)
+        public async Task<IActionResult> AddWeather(string id, [FromBody]Weather weather)
         {
             var home = await this.homeRepository.GetHome(id);
             if (home == null)
@@ -132,7 +132,7 @@ namespace SensorService.Controllers
         }
 
         [HttpGet("{id}/weather")]
-        public async Task<IActionResult> GetWeather(int id, [FromQuery]DateTime startDate, [FromQuery]DateTime endDate)
+        public async Task<IActionResult> GetWeather(string id, [FromQuery]DateTime startDate, [FromQuery]DateTime endDate)
         {
             var invalidDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             if (!ModelState.IsValid || startDate.Equals(endDate) || startDate.Equals(invalidDate) || endDate.Equals(invalidDate))

@@ -40,26 +40,26 @@ namespace SensorServiceTests
                 new Sensor()
                 {
                     Name = "test_sensor_1",
-                    Id = 1
+                    Id = "1"
                 },
                 new Sensor()
                 {
                     Name = "test_sensor_2",
-                    Id = 2
+                    Id = "2"
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor(1)).ReturnsAsync(sensors[0]);
-            mockedRepo.Setup(repo => repo.GetSensor(2)).ReturnsAsync(sensors[1]);
+            mockedRepo.Setup(repo => repo.GetSensor("1")).ReturnsAsync(sensors[0]);
+            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync(sensors[1]);
 
             var controller = new SensorsController(mockedRepo.Object);
-            var result = await controller.Get(1);
+            var result = await controller.Get("1");
             var contentResult = (result as OkObjectResult).Value as Sensor;
 
             Assert.NotNull(contentResult);
             Assert.Equal(contentResult, sensors[0]);
 
-            result = await controller.Get(2);
+            result = await controller.Get("2");
             contentResult = (result as OkObjectResult).Value as Sensor;
 
             Assert.NotNull(result);
@@ -76,20 +76,20 @@ namespace SensorServiceTests
                 new Sensor()
                 {
                     Name = "test_sensor_1",
-                    Id = 1
+                    Id = "1"
                 },
                 new Sensor()
                 {
                     Name = "test_sensor_2",
-                    Id = 2
+                    Id = "2"
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor(1)).ReturnsAsync(sensors[0]);
-            mockedRepo.Setup(repo => repo.GetSensor(2)).ReturnsAsync(sensors[1]);
+            mockedRepo.Setup(repo => repo.GetSensor("1")).ReturnsAsync(sensors[0]);
+            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync(sensors[1]);
 
             var controller = new SensorsController(mockedRepo.Object);
-            var result = await controller.Get(3);
+            var result = await controller.Get("3");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -105,7 +105,7 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = 3
+                Id = "3"
             };
 
             mockedRepo.Setup(repo => repo.EditSensor(newSensor)).ReturnsAsync(false);
@@ -126,13 +126,13 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = 3
+                Id = "3"
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor(3)).ReturnsAsync(newSensor);
-            mockedRepo.Setup(repo => repo.DeleteSensor(3)).ReturnsAsync(true);
+            mockedRepo.Setup(repo => repo.GetSensor("3")).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.DeleteSensor("3")).ReturnsAsync(true);
 
-            var result = await controller.Delete(3);
+            var result = await controller.Delete("3");
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -149,12 +149,12 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = 3
+                Id = "3"
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor(2)).ReturnsAsync((Sensor)null);
+            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync((Sensor)null);
 
-            var result = await controller.Delete(2);
+            var result = await controller.Delete("2");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -170,13 +170,13 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = 3
+                Id = "3"
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor(3)).ReturnsAsync(newSensor);
-            mockedRepo.Setup(repo => repo.DeleteSensor(3)).ReturnsAsync(false);
+            mockedRepo.Setup(repo => repo.GetSensor("3")).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.DeleteSensor("3")).ReturnsAsync(false);
 
-            var result = await controller.Delete(3);
+            var result = await controller.Delete("3");
             var contentResult = result as StatusCodeResult;
 
             Assert.NotNull(contentResult);

@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+    name: {{ include "home-manager.fullname" . }}-listener
+    labels:
+{{ include "home-manager.labels" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sensor-listener
+  template:
+    metadata:
+      labels:
+        app: sensor-listener
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+      - name: sensor-listener
+        image: "{{ .Values.sensor_listener.image.repository }}:{{ .Values.sensor_listener.image.tag }}"
+        imagePullPolicy: {{ .Values.sensor_listener.image.pullPolicy }}
+        env:
+        - name: RABBITMQ_HOST
+          value: {{ default "" .Values.rabbitmq.host | quote }}
+        - name: RABBITMQ_USERNAME
+          value: {{ default "" .Values.rabbitmq.username | quote }}
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "home-manager.fullname" . }}
+              key: rabbitmq-password
+        - name: SENSOR_SERVICE_URL
+          value: {{ default "" .Values.sensor_listener.sensor_service_url | quote }}

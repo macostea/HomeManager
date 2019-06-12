@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "home-manager.fullname" . }}-service
+  labels:
+{{ include "home-manager.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: sensor-service
+  template:
+    metadata:
+      labels:
+        app: sensor-service
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+      - name: sensor-service
+        image: "{{ .Values.sensor_service.image.repository }}:{{ .Values.sensor_service.image.tag }}"
+        imagePullPolicy: {{ .Values.sensor_service.image.pullPolicy }}

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-data
+  name: {{ include "home-manager.fullname" . }}-postgres-pvc
 spec:
   accessModes: [{{ .Values.persistence.accessMode | quote }}]
   {{- if .Values.persistence.storageClass }}

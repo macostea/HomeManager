@@ -14,3 +14,6 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size | quote }}
+  selector:
+    matchLabels:
+      data: timescale

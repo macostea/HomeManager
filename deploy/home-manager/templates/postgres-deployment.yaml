@@ -18,6 +18,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      strategy:
+        type: Recreate
       initContainers:
       - name: init-chmod-data
         image: bitnami/minideb:latest

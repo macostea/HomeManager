@@ -22,7 +22,7 @@ spec:
         type: Recreate
       initContainers:
       - name: init-chmod-data
-        image: bitnami/minideb:latest
+        image: debian:latest
         imagePullPolicy: Always
         command:
           - sh
@@ -38,7 +38,7 @@ spec:
           - name: postgres-data
             mountPath: /var/lib/postgresql/data
       containers:
-      - name: nginx
+      - name: postgres
         image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
         imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
         ports:

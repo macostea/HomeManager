@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: rabbitmq
         image: "{{ .Values.rabbitmq.image.repository }}:{{ .Values.rabbitmq.image.tag }}"
         imagePullPolicy: {{ .Values.rabbitmq.image.pullPolicy }}
         ports:

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "home-manager.fullname" . }}-rabbit-service
+  labels:
+{{ include "home-manager.labels" . | indent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 15672
+      name: management
+    - port: 1883
+      name: mqtt
+    - port: 5671
+      name: amqp-ssl
+    - port: 5672
+      name: amqp
+    - port: 8883
+      name: mqtt-secure
+
+  selector:
+    name: {{ include "home-manager.name" . }}-rabbit
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -15,7 +15,7 @@ sensor_listener:
     repository: mcostea/homemanager_sensor-listener
     tag: stable
     pullPolicy: Always
-  sensor_service_url: "http://home_manager_sensor-service"
+  sensor_service_url: "http://home-manager-sensor-service.default.cluster.local"
 
 nginx:
   image:
@@ -34,7 +34,7 @@ rabbitmq:
     repository: mcostea/homemanager_rabbitmq
     tag: stable
     pullPolicy: Always
-  host: "home_manager_rabbitmq"
+  host: "http://home-managerdefault.cluster.local"
   username: "rabbit"
 
 persistence:
@@ -44,7 +44,3 @@ persistence:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
-service:
-  type: ClusterIP
-  port: 80

@@ -1,8 +1,8 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-    name: {{ include "home-manager.fullname" . }}-listener
-    labels:
+  name: {{ include "home-manager.fullname" . }}-listener
+  labels:
 {{ include "home-manager.labels" . | indent 4 }}
 spec:
   replicas: 1

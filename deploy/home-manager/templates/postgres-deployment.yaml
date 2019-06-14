@@ -30,7 +30,7 @@ spec:
           - |
             mkdir -p /var/lib/postgresql/data
             chmod 700 /var/lib/postgresql/data
-            chown -R 70:70 /var/lib/postgresql/data
+            chown -R 1001:1001 /var/lib/postgresql/data
         securityContext:
           runAsUser: 0
         volumeMounts:
@@ -40,6 +40,9 @@ spec:
       - name: postgres
         image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
         imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+        securityContext:
+          runAsUser: 1001
+          runAsGroup: 1001
         ports:
         - name: postgres
           containerPort: 5432

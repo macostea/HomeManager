@@ -19,6 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       initContainers:
+      - name: init-chmod-data
         image: bitnami/minideb:latest
         imagePullPolicy: Always
         command:

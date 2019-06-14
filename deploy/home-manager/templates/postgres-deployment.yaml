@@ -30,8 +30,7 @@ spec:
           - |
             mkdir -p /var/lib/postgresql/data
             chmod 700 /var/lib/postgresql/data
-            find /var/lib/postgresql -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
-              xargs chown -R 70:70
+            chwon -R 70:70 /var/lib/postgresql/data
         securityContext:
           runAsUser: 0
         volumeMounts:

@@ -34,7 +34,7 @@ rabbitmq:
     repository: mcostea/homemanager_rabbitmq
     tag: stable
     pullPolicy: Always
-  host: "http://home-manager.default.svc.cluster.local"
+  host: "home-manager-rabbit-service.default.svc.cluster.local"
   username: "rabbit"
 
 persistence:

@@ -19,5 +19,5 @@ spec:
       name: mqtt-secure
 
   selector:
-    name: {{ include "home-manager.name" . }}-rabbit
+    app: rabbitmq
     app.kubernetes.io/instance: {{ .Release.Name }}

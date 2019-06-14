@@ -20,4 +20,3 @@ spec:
 
   selector:
     app: rabbitmq
-    app.kubernetes.io/instance: {{ .Release.Name }}

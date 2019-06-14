@@ -30,7 +30,7 @@ spec:
           - |
             mkdir -p /var/lib/postgresql/data
             chmod 700 /var/lib/postgresql/data
-            chwon -R 70:70 /var/lib/postgresql/data
+            chown -R 70:70 /var/lib/postgresql/data
         securityContext:
           runAsUser: 0
         volumeMounts:

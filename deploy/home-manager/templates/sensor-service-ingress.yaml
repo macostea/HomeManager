@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "home-manager.fullname" . }}-sensor-service-ingress
+  namespace: kube-system
+spec:
+  rules:
+  - host: sensor-service.mcostea.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "home-manager.fullname" . }}-sensor-service
+          servicePort: web

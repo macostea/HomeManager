@@ -10,4 +10,4 @@ spec:
       - path: /
         backend:
           serviceName: {{ include "home-manager.fullname" . }}-sensor-service
-          servicePort: web
+          servicePort: http

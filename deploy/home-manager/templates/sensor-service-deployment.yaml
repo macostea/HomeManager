@@ -22,3 +22,7 @@ spec:
       - name: sensor-service
         image: "{{ .Values.sensor_service.image.repository }}:{{ .Values.sensor_service.image.tag }}"
         imagePullPolicy: {{ .Values.sensor_service.image.pullPolicy }}
+        ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP

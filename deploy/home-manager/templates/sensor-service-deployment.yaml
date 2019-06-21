@@ -33,4 +33,4 @@ spec:
       volumes:
       - name: production-config-map
         configMap:
-          name: { include "home-manager.fullname" . }}-sensor-config-map
+          name: {{ include "home-manager.fullname" . }}-sensor-config-map

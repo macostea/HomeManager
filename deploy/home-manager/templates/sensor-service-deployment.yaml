@@ -26,3 +26,11 @@ spec:
         - name: web
           containerPort: 80
           protocol: TCP
+        volumeMounts:
+        - name: production-config-map
+          mountPath: /app/appsettings.Production.json
+          subPath: AppConfig.json
+      volumes:
+      - name: production-config-map
+        configMap:
+          name: { include "home-manager.fullname" . }}-sensor-config-map

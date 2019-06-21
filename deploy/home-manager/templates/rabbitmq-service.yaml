@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "home-manager.labels" . | indent 4 }}
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - port: 15672
       name: management
@@ -17,6 +17,5 @@ spec:
       name: amqp
     - port: 8883
       name: mqtt-secure
-
   selector:
     app: rabbitmq

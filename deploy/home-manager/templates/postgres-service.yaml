@@ -11,4 +11,4 @@ spec:
       name: postgres
 
   selector:
-    app: rabbitmq
+    app: postgres

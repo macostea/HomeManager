@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "home-manager.fullname" . }}-sensor
+  labels:
+{{ include "home-manager.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: sensor-service
+  template:
+    metadata:
+      labels:
+        app: sensor-service
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+      - name: sensor-service
+        image: "{{ .Values.sensor_service.image.repository }}:{{ .Values.sensor_service.image.tag }}"
+        imagePullPolicy: {{ .Values.sensor_service.image.pullPolicy }}
+        ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: production-config-map
+          mountPath: /app/appsettings.Production.json
+          subPath: AppConfig.json
+      volumes:
+      - name: production-config-map
+        configMap:
+          name: {{ include "home-manager.fullname" . }}-sensor-config-map

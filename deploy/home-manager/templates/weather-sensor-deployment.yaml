@@ -11,7 +11,6 @@ spec:
         - name: weather-sensor
           image: "{{ .Values.weather.image.repository }}:{{ .Values.weather.image.tag }}"
           imagePullPolicy: {{ .Values.weather.image.pullPolicy }}
-          restartPolicy: OnFailure
           env:
           - name: WEATHER_LOCATION
             value: "{{ .Values.weather.location }}"
@@ -24,3 +23,5 @@ spec:
               secretKeyRef:
                 name: {{ template "home-manager.fullname" . }}
                 key: openweathermap-appid
+        restartPolicy: OnFailure
+

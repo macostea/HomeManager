@@ -17,12 +17,6 @@ sensor_listener:
     pullPolicy: Always
   sensor_service_url: "http://home-manager-sensor-service.default.svc.cluster.local"
 
-nginx:
-  image:
-    repository: mcostea/homemanager_nginx
-    tag: stable
-    pullPolicy: Always
-
 postgres:
   image:
     repository: mcostea/timescaledb
@@ -36,6 +30,12 @@ rabbitmq:
     pullPolicy: Always
   host: "home-manager-rabbit-service.default.svc.cluster.local"
   username: "rabbit"
+
+weather:
+  image:
+    repository: mcostea/homemanager_weather-sensor
+    tag: stable
+    pullPolicy: Always
 
 persistence:
   accessMode: ReadWriteOnce

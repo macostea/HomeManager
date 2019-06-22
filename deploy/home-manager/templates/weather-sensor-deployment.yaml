@@ -9,7 +9,8 @@ spec:
       template:
         containers:
         - name: weather-sensor
-          image: mcostea/homemanager_weather-sensor
+          image: "{{ .Values.weather.image.repository }}:{{ .Values.weather.image.tag }}"
+          imagePullPolicy: {{ .Values.weather.image.pullPolicy }}
           env:
           - name: WEATHER_LOCATION
             value: "{{ .Values.weather.location }}"

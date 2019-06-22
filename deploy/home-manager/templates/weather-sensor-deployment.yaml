@@ -7,21 +7,21 @@ spec:
   jobTemplate:
     spec:
       template:
-        containers:
-        - name: weather-sensor
-          image: "{{ .Values.weather.image.repository }}:{{ .Values.weather.image.tag }}"
-          imagePullPolicy: {{ .Values.weather.image.pullPolicy }}
-          env:
-          - name: WEATHER_LOCATION
-            value: "{{ .Values.weather.location }}"
-          - name: RABBITMQ_HOST
-            value: {{ default "" .Values.rabbitmq.host | quote }}
-          - name: HOME_ID
-            value: "{{ .Values.weather.home_id }}"
-          - name: OPENWEATHERMAP_APPID
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "home-manager.fullname" . }}
-                key: openweathermap-appid
-        restartPolicy: OnFailure
-
+        spec:
+          containers:
+          - name: weather-sensor
+            image: "{{ .Values.weather.image.repository }}:{{ .Values.weather.image.tag }}"
+            imagePullPolicy: {{ .Values.weather.image.pullPolicy }}
+            env:
+            - name: WEATHER_LOCATION
+              value: "{{ .Values.weather.location }}"
+            - name: RABBITMQ_HOST
+              value: {{ default "" .Values.rabbitmq.host | quote }}
+            - name: HOME_ID
+              value: "{{ .Values.weather.home_id }}"
+            - name: OPENWEATHERMAP_APPID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-manager.fullname" . }}
+                  key: openweathermap-appid
+          restartPolicy: OnFailure

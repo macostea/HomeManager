@@ -17,6 +17,13 @@ spec:
               value: "{{ .Values.weather.location }}"
             - name: RABBITMQ_HOST
               value: {{ default "" .Values.rabbitmq.host | quote }}
+            - name: RABBITMQ_USERNAME
+              value: {{ default "" .Values.rabbitmq.username | quote }}
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-manager.fullname" . }}
+                  key: rabbitmq-password
             - name: HOME_ID
               value: "{{ .Values.weather.home_id }}"
             - name: OPENWEATHERMAP_APPID

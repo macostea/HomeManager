@@ -1,0 +1,24 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "home-manager.fullname" . }}-weather-sensor
+spec:
+  schedule: "4 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        containers:
+        - name: weather-sensor
+          image: mcostea/homemanager_weather-sensor
+          env:
+          - name: WEATHER_LOCATION
+            value: "{{ .Values.weather.location }}"
+          - name: RABBITMQ_HOST
+            value: {{ default "" .Values.rabbitmq.host | quote }}
+          - name: HOME_ID
+            value: "{{ .Values.weather.home_id }}"
+          - name: OPENWEATHERMAP_APPID
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "home-manager.fullname" . }}
+                key: openweathermap-appid

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "home-manager.fullname" . }}-sensor-config-map
+data:
+  AppConfig.json: |-
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Debug",
+          "System": "Information",
+          "Microsoft": "Information"
+        }
+      },
+      "ConnectionStrings": { "SensorsContext": "Host=home-manager-postgres-service.default.svc.cluster.local;Port=5432;Username=postgres;Password=password;Database=home-manager" }
+    }

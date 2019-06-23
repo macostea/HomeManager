@@ -12,7 +12,7 @@ COPY ["Common/Common.csproj", "Common/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 RUN dotnet restore "SensorService/SensorService.csproj"
 COPY . .
-WORKDIR "/src/SensorService"
+WORKDIR /src/SensorService
 
 # Build and publish
 FROM build AS publish

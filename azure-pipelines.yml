@@ -6,15 +6,6 @@ pool:
 
 steps:
 - task: Docker@1
-  displayName: 'Build nginx'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerFile: deploy/nginx/Dockerfile
-    imageName: 'mcostea/homemanager_nginx:$(Build.BuildId)'
-    includeLatestTag: true
-
-- task: Docker@1
   displayName: 'Build RabbitMQ'
   inputs:
     containerregistrytype: 'Container Registry'
@@ -80,7 +71,6 @@ steps:
 - bash: |
    # Write your commands here
    # Use the environment variables input below to pass secret variables to this script
-   echo "mcostea/homemanager_nginx" > images.txt
    echo "mcostea/homemanager_rabbitmq" >> images.txt
    echo "mcostea/homemanager_sensor-service" >> images.txt
    echo "mcostea/homemanager_sensor-listener" >> images.txt

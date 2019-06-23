@@ -1,0 +1,34 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "home-manager.fullname" . }}-weather-sensor
+spec:
+  schedule: "4 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: weather-sensor
+            image: "{{ .Values.weather.image.repository }}:{{ .Values.weather.image.tag }}"
+            imagePullPolicy: {{ .Values.weather.image.pullPolicy }}
+            env:
+            - name: WEATHER_LOCATION
+              value: "{{ .Values.weather.location }}"
+            - name: RABBITMQ_HOST
+              value: {{ default "" .Values.rabbitmq.host | quote }}
+            - name: RABBITMQ_USERNAME
+              value: {{ default "" .Values.rabbitmq.username | quote }}
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-manager.fullname" . }}
+                  key: rabbitmq-password
+            - name: HOME_ID
+              value: "{{ .Values.weather.home_id }}"
+            - name: OPENWEATHERMAP_APPID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-manager.fullname" . }}
+                  key: openweathermap-appid
+          restartPolicy: OnFailure

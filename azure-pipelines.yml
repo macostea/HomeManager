@@ -1,88 +1,191 @@
 trigger:
 - master
 
-pool:
-  name: Default
 
-steps:
-- task: Docker@1
-  displayName: 'Build RabbitMQ'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerFile: deploy/rabbitmq/Dockerfile
-    imageName: 'mcostea/homemanager_rabbitmq:$(Build.BuildId)'
-    includeLatestTag: true
+jobs:
+- job: "arm"
+  pool:
+    name: Default
 
-- task: Docker@1
-  displayName: 'Build sensor service'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerFile: SensorService/Dockerfile
-    imageName: 'mcostea/homemanager_sensor-service:$(Build.BuildId)'
-    includeLatestTag: true
-    useDefaultContext: false
-    buildContext: '$(System.DefaultWorkingDirectory)'
+  steps:
+  - task: Docker@1
+    displayName: 'Build RabbitMQ'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: deploy/rabbitmq/Dockerfile
+      imageName: 'mcostea/homemanager_rabbitmq:$(Build.BuildId)-arm'
+      includeLatestTag: true
 
-- task: Docker@1
-  displayName: 'Build sensor service tests'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerFile: SensorService/Dockerfile
-    arguments: '--pull --target testrunner'
-    imageName: 'mcostea/homemanager_sensor-service:test'
-    useDefaultContext: false
-    buildContext: '$(Build.SourcesDirectory)'
+  - task: Docker@1
+    displayName: 'Build sensor service'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: SensorService/Dockerfile
+      imageName: 'mcostea/homemanager_sensor-service:$(Build.BuildId)-arm'
+      includeLatestTag: true
+      useDefaultContext: false
+      buildContext: '$(System.DefaultWorkingDirectory)'
 
-- task: Docker@1
-  displayName: 'Run sensor service tests'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    command: 'Run an image'
-    imageName: 'mcostea/homemanager_sensor-service:test'
-    envVars: 'CODECOV_TOKEN=22560ceb-5679-418d-be9c-8d61262de8ff'
-    runInBackground: false
+  - task: Docker@1
+    displayName: 'Build sensor service tests'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: SensorService/Dockerfile
+      arguments: '--pull --target testrunner'
+      imageName: 'mcostea/homemanager_sensor-service:test'
+      useDefaultContext: false
+      buildContext: '$(Build.SourcesDirectory)'
 
-- task: Docker@1
-  displayName: 'Build sensor listener'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerFile: SensorListener/Dockerfile
-    imageName: 'mcostea/homemanager_sensor-listener:$(Build.BuildId)'
-    includeLatestTag: true
-    useDefaultContext: false
-    buildContext: '$(System.DefaultWorkingDirectory)'
+  - task: Docker@1
+    displayName: 'Run sensor service tests'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Run an image'
+        imageName: 'mcostea/homemanager_sensor-service:test'
+        envVars: 'CODECOV_TOKEN=22560ceb-5679-418d-be9c-8d61262de8ff'
+        runInBackground: false
 
-- task: Docker@1
-  displayName: 'Build weather sensor'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    dockerFile: Sensors/WeatherSensor/Dockerfile
-    imageName: 'mcostea/homemanager_weather-sensor:$(Build.BuildId)'
-    includeLatestTag: true
-    useDefaultContext: false
-    buildContext: '$(System.DefaultWorkingDirectory)'
+  - task: Docker@1
+    displayName: 'Build sensor listener'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        dockerFile: SensorListener/Dockerfile
+        imageName: 'mcostea/homemanager_sensor-listener:$(Build.BuildId)-arm'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
 
-- bash: |
-   # Write your commands here
-   # Use the environment variables input below to pass secret variables to this script
-   echo "mcostea/homemanager_rabbitmq" >> images.txt
-   echo "mcostea/homemanager_sensor-service" >> images.txt
-   echo "mcostea/homemanager_sensor-listener" >> images.txt
-   echo "mcostea/homemanager_weather-sensor" >> images.txt
-  displayName: 'Bash Script'
+  - task: Docker@1
+    displayName: 'Build weather sensor'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        dockerFile: Sensors/WeatherSensor/Dockerfile
+        imageName: 'mcostea/homemanager_weather-sensor:$(Build.BuildId)-arm'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
 
-- task: Docker@1
-  displayName: 'Push images'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    command: 'Push an image'
-    pushMultipleImages: true
-    imageNamesPath: images.txt
+  - bash: |
+      # Write your commands here
+      # Use the environment variables input below to pass secret variables to this script
+      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-arm" >> images.txt
+      echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-arm" >> images.txt
+      echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-arm" >> images.txt
+      echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-arm" >> images.txt
+    displayName: 'Bash Script'
+
+  - task: Docker@1
+    displayName: 'Push images'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Push an image'
+        pushMultipleImages: true
+        imageNamesPath: images.txt
+
+- job: "amd64"
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  steps:
+  - task: Docker@1
+    displayName: 'Build RabbitMQ'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: deploy/rabbitmq/Dockerfile
+      imageName: 'mcostea/homemanager_rabbitmq:$(Build.BuildId)-amd64'
+      includeLatestTag: true
+
+  - task: Docker@1
+    displayName: 'Build sensor service'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: SensorService/Dockerfile
+      imageName: 'mcostea/homemanager_sensor-service:$(Build.BuildId)-amd64'
+      includeLatestTag: true
+      useDefaultContext: false
+      buildContext: '$(System.DefaultWorkingDirectory)'
+
+  - task: Docker@1
+    displayName: 'Build sensor listener'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        dockerFile: SensorListener/Dockerfile
+        imageName: 'mcostea/homemanager_sensor-listener:$(Build.BuildId)-amd64'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
+
+  - task: Docker@1
+    displayName: 'Build weather sensor'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        dockerFile: Sensors/WeatherSensor/Dockerfile
+        imageName: 'mcostea/homemanager_weather-sensor:$(Build.BuildId)-amd64'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
+
+  - bash: |
+      # Write your commands here
+      # Use the environment variables input below to pass secret variables to this script
+      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-amd64" >> images.txt
+      echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-amd64" >> images.txt
+      echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-amd64" >> images.txt
+      echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-amd64" >> images.txt
+    displayName: 'Bash Script'
+
+  - task: Docker@1
+    displayName: 'Push images'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Push an image'
+        pushMultipleImages: true
+        imageNamesPath: images.txt
+
+- job: "manifest"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  dependsOn:
+  - arm
+  - amd64
+  steps:
+  - task: Docker@1
+    displayName: Login
+    inputs:
+      command: login
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+  - bash: |
+      # Write your commands here
+      # Use the environment variables input below to pass secret variables to this script
+      mkdir -p ~/.docker
+      echo '{ "experimental": "enabled" }' > ~/.docker/config.json
+      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-amd64" >> images.txt
+      echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-amd64" >> images.txt
+      echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-amd64" >> images.txt
+      echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-amd64" >> images.txt
+
+      docker --config ~/.docker manifest create mcostea/homemanager_rabbitmq:$(Build.BuildId) mcostea/homemanager_rabbitmq:$(Build.BuildId)-arm mcostea/homemanager_rabbitmq:$(Build.BuildId)-amd64
+      docker --config ~/.docker manifest create mcostea/homemanager_sensor-service:$(Build.BuildId) mcostea/homemanager_sensor-service:$(Build.BuildId)-arm mcostea/homemanager_sensor-service:$(Build.BuildId)-amd64
+      docker --config ~/.docker manifest create mcostea/homemanager_sensor-listener:$(Build.BuildId) mcostea/homemanager_sensor-listener:$(Build.BuildId)-arm mcostea/homemanager_sensor-listener:$(Build.BuildId)-amd64
+      docker --config ~/.docker manifest create mcostea/homemanager_weather-sensor:$(Build.BuildId) mcostea/homemanager_weather-sensor:$(Build.BuildId)-arm mcostea/homemanager_weather-sensor:$(Build.BuildId)-amd64
+
+      docker --config ~/.docker manifest push mcostea/homemanager_rabbitmq:$(Build.BuildId)
+      docker --config ~/.docker manifest push mcostea/homemanager_sensor-service:$(Build.BuildId)
+      docker --config ~/.docker manifest push mcostea/homemanager_sensor-listener:$(Build.BuildId)
+      docker --config ~/.docker manifest push mcostea/homemanager_weather-sensor:$(Build.BuildId)
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))

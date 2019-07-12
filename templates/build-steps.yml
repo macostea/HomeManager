@@ -1,0 +1,88 @@
+parameters:
+  arch: 'amd64'
+  runTests: 'true'
+
+steps:
+  - task: Docker@1
+    displayName: 'Build RabbitMQ'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: deploy/rabbitmq/Dockerfile
+      imageName: 'mcostea/homemanager_rabbitmq:$(Build.BuildId)-${{ parameters.arch }}'
+      includeLatestTag: true
+
+  - task: Docker@1
+    displayName: 'Build sensor service'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: SensorService/Dockerfile
+      imageName: 'mcostea/homemanager_sensor-service:$(Build.BuildId)-${{ parameters.arch }}'
+      includeLatestTag: true
+      useDefaultContext: false
+      buildContext: '$(System.DefaultWorkingDirectory)'
+
+  - task: Docker@1
+    displayName: 'Build sensor service tests'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker Hub'
+      dockerFile: SensorService/Dockerfile
+      arguments: '--pull --target testrunner'
+      imageName: 'mcostea/homemanager_sensor-service:test'
+      useDefaultContext: false
+      buildContext: '$(Build.SourcesDirectory)'
+    condition: eq('${{ parameters.runTests }}', 'true')
+
+  - task: Docker@1
+    displayName: 'Run sensor service tests'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Run an image'
+        imageName: 'mcostea/homemanager_sensor-service:test'
+        envVars: 'CODECOV_TOKEN=22560ceb-5679-418d-be9c-8d61262de8ff'
+        runInBackground: false
+    condition: eq('${{ parameters.runTests }}', 'true')
+
+  - task: Docker@1
+    displayName: 'Build sensor listener'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        dockerFile: SensorListener/Dockerfile
+        imageName: 'mcostea/homemanager_sensor-listener:$(Build.BuildId)-${{ parameters.arch }}'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
+
+  - task: Docker@1
+    displayName: 'Build weather sensor'
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        dockerFile: Sensors/WeatherSensor/Dockerfile
+        imageName: 'mcostea/homemanager_weather-sensor:$(Build.BuildId)-${{ parameters.arch }}'
+        includeLatestTag: true
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
+
+  - bash: |
+      # Write your commands here
+      # Use the environment variables input below to pass secret variables to this script
+      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
+      echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
+      echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
+      echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
+    displayName: 'Bash Script'
+
+  - task: Docker@1
+    displayName: 'Push images'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+        containerregistrytype: 'Container Registry'
+        dockerRegistryEndpoint: 'Docker Hub'
+        command: 'Push an image'
+        pushMultipleImages: true
+        imageNamesPath: images.txt

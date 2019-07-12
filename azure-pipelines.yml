@@ -27,23 +27,11 @@ jobs:
   - arm
   - amd64
   steps:
-  - task: Docker@2
-    displayName: Hub Login
-    inputs:
-      command: login
-      containerRegistry: 'Docker Hub'
-
-  - task: Docker@2
-    displayName: IO Login
-    inputs:
-      command: login
-      containerRegistry: 'Docker IO'
-
   - bash: |
       # Write your commands here
       # Use the environment variables input below to pass secret variables to this script
       mkdir -p ~/.docker
-      echo '{ "experimental": "enabled" }' > ~/.docker/config.json
+      echo '{ "experimental": "enabled", "auths": { "https://index.docker.io/v1/": { "auth": "$(docker_hub_auth)", "email": "" } } }' > ~/.docker/config.json
       echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-amd64" >> images.txt
       echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-amd64" >> images.txt
       echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-amd64" >> images.txt

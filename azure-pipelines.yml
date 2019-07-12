@@ -164,11 +164,19 @@ jobs:
   - amd64
   steps:
   - task: Docker@1
-    displayName: Login
+    displayName: Hub Login
     inputs:
       command: login
       containerregistrytype: 'Container Registry'
       dockerRegistryEndpoint: 'Docker Hub'
+
+  - task: Docker@1
+    displayName: IO Login
+    inputs:
+      command: login
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: 'Docker IO'
+
   - bash: |
       # Write your commands here
       # Use the environment variables input below to pass secret variables to this script

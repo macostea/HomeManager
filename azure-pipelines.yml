@@ -1,160 +1,24 @@
 trigger:
 - master
 
-
 jobs:
 - job: "arm"
   pool:
     name: Default
-
   steps:
-  - task: Docker@1
-    displayName: 'Build RabbitMQ'
-    inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: deploy/rabbitmq/Dockerfile
-      imageName: 'mcostea/homemanager_rabbitmq:$(Build.BuildId)-arm'
-      includeLatestTag: true
-
-  - task: Docker@1
-    displayName: 'Build sensor service'
-    inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: SensorService/Dockerfile
-      imageName: 'mcostea/homemanager_sensor-service:$(Build.BuildId)-arm'
-      includeLatestTag: true
-      useDefaultContext: false
-      buildContext: '$(System.DefaultWorkingDirectory)'
-
-  - task: Docker@1
-    displayName: 'Build sensor service tests'
-    inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: SensorService/Dockerfile
-      arguments: '--pull --target testrunner'
-      imageName: 'mcostea/homemanager_sensor-service:test'
-      useDefaultContext: false
-      buildContext: '$(Build.SourcesDirectory)'
-
-  - task: Docker@1
-    displayName: 'Run sensor service tests'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Run an image'
-        imageName: 'mcostea/homemanager_sensor-service:test'
-        envVars: 'CODECOV_TOKEN=22560ceb-5679-418d-be9c-8d61262de8ff'
-        runInBackground: false
-
-  - task: Docker@1
-    displayName: 'Build sensor listener'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        dockerFile: SensorListener/Dockerfile
-        imageName: 'mcostea/homemanager_sensor-listener:$(Build.BuildId)-arm'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)'
-
-  - task: Docker@1
-    displayName: 'Build weather sensor'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        dockerFile: Sensors/WeatherSensor/Dockerfile
-        imageName: 'mcostea/homemanager_weather-sensor:$(Build.BuildId)-arm'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)'
-
-  - bash: |
-      # Write your commands here
-      # Use the environment variables input below to pass secret variables to this script
-      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-arm" >> images.txt
-      echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-arm" >> images.txt
-      echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-arm" >> images.txt
-      echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-arm" >> images.txt
-    displayName: 'Bash Script'
-
-  - task: Docker@1
-    displayName: 'Push images'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Push an image'
-        pushMultipleImages: true
-        imageNamesPath: images.txt
+  - template: templates/build-steps.yml
+    parameters:
+      arch: "arm"
+      runTests: "false"
 
 - job: "amd64"
   pool:
     vmImage: 'ubuntu-16.04'
-
   steps:
-  - task: Docker@1
-    displayName: 'Build RabbitMQ'
-    inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: deploy/rabbitmq/Dockerfile
-      imageName: 'mcostea/homemanager_rabbitmq:$(Build.BuildId)-amd64'
-      includeLatestTag: true
-
-  - task: Docker@1
-    displayName: 'Build sensor service'
-    inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: SensorService/Dockerfile
-      imageName: 'mcostea/homemanager_sensor-service:$(Build.BuildId)-amd64'
-      includeLatestTag: true
-      useDefaultContext: false
-      buildContext: '$(System.DefaultWorkingDirectory)'
-
-  - task: Docker@1
-    displayName: 'Build sensor listener'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        dockerFile: SensorListener/Dockerfile
-        imageName: 'mcostea/homemanager_sensor-listener:$(Build.BuildId)-amd64'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)'
-
-  - task: Docker@1
-    displayName: 'Build weather sensor'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        dockerFile: Sensors/WeatherSensor/Dockerfile
-        imageName: 'mcostea/homemanager_weather-sensor:$(Build.BuildId)-amd64'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)'
-
-  - bash: |
-      # Write your commands here
-      # Use the environment variables input below to pass secret variables to this script
-      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-amd64" >> images.txt
-      echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-amd64" >> images.txt
-      echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-amd64" >> images.txt
-      echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-amd64" >> images.txt
-    displayName: 'Bash Script'
-
-  - task: Docker@1
-    displayName: 'Push images'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Push an image'
-        pushMultipleImages: true
-        imageNamesPath: images.txt
+  - template: templates/build-steps.yml
+    parameters:
+      arch: "amd64"
+      runTests: "true"
 
 - job: "manifest"
   pool:
@@ -163,19 +27,17 @@ jobs:
   - arm
   - amd64
   steps:
-  - task: Docker@1
+  - task: Docker@2
     displayName: Hub Login
     inputs:
       command: login
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
+      containerRegistry: 'Docker Hub'
 
-  - task: Docker@1
+  - task: Docker@2
     displayName: IO Login
     inputs:
       command: login
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker IO'
+      containerRegistry: 'Docker IO'
 
   - bash: |
       # Write your commands here

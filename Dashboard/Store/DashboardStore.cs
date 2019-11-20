@@ -85,7 +85,7 @@ namespace Dashboard.Store
 
             this.Home = new Home
             {
-                Id = 1,
+                Id = "1",
                 Name = "dorobantilor",
                 City = "Cluj-Napoca",
                 Country = "Romania"

@@ -9,6 +9,8 @@ spec:
   selector:
     matchLabels:
       app: postgres
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -18,8 +20,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      strategy:
-        type: Recreate
       containers:
       - name: postgres
         image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"

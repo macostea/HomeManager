@@ -8,9 +8,9 @@
     private string currentTime { get; set; }
     private Timer timer;
 
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
-        base.OnInit();
+        base.OnInitialized();
 
         string formatInfo = CultureInfo.GetCultureInfo("ro-RO").DateTimeFormat.FullDateTimePattern;
 

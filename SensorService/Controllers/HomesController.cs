@@ -31,13 +31,13 @@ namespace SensorService.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var home = await this.homeRepository.GetHome(id);
+            var home = await this.homeRepository.GetHome(Guid.Parse(id));
             if (home == null)
             {
                 return NotFound();
             }
 
-            return Ok(await this.homeRepository.GetHome(id));
+            return Ok(await this.homeRepository.GetHome(Guid.Parse(id)));
         }
 
         // POST api/<controller>
@@ -69,13 +69,13 @@ namespace SensorService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var home = await this.homeRepository.GetHome(id);
+            var home = await this.homeRepository.GetHome(Guid.Parse(id));
             if (home == null)
             {
                 return NotFound();
             }
 
-            var success = await this.homeRepository.DeleteHome(id);
+            var success = await this.homeRepository.DeleteHome(Guid.Parse(id));
 
             if (!success)
             {
@@ -88,7 +88,7 @@ namespace SensorService.Controllers
         [HttpGet("{id}/room")]
         public async Task<IActionResult> GetRooms(string id)
         {
-            var home = await this.homeRepository.GetHome(id);
+            var home = await this.homeRepository.GetHome(Guid.Parse(id));
             if (home == null)
             {
                 return NotFound();
@@ -101,12 +101,12 @@ namespace SensorService.Controllers
         [HttpPost("{id}/room")]
         public async Task<IActionResult> AddRoom(string id, [FromBody]Room room)
         {
-            var home = await this.homeRepository.GetHome(id);
+            var home = await this.homeRepository.GetHome(Guid.Parse(id));
             if (home == null)
             {
                 return NotFound();
             }
-            var insertedRoom = await this.homeRepository.AddRoom(id, room);
+            var insertedRoom = await this.homeRepository.AddRoom(Guid.Parse(id), room);
             if (insertedRoom == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -117,12 +117,12 @@ namespace SensorService.Controllers
         [HttpPost("{id}/weather")]
         public async Task<IActionResult> AddWeather(string id, [FromBody]Weather weather)
         {
-            var home = await this.homeRepository.GetHome(id);
+            var home = await this.homeRepository.GetHome(Guid.Parse(id));
             if (home == null)
             {
                 return NotFound();
             }
-            var insertedWeather = await this.homeRepository.AddWeather(id, weather);
+            var insertedWeather = await this.homeRepository.AddWeather(Guid.Parse(id), weather);
             if (insertedWeather == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -140,13 +140,13 @@ namespace SensorService.Controllers
                 return BadRequest();
             }
 
-            var home = await this.homeRepository.GetHome(id);
+            var home = await this.homeRepository.GetHome(Guid.Parse(id));
             if (home == null)
             {
                 return NotFound();
             }
 
-            var weather = await this.homeRepository.GetWeather(id, startDate, endDate);
+            var weather = await this.homeRepository.GetWeather(Guid.Parse(id), startDate, endDate);
             return Ok(weather);
         }
     }

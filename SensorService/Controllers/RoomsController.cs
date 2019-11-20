@@ -26,7 +26,7 @@ namespace SensorService.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var room = await this.homeRepository.GetRoom(id);
+            var room = await this.homeRepository.GetRoom(Guid.Parse(id));
 
             if (room == null)
             {
@@ -50,7 +50,7 @@ namespace SensorService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBySensor([FromQuery(Name = "sensorId")]string sensorId)
         {
-            var room = await this.homeRepository.GetRoomBySensorId(sensorId);
+            var room = await this.homeRepository.GetRoomBySensorId(Guid.Parse(sensorId));
             if (room == null)
             {
                 return NotFound();
@@ -62,12 +62,12 @@ namespace SensorService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var room = await this.homeRepository.GetRoom(id);
+            var room = await this.homeRepository.GetRoom(Guid.Parse(id));
             if (room == null)
             {
                 return NotFound();
             }
-            var success = await this.homeRepository.DeleteRoom(id);
+            var success = await this.homeRepository.DeleteRoom(Guid.Parse(id));
             if (!success)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -79,7 +79,7 @@ namespace SensorService.Controllers
         [HttpGet("{id}/sensor")]
         public async Task<IActionResult> GetSensors(string id)
         {
-            var room = await this.homeRepository.GetRoom(id);
+            var room = await this.homeRepository.GetRoom(Guid.Parse(id));
             if (room == null)
             {
                 return NotFound();
@@ -91,12 +91,12 @@ namespace SensorService.Controllers
         [HttpPost("{id}/sensor")]
         public async Task<IActionResult> PostSensor(string id, [FromBody]Sensor sensor)
         {
-            var room = await this.homeRepository.GetRoom(id);
+            var room = await this.homeRepository.GetRoom(Guid.Parse(id));
             if (room == null)
             {
                 return NotFound();
             }
-            var insertedSensor = await this.homeRepository.AddSensor(id, sensor);
+            var insertedSensor = await this.homeRepository.AddSensor(Guid.Parse(id), sensor);
             if (insertedSensor == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -114,32 +114,32 @@ namespace SensorService.Controllers
                 return BadRequest();
             }
 
-            var room = await this.homeRepository.GetRoom(id);
+            var room = await this.homeRepository.GetRoom(Guid.Parse(id));
             if (room == null)
             {
                 return NotFound();
             }
 
-            var envs = await this.homeRepository.GetEnvironmentReadings(id, startDate, endDate);
+            var envs = await this.homeRepository.GetEnvironmentReadings(Guid.Parse(id), startDate, endDate);
             return Ok(envs);
         }
 
         [HttpPost("{id}/sensor/{sensorId}/environment")]
         public async Task<IActionResult> PostEnvironment(string id, string sensorId, [FromBody]Environment environment)
         {
-            var room = await this.homeRepository.GetRoom(id);
+            var room = await this.homeRepository.GetRoom(Guid.Parse(id));
             if (room == null)
             {
                 return NotFound();
             }
 
-            var sensor = await this.homeRepository.GetSensor(sensorId);
+            var sensor = await this.homeRepository.GetSensor(Guid.Parse(sensorId));
             if (sensor == null)
             {
                 return NotFound();
             }
 
-            var insertedEnvironment = await this.homeRepository.AddEnvironmentReading(id, sensorId, environment);
+            var insertedEnvironment = await this.homeRepository.AddEnvironmentReading(Guid.Parse(id), Guid.Parse(sensorId), environment);
             if (insertedEnvironment == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);

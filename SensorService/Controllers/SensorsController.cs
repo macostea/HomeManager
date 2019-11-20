@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Common.Repository;
@@ -35,7 +35,7 @@ namespace SensorService.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var sensor = await this.repository.GetSensor(id);
+            var sensor = await this.repository.GetSensor(Guid.Parse(id));
             if (sensor == null)
             {
                 return NotFound();
@@ -47,13 +47,13 @@ namespace SensorService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var sensor = await this.repository.GetSensor(id);
+            var sensor = await this.repository.GetSensor(Guid.Parse(id));
             if (sensor == null)
             {
                 return NotFound();
             }
 
-            var resultOk = await this.repository.DeleteSensor(id);
+            var resultOk = await this.repository.DeleteSensor(Guid.Parse(id));
             if (!resultOk)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);

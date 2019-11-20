@@ -23,14 +23,14 @@ namespace SensorServiceTests
             {
                 new Room()
                 {
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(rooms[0]);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(rooms[0]);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.Get("1");
+            var result = await controller.Get("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value as Room;
 
             Assert.NotNull(contentResult);
@@ -46,14 +46,14 @@ namespace SensorServiceTests
             {
                 new Room()
                 {
-                    Id = ""
+                    Id = Guid.Empty
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(rooms[0]);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(rooms[0]);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.Get("2");
+            var result = await controller.Get("00000000-0000-0000-0000-000000000002");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -102,10 +102,10 @@ namespace SensorServiceTests
             {
                 Name = "test_room_1"
             };
-            mockedRepo.Setup(repo => repo.GetRoomBySensorId("1")).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetRoomBySensorId(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.GetBySensor("1");
+            var result = await controller.GetBySensor("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -120,10 +120,10 @@ namespace SensorServiceTests
             {
                 Name = "test_room_1"
             };
-            mockedRepo.Setup(repo => repo.GetRoomBySensorId("1")).ReturnsAsync((Room)null);
+            mockedRepo.Setup(repo => repo.GetRoomBySensorId(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync((Room)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.GetBySensor("1");
+            var result = await controller.GetBySensor("00000000-0000-0000-0000-000000000001");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -137,11 +137,11 @@ namespace SensorServiceTests
             {
                 Name = "test_room_1"
             };
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.DeleteRoom("1")).ReturnsAsync(true);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.DeleteRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(true);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.Delete("1");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -156,11 +156,11 @@ namespace SensorServiceTests
             {
                 Name = "test_room_1"
             };
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync((Room)null);
-            mockedRepo.Setup(repo => repo.DeleteRoom("1")).ReturnsAsync(false);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync((Room)null);
+            mockedRepo.Setup(repo => repo.DeleteRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(false);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.Delete("1");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000001");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -174,11 +174,11 @@ namespace SensorServiceTests
             {
                 Name = "test_room_1"
             };
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.DeleteRoom("1")).ReturnsAsync(false);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.DeleteRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(false);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.Delete("1");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as StatusCodeResult).StatusCode;
 
             Assert.Equal(StatusCodes.Status500InternalServerError, contentResult);
@@ -192,23 +192,23 @@ namespace SensorServiceTests
             {
                 new Sensor()
                 {
-                    Id = "0"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
                 },
                 new Sensor()
                 {
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 }
             };
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.GetSensors(room)).ReturnsAsync(sensors);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.GetSensors("1");
+            var result = await controller.GetSensors("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -223,23 +223,23 @@ namespace SensorServiceTests
             {
                 new Sensor()
                 {
-                    Id = "0"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
                 },
                 new Sensor()
                 {
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 }
             };
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
-            mockedRepo.Setup(repo => repo.GetRoom("2")).ReturnsAsync((Room)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Room)null);
             mockedRepo.Setup(repo => repo.GetSensors(room)).ReturnsAsync(sensors);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.GetSensors("2");
+            var result = await controller.GetSensors("00000000-0000-0000-0000-000000000002");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -251,19 +251,19 @@ namespace SensorServiceTests
             var mockedRepo = new Mock<IHomeRepository>();
             var sensor = new Sensor()
             {
-                Id = "0"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.AddSensor("1", sensor)).ReturnsAsync(sensor);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.AddSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"), sensor)).ReturnsAsync(sensor);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.PostSensor("1", sensor);
+            var result = await controller.PostSensor("00000000-0000-0000-0000-000000000001", sensor);
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -276,19 +276,19 @@ namespace SensorServiceTests
             var mockedRepo = new Mock<IHomeRepository>();
             var sensor = new Sensor()
             {
-                Id = ""
+                Id = Guid.Empty
             };
 
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
-            mockedRepo.Setup(repo => repo.GetRoom("2")).ReturnsAsync((Room)null);
-            mockedRepo.Setup(repo => repo.AddSensor("2", sensor)).ReturnsAsync((Sensor)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Room)null);
+            mockedRepo.Setup(repo => repo.AddSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"), sensor)).ReturnsAsync((Sensor)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.PostSensor("2", sensor);
+            var result = await controller.PostSensor("00000000-0000-0000-0000-000000000002", sensor);
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -300,19 +300,19 @@ namespace SensorServiceTests
             var mockedRepo = new Mock<IHomeRepository>();
             var sensor = new Sensor()
             {
-                Id = "0"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.AddSensor("1", sensor)).ReturnsAsync((Sensor)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.AddSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"), sensor)).ReturnsAsync((Sensor)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.PostSensor("1", sensor);
+            var result = await controller.PostSensor("00000000-0000-0000-0000-000000000001", sensor);
             var contentResult = (result as StatusCodeResult).StatusCode;
 
             Assert.Equal(StatusCodes.Status500InternalServerError, contentResult);
@@ -326,28 +326,28 @@ namespace SensorServiceTests
             {
                 new Environment()
                 {
-                    Id = "0"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
                 },
                 new Environment()
                 {
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 }
             };
 
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             var startDate = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
             var endDate = DateTime.UtcNow;
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.GetEnvironmentReadings("1", startDate, endDate)).ReturnsAsync(environment);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetEnvironmentReadings(Guid.Parse("00000000-0000-0000-0000-000000000001"), startDate, endDate)).ReturnsAsync(environment);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.GetEnvironment("1", startDate, endDate);
+            var result = await controller.GetEnvironment("00000000-0000-0000-0000-000000000001", startDate, endDate);
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -362,17 +362,17 @@ namespace SensorServiceTests
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             var startDate = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
             var endDate = DateTime.UtcNow;
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync((Room)null);
-            mockedRepo.Setup(repo => repo.GetEnvironmentReadings("1", startDate, endDate)).ReturnsAsync((List<Environment>)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync((Room)null);
+            mockedRepo.Setup(repo => repo.GetEnvironmentReadings(Guid.Parse("00000000-0000-0000-0000-000000000001"), startDate, endDate)).ReturnsAsync((List<Environment>)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.GetEnvironment("1", startDate, endDate);
+            var result = await controller.GetEnvironment("00000000-0000-0000-0000-000000000001", startDate, endDate);
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -386,17 +386,17 @@ namespace SensorServiceTests
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             var startDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var endDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.GetEnvironmentReadings("1", startDate, endDate)).ReturnsAsync((List<Environment>)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetEnvironmentReadings(Guid.Parse("00000000-0000-0000-0000-000000000001"), startDate, endDate)).ReturnsAsync((List<Environment>)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.GetEnvironment("1", startDate, endDate);
+            var result = await controller.GetEnvironment("00000000-0000-0000-0000-000000000001", startDate, endDate);
             var contentResult = result as BadRequestResult;
 
             Assert.NotNull(contentResult);
@@ -410,25 +410,25 @@ namespace SensorServiceTests
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             var sensor = new Sensor()
             {
-                Id = "2"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
             };
 
             var environment = new Environment()
             {
-                Id = "0"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync(sensor);
-            mockedRepo.Setup(repo => repo.AddEnvironmentReading("1", "2", environment)).ReturnsAsync(environment);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
+            mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync(environment);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.PostEnvironment("1", "2", environment);
+            var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -443,25 +443,25 @@ namespace SensorServiceTests
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             var sensor = new Sensor()
             {
-                Id = "2"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
             };
 
             var environment = new Environment()
             {
-                Id = "0"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync((Room)null);
-            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync(sensor);
-            mockedRepo.Setup(repo => repo.AddEnvironmentReading("1", "2", environment)).ReturnsAsync((Environment)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync((Room)null);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
+            mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync((Environment)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.PostEnvironment("1", "2", environment);
+            var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -475,25 +475,25 @@ namespace SensorServiceTests
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             var sensor = new Sensor()
             {
-                Id = "2"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
             };
 
             var environment = new Environment()
             {
-                Id = "0"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync((Sensor)null);
-            mockedRepo.Setup(repo => repo.AddEnvironmentReading("1", "2", environment)).ReturnsAsync((Environment)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Sensor)null);
+            mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync((Environment)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.PostEnvironment("1", "2", environment);
+            var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -507,25 +507,25 @@ namespace SensorServiceTests
             var room = new Room()
             {
                 Name = "test_room_1",
-                Id = "1"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             var sensor = new Sensor()
             {
-                Id = "2"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
             };
 
             var environment = new Environment()
             {
-                Id = "0"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
-            mockedRepo.Setup(repo => repo.GetRoom("1")).ReturnsAsync(room);
-            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync(sensor);
-            mockedRepo.Setup(repo => repo.AddEnvironmentReading("1", "2", environment)).ReturnsAsync((Environment)null);
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
+            mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync((Environment)null);
 
             var controller = new RoomsController(mockedRepo.Object);
-            var result = await controller.PostEnvironment("1", "2", environment);
+            var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = (result as StatusCodeResult).StatusCode;
 
             Assert.Equal(StatusCodes.Status500InternalServerError, contentResult);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Entities;
@@ -40,26 +41,26 @@ namespace SensorServiceTests
                 new Sensor()
                 {
                     Name = "test_sensor_1",
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 },
                 new Sensor()
                 {
                     Name = "test_sensor_2",
-                    Id = "2"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor("1")).ReturnsAsync(sensors[0]);
-            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync(sensors[1]);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(sensors[0]);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensors[1]);
 
             var controller = new SensorsController(mockedRepo.Object);
-            var result = await controller.Get("1");
+            var result = await controller.Get("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value as Sensor;
 
             Assert.NotNull(contentResult);
             Assert.Equal(contentResult, sensors[0]);
 
-            result = await controller.Get("2");
+            result = await controller.Get("00000000-0000-0000-0000-000000000002");
             contentResult = (result as OkObjectResult).Value as Sensor;
 
             Assert.NotNull(result);
@@ -76,20 +77,20 @@ namespace SensorServiceTests
                 new Sensor()
                 {
                     Name = "test_sensor_1",
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 },
                 new Sensor()
                 {
                     Name = "test_sensor_2",
-                    Id = "2"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor("1")).ReturnsAsync(sensors[0]);
-            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync(sensors[1]);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(sensors[0]);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensors[1]);
 
             var controller = new SensorsController(mockedRepo.Object);
-            var result = await controller.Get("3");
+            var result = await controller.Get("00000000-0000-0000-0000-000000000003");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -105,7 +106,7 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
             mockedRepo.Setup(repo => repo.EditSensor(newSensor)).ReturnsAsync(false);
@@ -126,13 +127,13 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor("3")).ReturnsAsync(newSensor);
-            mockedRepo.Setup(repo => repo.DeleteSensor("3")).ReturnsAsync(true);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.DeleteSensor(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(true);
 
-            var result = await controller.Delete("3");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000003");
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -149,12 +150,12 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor("2")).ReturnsAsync((Sensor)null);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Sensor)null);
 
-            var result = await controller.Delete("2");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000002");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -170,13 +171,13 @@ namespace SensorServiceTests
             var newSensor = new Sensor()
             {
                 Name = "test_sensor_1",
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
-            mockedRepo.Setup(repo => repo.GetSensor("3")).ReturnsAsync(newSensor);
-            mockedRepo.Setup(repo => repo.DeleteSensor("3")).ReturnsAsync(false);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.DeleteSensor(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(false);
 
-            var result = await controller.Delete("3");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000003");
             var contentResult = result as StatusCodeResult;
 
             Assert.NotNull(contentResult);

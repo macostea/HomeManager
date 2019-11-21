@@ -8,7 +8,6 @@ namespace SensorListener.Listeners
 {
     public class NewSensorListener : ISensorListener
     {
-
         public string Topic { get; }
         public string SensorServiceURL { get; }
         protected SensorServiceAPI Client { get; }

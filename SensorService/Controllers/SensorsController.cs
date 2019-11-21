@@ -19,6 +19,19 @@ namespace SensorService.Controllers
             this.repository = repository;
         }
 
+        // POST api/sensor
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody]Sensor sensor)
+        {
+            var insertedSensor = await this.repository.AddSensor(sensor);
+            if (insertedSensor == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(insertedSensor);
+        }
+
         // PUT api/sensor
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]Sensor sensor)

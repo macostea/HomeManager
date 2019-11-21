@@ -31,6 +31,7 @@ namespace Common.Repository
 
         Task<IEnumerable<Sensor>> GetSensors(Room room);
         Task<Sensor> AddSensor(Guid roomId, Sensor sensor);
+        Task<Sensor> AddSensor(Sensor sensor);
 
         Task<bool> EditWeather(Weather weather);
 

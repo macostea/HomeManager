@@ -13,8 +13,12 @@ namespace HomeManager.SensorListener
                                                      Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
                                                      Environment.GetEnvironmentVariable("RABBITMQ_EXCHANGE") ?? "SensorsExchange",
                                                      Environment.GetEnvironmentVariable("RABBITMQ_QUEUE") ?? "SensorsQueue");
-            client.RegisterListener(new SensorReadingListener("environment", Environment.GetEnvironmentVariable("SENSOR_SERVICE_URL") ?? "localhost"));
-            client.RegisterListener(new WeatherReadingListener("weather", Environment.GetEnvironmentVariable("SENSOR_SERVICE_URL") ?? "localhost"));
+
+            var sensorServiceURL = Environment.GetEnvironmentVariable("SENSOR_SERVICE_URL") ?? "localhost";
+
+            client.RegisterListener(new SensorReadingListener("environment", sensorServiceURL));
+            client.RegisterListener(new WeatherReadingListener("weather", sensorServiceURL));
+            client.RegisterListener(new NewSensorListener("sensor", sensorServiceURL));
             
             client.Start();
         }

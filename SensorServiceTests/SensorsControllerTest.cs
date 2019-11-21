@@ -183,5 +183,50 @@ namespace SensorServiceTests
             Assert.NotNull(contentResult);
             Assert.Equal(StatusCodes.Status500InternalServerError, contentResult.StatusCode);
         }
+
+        [Fact]
+        public async Task Post_WhenCalled_ReturnsOk()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var controller = new SensorsController(mockedRepo.Object);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                Type = "test_type"
+            };
+
+            mockedRepo.Setup(repo => repo.AddSensor(newSensor)).ReturnsAsync(newSensor);
+
+            var result = await controller.Post(newSensor);
+            var contentResult = (result as OkObjectResult).Value;
+
+            Assert.NotNull(contentResult);
+            Assert.Equal(newSensor, contentResult);
+        }
+
+        [Fact]
+        public async Task Post_WhenCalled_AddFaild_ReturnsServerError()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var controller = new SensorsController(mockedRepo.Object);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                Type = "test_type"
+            };
+
+            mockedRepo.Setup(repo => repo.AddSensor(newSensor)).ReturnsAsync((Sensor)null);
+
+            var result = await controller.Post(newSensor);
+            var contentResult = (result as StatusCodeResult).StatusCode;
+
+            Assert.Equal(StatusCodes.Status500InternalServerError, contentResult);
+        }
     }
 }

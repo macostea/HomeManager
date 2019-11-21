@@ -111,6 +111,24 @@ namespace Common.Repository
             return insertedSensor;
         }
 
+        public async Task<Sensor> AddSensor(Sensor sensor)
+        {
+            var sql = "INSERT INTO sensors (type) VALUES (@Type) RETURNING *";
+            Sensor insertedSensor = null;
+            try
+            {
+                insertedSensor = await dbConnection.QueryFirstAsync<Sensor>(sql, new
+                {
+                    sensor.Type
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert sensor");
+            }
+
+            return insertedSensor;
+        }
+
         public async Task<bool> DeleteEnvironment(Guid id)
         {
             var sql = "DELETE FROM environment WHERE id = @Id";

@@ -39,50 +39,48 @@ namespace SensorListener.QueueClients
                 UserName = this.username,
                 Password = this.password
             };
-            using (var connection = factory.CreateConnection())
+            using var connection = factory.CreateConnection();
+            using (var channel = connection.CreateModel())
             {
-                using (var channel = connection.CreateModel())
+                channel.ExchangeDeclare(exchange: exchangeName, type: "topic", durable: false);
+
+                channel.QueueDeclare(queue: this.queueName,
+                                        durable: false,
+                                        exclusive: false,
+                                        autoDelete: false,
+                                        arguments: null);
+
+                foreach (var listener in this.listeners)
                 {
-                    channel.ExchangeDeclare(exchange: exchangeName, type: "topic", durable: false);
-
-                    channel.QueueDeclare(queue: this.queueName,
-                                            durable: false,
-                                            exclusive: false,
-                                            autoDelete: false,
-                                            arguments: null);
-
-                    foreach (var listener in this.listeners)
-                    {
-                        channel.QueueBind(queueName, exchangeName, listener.Key);
-                    }
-
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body);
-
-                        var listenerFound = this.listeners.TryGetValue(ea.RoutingKey, out ISensorListener listener);
-
-                        if (listenerFound)
-                        {
-                            listener.ProcessMessageAsync(message);
-                        }
-                    };
-
-                    channel.BasicConsume(queue: queueName,
-                                 autoAck: true,
-                                 consumer: consumer);
-
-                    var autoResetEvent = new AutoResetEvent(false);
-                    Console.CancelKeyPress += (sender, eventArgs) =>
-                    {
-                        eventArgs.Cancel = true;
-                        autoResetEvent.Set();
-                    };
-
-                    autoResetEvent.WaitOne();
+                    channel.QueueBind(queueName, exchangeName, listener.Key);
                 }
+
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += (model, ea) =>
+                {
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+
+                    var listenerFound = this.listeners.TryGetValue(ea.RoutingKey, out ISensorListener listener);
+
+                    if (listenerFound)
+                    {
+                        listener.ProcessMessageAsync(message);
+                    }
+                };
+
+                channel.BasicConsume(queue: queueName,
+                             autoAck: true,
+                             consumer: consumer);
+
+                var autoResetEvent = new AutoResetEvent(false);
+                Console.CancelKeyPress += (sender, eventArgs) =>
+                {
+                    eventArgs.Cancel = true;
+                    autoResetEvent.Set();
+                };
+
+                autoResetEvent.WaitOne();
             }
         }
 

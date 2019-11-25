@@ -69,19 +69,6 @@ namespace SensorListener.QueueClients
                             listener.ProcessMessageAsync(message);
                         }
                     };
-
-                    channel.BasicConsume(queue: queueName,
-                                 autoAck: true,
-                                 consumer: consumer);
-
-                    var autoResetEvent = new AutoResetEvent(false);
-                    Console.CancelKeyPress += (sender, eventArgs) =>
-                    {
-                        eventArgs.Cancel = true;
-                        autoResetEvent.Set();
-                    };
-
-                    autoResetEvent.WaitOne();
                 }
             }
         }

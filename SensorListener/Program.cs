@@ -1,4 +1,7 @@
-﻿using SensorListener.Listeners;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using SensorListener;
+using SensorListener.Listeners;
 using SensorListener.QueueClients;
 using System;
 
@@ -21,6 +24,12 @@ namespace HomeManager.SensorListener
             client.RegisterListener(new NewSensorListener("sensor", sensorServiceURL));
             
             client.Start();
+
+            CreateWebHostBuilder(args).Build().Run();
         }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }

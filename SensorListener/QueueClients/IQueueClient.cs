@@ -2,13 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SensorListener.QueueClients
 {
     interface IQueueClient
     {
         void RegisterListener(ISensorListener listener);
-        void Start();
+        Task PublishAsync(string topic, string message);
+        void StartListening();
         void Stop();
     }
 }

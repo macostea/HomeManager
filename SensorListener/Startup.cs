@@ -24,16 +24,13 @@ namespace SensorListener
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(option => option.EnableEndpointRouting = false)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddNewtonsoftJson();
-
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SensorService API", Version = "v1" });
             });
 
-            services.AddHostedService((provider) =>
+            services.AddSingleton((provider) =>
             {
                 RabbitMQClient client = new RabbitMQClient(Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
                                          Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
@@ -46,6 +43,8 @@ namespace SensorListener
                 client.RegisterListener(new SensorReadingListener("environment", sensorServiceURL));
                 client.RegisterListener(new WeatherReadingListener("weather", sensorServiceURL));
                 client.RegisterListener(new NewSensorListener("sensor", sensorServiceURL));
+
+                client.StartListening();
 
                 return client;
             });
@@ -70,7 +69,10 @@ namespace SensorListener
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SensorListener API v1");
             });
-            app.UseMvcWithDefaultRoute();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

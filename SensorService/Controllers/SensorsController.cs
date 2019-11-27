@@ -4,6 +4,8 @@ using Domain.Entities;
 using Common.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Common.SensorListenerAPI;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,10 +15,12 @@ namespace SensorService.Controllers
     public class SensorsController : Controller
     {
         private readonly IHomeRepository repository;
+        private readonly IConfiguration configuration;
 
-        public SensorsController(IHomeRepository repository)
+        public SensorsController(IHomeRepository repository, IConfiguration config)
         {
             this.repository = repository;
+            this.configuration = config;
         }
 
         // POST api/sensor
@@ -42,7 +46,11 @@ namespace SensorService.Controllers
                 return BadRequest();
             }
 
-            return Ok(sensor);
+            Console.WriteLine(configuration.ToString());
+            var listenerClient = new SensorListenerAPI(configuration["SENSOR_LISTENER"]);
+            var s = await listenerClient.NotifySensorUpdate(sensor);
+
+            return Ok(s);
         }
 
         [HttpGet("{id}")]
@@ -54,6 +62,13 @@ namespace SensorService.Controllers
                 return NotFound();
             }
             return Ok(sensor);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var sensors = await this.repository.GetSensors();
+            return Ok(sensors);
         }
 
         // DELETE api/sensor/5

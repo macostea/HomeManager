@@ -24,30 +24,27 @@ namespace SensorListener
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            RabbitMQClient client = new RabbitMQClient(Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
+                         Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
+                         Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
+                         Environment.GetEnvironmentVariable("RABBITMQ_EXCHANGE") ?? "SensorsExchange",
+                         Environment.GetEnvironmentVariable("RABBITMQ_QUEUE") ?? "SensorsQueue");
+
+            var sensorServiceURL = Environment.GetEnvironmentVariable("SENSOR_SERVICE_URL") ?? "localhost";
+
+            client.RegisterListener(new SensorReadingListener("environment", sensorServiceURL));
+            client.RegisterListener(new WeatherReadingListener("weather", sensorServiceURL));
+            client.RegisterListener(new NewSensorListener("sensor", sensorServiceURL));
+
+            client.StartListening();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SensorService API", Version = "v1" });
             });
 
-            services.AddSingleton((provider) =>
-            {
-                RabbitMQClient client = new RabbitMQClient(Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
-                                         Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
-                                         Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
-                                         Environment.GetEnvironmentVariable("RABBITMQ_EXCHANGE") ?? "SensorsExchange",
-                                         Environment.GetEnvironmentVariable("RABBITMQ_QUEUE") ?? "SensorsQueue");
-
-                var sensorServiceURL = Environment.GetEnvironmentVariable("SENSOR_SERVICE_URL") ?? "localhost";
-
-                client.RegisterListener(new SensorReadingListener("environment", sensorServiceURL));
-                client.RegisterListener(new WeatherReadingListener("weather", sensorServiceURL));
-                client.RegisterListener(new NewSensorListener("sensor", sensorServiceURL));
-
-                client.StartListening();
-
-                return client;
-            });
+            services.AddSingleton(client);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

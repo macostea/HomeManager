@@ -171,7 +171,7 @@ namespace Common.Repository
             	"timestamp = @Timestamp, " +
             	"temperature = @Temperature, " +
             	"humidity = @Humidity, " +
-            	"motion = @Motion, " +
+            	"motion = @Motion " +
             	"WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
@@ -210,7 +210,7 @@ namespace Common.Repository
         public async Task<bool> EditRoom(Room room)
         {
             var sql = "UPDATE rooms SET " +
-                "name = @Name, " +
+                "name = @Name " +
                 "WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
@@ -225,7 +225,7 @@ namespace Common.Repository
         public async Task<bool> EditSensor(Sensor sensor)
         {
             var sql = "UPDATE sensors SET " +
-                "type = @Type, " +
+                "type = @Type " +
                 "WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
@@ -382,6 +382,24 @@ namespace Common.Repository
             {
                 sensors = await dbConnection.QueryAsync<Sensor>(sql, new { RoomId = room.Id });
             } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get sensors");
+            }
+
+            return sensors;
+        }
+
+
+        public async Task<IEnumerable<Sensor>> GetSensors()
+        {
+            var sql = "SELECT * FROM sensors";
+
+            IEnumerable<Sensor> sensors = null;
+            try
+            {
+                sensors = await dbConnection.QueryAsync<Sensor>(sql);
+            }
+            catch (InvalidOperationException e)
             {
                 this.logger.LogError(e, "Cannot get sensors");
             }

@@ -403,7 +403,6 @@ namespace Common.Repository
             return sensors;
         }
 
-
         public async Task<IEnumerable<Sensor>> GetSensors()
         {
             var sql = "SELECT * FROM sensors";

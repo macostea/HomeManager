@@ -4,6 +4,8 @@ using Domain.Entities;
 using Common.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Common.SensorListenerAPI;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,10 +15,31 @@ namespace SensorService.Controllers
     public class SensorsController : Controller
     {
         private readonly IHomeRepository repository;
+        private readonly ISensorListenerAPI listenerClient;
 
-        public SensorsController(IHomeRepository repository)
+        public SensorsController(IHomeRepository repository, ISensorListenerAPI listenerClient)
         {
             this.repository = repository;
+            this.listenerClient = listenerClient;
+        }
+
+        // POST api/sensor
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody]Sensor sensor)
+        {
+            var insertedSensor = await this.repository.AddSensor(sensor);
+            if (insertedSensor == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            if (insertedSensor.RoomId != Guid.Empty)
+            {
+                var s = await listenerClient.NotifySensorUpdate(insertedSensor);
+                return Ok(s);
+            }
+
+            return Ok(insertedSensor);
         }
 
         // PUT api/sensor
@@ -29,7 +52,9 @@ namespace SensorService.Controllers
                 return BadRequest();
             }
 
-            return Ok(sensor);
+            var s = await this.listenerClient.NotifySensorUpdate(sensor);
+
+            return Ok(s);
         }
 
         [HttpGet("{id}")]
@@ -41,6 +66,13 @@ namespace SensorService.Controllers
                 return NotFound();
             }
             return Ok(sensor);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var sensors = await this.repository.GetSensors();
+            return Ok(sensors);
         }
 
         // DELETE api/sensor/5

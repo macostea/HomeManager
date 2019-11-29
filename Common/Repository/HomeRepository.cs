@@ -111,6 +111,36 @@ namespace Common.Repository
             return insertedSensor;
         }
 
+        public async Task<Sensor> AddSensor(Sensor sensor)
+        {
+            var sql = "INSERT INTO sensors (type) VALUES (@Type) RETURNING *";
+            object param = new
+            {
+                sensor.Type
+            };
+
+            if (sensor.Id != Guid.Empty)
+            {
+                sql = "INSERT INTO sensors (id, type) VALUES (@Id, @Type) ON CONFLICT (id) DO UPDATE SET type = @Type RETURNING *";
+                param = new
+                {
+                    sensor.Id,
+                    sensor.Type
+                };
+            }
+
+            Sensor insertedSensor = null;
+            try
+            {
+                insertedSensor = await dbConnection.QueryFirstAsync<Sensor>(sql, param);
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert sensor");
+            }
+
+            return insertedSensor;
+        }
+
         public async Task<bool> DeleteEnvironment(Guid id)
         {
             var sql = "DELETE FROM environment WHERE id = @Id";
@@ -153,7 +183,7 @@ namespace Common.Repository
             	"timestamp = @Timestamp, " +
             	"temperature = @Temperature, " +
             	"humidity = @Humidity, " +
-            	"motion = @Motion, " +
+            	"motion = @Motion " +
             	"WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
@@ -192,7 +222,7 @@ namespace Common.Repository
         public async Task<bool> EditRoom(Room room)
         {
             var sql = "UPDATE rooms SET " +
-                "name = @Name, " +
+                "name = @Name " +
                 "WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
@@ -208,12 +238,14 @@ namespace Common.Repository
         {
             var sql = "UPDATE sensors SET " +
                 "type = @Type, " +
+                "room_id = @RoomId " +
                 "WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
             {
                 sensor.Type,
-                sensor.Id
+                sensor.Id,
+                sensor.RoomId
             });
 
             return affectedRows != 0;
@@ -364,6 +396,23 @@ namespace Common.Repository
             {
                 sensors = await dbConnection.QueryAsync<Sensor>(sql, new { RoomId = room.Id });
             } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get sensors");
+            }
+
+            return sensors;
+        }
+
+        public async Task<IEnumerable<Sensor>> GetSensors()
+        {
+            var sql = "SELECT * FROM sensors";
+
+            IEnumerable<Sensor> sensors = null;
+            try
+            {
+                sensors = await dbConnection.QueryAsync<Sensor>(sql);
+            }
+            catch (InvalidOperationException e)
             {
                 this.logger.LogError(e, "Cannot get sensors");
             }

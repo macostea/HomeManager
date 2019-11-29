@@ -6,6 +6,6 @@ namespace Common.SensorListenerAPI
 {
     public interface ISensorListenerAPI
     {
-        public Task<Sensor> NotifySensorUpdate(Sensor sensor);
+        Task<Sensor> NotifySensorUpdate(Sensor sensor);
     }
 }

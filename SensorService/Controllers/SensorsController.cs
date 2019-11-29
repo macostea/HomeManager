@@ -15,16 +15,12 @@ namespace SensorService.Controllers
     public class SensorsController : Controller
     {
         private readonly IHomeRepository repository;
-        private readonly IConfiguration configuration;
+        private readonly ISensorListenerAPI listenerClient;
 
-        private readonly SensorListenerAPI listenerClient;
-
-        public SensorsController(IHomeRepository repository, IConfiguration config)
+        public SensorsController(IHomeRepository repository, ISensorListenerAPI listenerClient)
         {
             this.repository = repository;
-            this.configuration = config;
-
-            this.listenerClient = new SensorListenerAPI(configuration["SENSOR_LISTENER"]);
+            this.listenerClient = listenerClient;
         }
 
         // POST api/sensor

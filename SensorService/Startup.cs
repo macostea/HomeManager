@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Common.Mappings;
 using Common.Repository;
+using Common.SensorListenerAPI;
 using Dapper;
 using Dapper.FluentMap;
 using Microsoft.AspNetCore.Builder;
@@ -38,6 +39,7 @@ namespace SensorService
             var connectionString = Configuration.GetConnectionString("SensorsContext");
             services.AddTransient<IDbConnection>(s => new NpgsqlConnection(connectionString));
             services.AddTransient<IHomeRepository, HomeRepository>();
+            services.AddTransient<ISensorListenerAPI>(s => new SensorListenerAPI(this.Configuration["SENSOR_LISTENER"]));
 
             FluentMapper.Initialize(config =>
             {

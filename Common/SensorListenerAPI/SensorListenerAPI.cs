@@ -7,7 +7,7 @@ using Environment = Domain.Entities.Environment;
 
 namespace Common.SensorListenerAPI
 {
-    public class SensorListenerAPI
+    public class SensorListenerAPI : ISensorListenerAPI
     {
         public Uri BaseURL { get; }
 

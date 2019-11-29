@@ -8,11 +8,22 @@ using SensorService.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Common.SensorListenerAPI;
 
 namespace SensorServiceTests
 {
     public class SensorsControllerTest
     {
+        private ISensorListenerAPI listenerClient;
+        public SensorsControllerTest()
+        {
+            var mockedSensorListenerClient = new Mock<ISensorListenerAPI>();
+            mockedSensorListenerClient.Setup(listener => listener.NotifySensorUpdate(It.IsAny<Sensor>())).ReturnsAsync(new Sensor());
+
+            this.listenerClient = mockedSensorListenerClient.Object;
+        }
+
         [Fact]
         public async Task Put_WhenCalled_ReturnsOkResult()
         {
@@ -22,8 +33,11 @@ namespace SensorServiceTests
                 Name = "test_sensor_1"
             };
 
+            var mockedSensorListenerClient = new Mock<ISensorListenerAPI>();
+            mockedSensorListenerClient.Setup(listener => listener.NotifySensorUpdate(sensor)).ReturnsAsync(sensor);
+
             mockedRepo.Setup(repo => repo.EditSensor(sensor)).ReturnsAsync(true);
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, mockedSensorListenerClient.Object);
             var result = await controller.Put(sensor);
             var contentResult = (result as OkObjectResult).Value;
 
@@ -53,7 +67,7 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(sensors[0]);
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensors[1]);
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
             var result = await controller.Get("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value as Sensor;
 
@@ -89,7 +103,7 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(sensors[0]);
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensors[1]);
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
             var result = await controller.Get("00000000-0000-0000-0000-000000000003");
             var contentResult = result as NotFoundResult;
 
@@ -101,7 +115,7 @@ namespace SensorServiceTests
         {
             var mockedRepo = new Mock<IHomeRepository>();
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
 
             var newSensor = new Sensor()
             {
@@ -122,7 +136,7 @@ namespace SensorServiceTests
         {
             var mockedRepo = new Mock<IHomeRepository>();
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
 
             var newSensor = new Sensor()
             {
@@ -145,7 +159,7 @@ namespace SensorServiceTests
         {
             var mockedRepo = new Mock<IHomeRepository>();
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
 
             var newSensor = new Sensor()
             {
@@ -166,7 +180,7 @@ namespace SensorServiceTests
         {
             var mockedRepo = new Mock<IHomeRepository>();
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
 
             var newSensor = new Sensor()
             {
@@ -189,7 +203,7 @@ namespace SensorServiceTests
         {
             var mockedRepo = new Mock<IHomeRepository>();
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
 
             var newSensor = new Sensor()
             {
@@ -212,7 +226,7 @@ namespace SensorServiceTests
         {
             var mockedRepo = new Mock<IHomeRepository>();
 
-            var controller = new SensorsController(mockedRepo.Object);
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
 
             var newSensor = new Sensor()
             {

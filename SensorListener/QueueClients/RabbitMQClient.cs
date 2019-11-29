@@ -80,7 +80,6 @@ namespace SensorListener.QueueClients
                 {
                     Console.WriteLine(e.StackTrace);
                 }
-
             };
 
             listenChannel.BasicConsume(queue: queueName,

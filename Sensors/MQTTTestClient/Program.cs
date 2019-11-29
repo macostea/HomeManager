@@ -9,7 +9,7 @@ namespace MQTTTestClient
 {
     class Program
     {
-        enum States { New, WaitingResponse, Registered };
+        enum States { New, WaitingResponse, Registered }
 
         static States State;
 

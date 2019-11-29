@@ -97,13 +97,6 @@ namespace SensorListener.QueueClients
 
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: topic,
-                                    durable: false,
-                                    exclusive: false,
-                                    autoDelete: false,
-                                    arguments: null);
-
-                channel.QueueBind(topic, this.exchangeName, topic);
                 var body = Encoding.UTF8.GetBytes(message);
 
                 channel.BasicPublish(this.exchangeName, topic, null, body);

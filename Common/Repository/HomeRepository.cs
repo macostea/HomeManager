@@ -114,13 +114,25 @@ namespace Common.Repository
         public async Task<Sensor> AddSensor(Sensor sensor)
         {
             var sql = "INSERT INTO sensors (type) VALUES (@Type) RETURNING *";
+            object param = new
+            {
+                sensor.Type
+            };
+
+            if (sensor.Id != Guid.Empty)
+            {
+                sql = "INSERT INTO sensors (id, type) VALUES (@Id, @Type) ON CONFLICT (id) DO UPDATE SET type = @Type RETURNING *";
+                param = new
+                {
+                    sensor.Id,
+                    sensor.Type
+                };
+            }
+
             Sensor insertedSensor = null;
             try
             {
-                insertedSensor = await dbConnection.QueryFirstAsync<Sensor>(sql, new
-                {
-                    sensor.Type
-                });
+                insertedSensor = await dbConnection.QueryFirstAsync<Sensor>(sql, param);
             } catch (InvalidOperationException e)
             {
                 this.logger.LogError(e, "Cannot insert sensor");
@@ -225,13 +237,15 @@ namespace Common.Repository
         public async Task<bool> EditSensor(Sensor sensor)
         {
             var sql = "UPDATE sensors SET " +
-                "type = @Type " +
+                "type = @Type, " +
+                "room_id = @RoomId " +
                 "WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new
             {
                 sensor.Type,
-                sensor.Id
+                sensor.Id,
+                sensor.RoomId
             });
 
             return affectedRows != 0;

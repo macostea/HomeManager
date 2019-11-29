@@ -42,6 +42,7 @@ namespace SensorService
             FluentMapper.Initialize(config =>
             {
                 config.AddMap(new WeatherMap());
+                config.AddMap(new SensorMap());
             });
             SqlMapper.AddTypeHandler(new UriTypeHandler());
 

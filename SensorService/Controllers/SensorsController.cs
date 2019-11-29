@@ -17,10 +17,14 @@ namespace SensorService.Controllers
         private readonly IHomeRepository repository;
         private readonly IConfiguration configuration;
 
+        private readonly SensorListenerAPI listenerClient;
+
         public SensorsController(IHomeRepository repository, IConfiguration config)
         {
             this.repository = repository;
             this.configuration = config;
+
+            this.listenerClient = new SensorListenerAPI(configuration["SENSOR_LISTENER"]);
         }
 
         // POST api/sensor
@@ -31,6 +35,12 @@ namespace SensorService.Controllers
             if (insertedSensor == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            if (insertedSensor.RoomId != Guid.Empty)
+            {
+                var s = await listenerClient.NotifySensorUpdate(insertedSensor);
+                return Ok(s);
             }
 
             return Ok(insertedSensor);
@@ -46,9 +56,7 @@ namespace SensorService.Controllers
                 return BadRequest();
             }
 
-            Console.WriteLine(configuration.ToString());
-            var listenerClient = new SensorListenerAPI(configuration["SENSOR_LISTENER"]);
-            var s = await listenerClient.NotifySensorUpdate(sensor);
+            var s = await this.listenerClient.NotifySensorUpdate(sensor);
 
             return Ok(s);
         }

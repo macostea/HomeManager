@@ -2,7 +2,7 @@
 
 namespace SensorListener.Listeners
 {
-    interface ISensorListener
+    public interface ISensorListener
     {
         string Topic { get; }
         Task<bool> ProcessMessageAsync(string message);

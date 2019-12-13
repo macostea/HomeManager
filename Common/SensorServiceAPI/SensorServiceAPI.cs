@@ -52,5 +52,17 @@ namespace Common.SensorServiceAPI
 
             return await Utilities.ExecuteRestRequest<Weather>(this.BaseURL, weatherRequest);
         }
+
+        public async Task<Sensor> CreateSensor(Sensor sensor)
+        {
+            var newSensorRequest = new RestRequest
+            {
+                Resource = "api/sensors"
+            };
+            newSensorRequest.Method = Method.POST;
+            newSensorRequest.AddJsonBody(sensor);
+
+            return await Utilities.ExecuteRestRequest<Sensor>(this.BaseURL, newSensorRequest);
+        }
     }
 }

@@ -30,9 +30,9 @@
     public Weather CurrentCondition { get; set; }
     private IDisposable cancelSubscription;
 
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
-        base.OnInit();
+        base.OnInitialized();
 
         cancelSubscription = Store.Subscribe(this);
     }

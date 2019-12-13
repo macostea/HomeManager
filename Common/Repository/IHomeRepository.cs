@@ -13,40 +13,42 @@ namespace Common.Repository
         Task<Home> AddHome(Home home);
         Task<bool> EditHome(Home home);
 
-        Task<Home> GetHome(string id);
-        Task<bool> DeleteHome(string id);
+        Task<Home> GetHome(Guid id);
+        Task<bool> DeleteHome(Guid id);
 
         Task<IEnumerable<Room>> GetRooms(Home home);
-        Task<Room> AddRoom(string homeId, Room room);
+        Task<Room> AddRoom(Guid homeId, Room room);
 
-        Task<IEnumerable<Weather>> GetWeather(string homeId, DateTime startDate, DateTime endDate);
-        Task<Weather> AddWeather(string homeId, Weather weather);
+        Task<IEnumerable<Weather>> GetWeather(Guid homeId, DateTime startDate, DateTime endDate);
+        Task<Weather> AddWeather(Guid homeId, Weather weather);
 
         Task<bool> EditRoom(Room room);
 
-        Task<Room> GetRoom(string id);
-        Task<bool> DeleteRoom(string id);
+        Task<Room> GetRoom(Guid id);
+        Task<bool> DeleteRoom(Guid id);
 
-        Task<Room> GetRoomBySensorId(string sensorId);
+        Task<Room> GetRoomBySensorId(Guid sensorId);
 
         Task<IEnumerable<Sensor>> GetSensors(Room room);
-        Task<Sensor> AddSensor(string roomId, Sensor sensor);
+        Task<IEnumerable<Sensor>> GetSensors();
+        Task<Sensor> AddSensor(Guid roomId, Sensor sensor);
+        Task<Sensor> AddSensor(Sensor sensor);
 
         Task<bool> EditWeather(Weather weather);
 
-        Task<Weather> GetWeather(string id);
-        Task<bool> DeleteWeather(string id);
+        Task<Weather> GetWeather(Guid id);
+        Task<bool> DeleteWeather(Guid id);
 
-        Task<IEnumerable<Environment>> GetEnvironmentReadings(string roomId, DateTime startDate, DateTime endDate);
-        Task<Environment> AddEnvironmentReading(string roomId, string sensorId, Environment environment);
+        Task<IEnumerable<Environment>> GetEnvironmentReadings(Guid roomId, DateTime startDate, DateTime endDate);
+        Task<Environment> AddEnvironmentReading(Guid roomId, Guid sensorId, Environment environment);
 
         Task<bool> EditSensor(Sensor sensor);
 
-        Task<Sensor> GetSensor(string id);
-        Task<bool> DeleteSensor(string id);
+        Task<Sensor> GetSensor(Guid id);
+        Task<bool> DeleteSensor(Guid id);
 
         Task<bool> EditEnvironment(Environment environment);
-        Task<Environment> GetEnvironment(string id);
-        Task<bool> DeleteEnvironment(string id);
+        Task<Environment> GetEnvironment(Guid id);
+        Task<bool> DeleteEnvironment(Guid id);
     }
 }

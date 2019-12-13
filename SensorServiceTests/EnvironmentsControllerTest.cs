@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Repository;
 using Domain.Entities;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SensorService.Controllers;
 using Xunit;
+using Environment = Domain.Entities.Environment;
 
 namespace SensorServiceTests
 {
@@ -18,7 +20,7 @@ namespace SensorServiceTests
             var mockedRepo = new Mock<IHomeRepository>();
             var environment = new Environment()
             {
-                Id = "0"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
             mockedRepo.Setup(repo => repo.EditEnvironment(environment)).ReturnsAsync(true);
@@ -39,25 +41,25 @@ namespace SensorServiceTests
             {
                 new Environment()
                 {
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 },
                 new Environment()
                 {
-                    Id = "2"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetEnvironment("1")).ReturnsAsync(envs[0]);
-            mockedRepo.Setup(repo => repo.GetEnvironment("2")).ReturnsAsync(envs[1]);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(envs[0]);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(envs[1]);
 
             var controller = new EnvironmentsController(mockedRepo.Object);
-            var result = await controller.Get("1");
+            var result = await controller.Get("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value as Environment;
 
             Assert.NotNull(contentResult);
             Assert.Equal(contentResult, envs[0]);
 
-            result = await controller.Get("2");
+            result = await controller.Get("00000000-0000-0000-0000-000000000002");
             contentResult = (result as OkObjectResult).Value as Environment;
 
             Assert.NotNull(result);
@@ -73,20 +75,20 @@ namespace SensorServiceTests
             {
                 new Environment()
                 {
-                    Id = "1"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 },
                 new Environment()
                 {
-                    Id = "2"
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
                 }
             };
 
-            mockedRepo.Setup(repo => repo.GetEnvironment("1")).ReturnsAsync(envs[0]);
-            mockedRepo.Setup(repo => repo.GetEnvironment("2")).ReturnsAsync(envs[1]);
-            mockedRepo.Setup(repo => repo.GetEnvironment("3")).ReturnsAsync((Environment)null);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(envs[0]);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(envs[1]);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync((Environment)null);
 
             var controller = new EnvironmentsController(mockedRepo.Object);
-            var result = await controller.Get("3");
+            var result = await controller.Get("00000000-0000-0000-0000-000000000003");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -101,7 +103,7 @@ namespace SensorServiceTests
 
             var newEnv = new Environment()
             {
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
             mockedRepo.Setup(repo => repo.EditEnvironment(newEnv)).ReturnsAsync(false);
@@ -121,13 +123,13 @@ namespace SensorServiceTests
 
             var newEnv = new Environment()
             {
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
-            mockedRepo.Setup(repo => repo.GetEnvironment("3")).ReturnsAsync(newEnv);
-            mockedRepo.Setup(repo => repo.DeleteEnvironment("3")).ReturnsAsync(true);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(newEnv);
+            mockedRepo.Setup(repo => repo.DeleteEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(true);
 
-            var result = await controller.Delete("3");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000003");
             var contentResult = (result as OkObjectResult).Value;
 
             Assert.NotNull(contentResult);
@@ -143,12 +145,12 @@ namespace SensorServiceTests
 
             var newEnv = new Environment()
             {
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
-            mockedRepo.Setup(repo => repo.GetEnvironment("2")).ReturnsAsync((Environment)null);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Environment)null);
 
-            var result = await controller.Delete("2");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000002");
             var contentResult = result as NotFoundResult;
 
             Assert.NotNull(contentResult);
@@ -163,13 +165,13 @@ namespace SensorServiceTests
 
             var newEnv = new Environment()
             {
-                Id = "3"
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
             };
 
-            mockedRepo.Setup(repo => repo.GetEnvironment("3")).ReturnsAsync(newEnv);
-            mockedRepo.Setup(repo => repo.DeleteEnvironment("3")).ReturnsAsync(false);
+            mockedRepo.Setup(repo => repo.GetEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(newEnv);
+            mockedRepo.Setup(repo => repo.DeleteEnvironment(Guid.Parse("00000000-0000-0000-0000-000000000003"))).ReturnsAsync(false);
 
-            var result = await controller.Delete("3");
+            var result = await controller.Delete("00000000-0000-0000-0000-000000000003");
             var contentResult = result as StatusCodeResult;
 
             Assert.NotNull(contentResult);

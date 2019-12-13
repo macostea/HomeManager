@@ -31,5 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mappings\" />
+    <Folder Include="SensorListenerAPI\" />
   </ItemGroup>
 </Project>

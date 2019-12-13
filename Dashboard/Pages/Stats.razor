@@ -33,7 +33,7 @@
     private Dictionary<Room, Environment> Rooms;
     private IDisposable cancelSubscription;
 
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
         cancelSubscription = Store.Subscribe(this);
         Console.WriteLine("Subscribed to environment messages");

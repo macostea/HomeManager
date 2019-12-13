@@ -20,6 +20,7 @@ spec:
     {{- end }}
       strategy:
         type: Recreate
+        rollingUpdate: null
       containers:
       - name: postgres
         image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"

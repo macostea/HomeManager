@@ -40,6 +40,7 @@ weather:
 persistence:
   accessMode: ReadWriteOnce
   size: 25Gi
+  storageClass: -
 
 imagePullSecrets: []
 nameOverride: ""

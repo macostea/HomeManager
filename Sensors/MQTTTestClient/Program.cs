@@ -33,7 +33,7 @@ namespace MQTTTestClient
                     if (State == States.WaitingResponse)
                     {
                         var msgObj = JsonConvert.DeserializeObject<Dictionary<string, object>>(Encoding.UTF8.GetString(msg.Payload));
-                        roomId = (string)msgObj["RoomId"];
+                        roomId = (string)msgObj["RoomId"]; // Not used yet as we can get the roomId from SensorService based on sensorId
                         State = States.Registered;
                     }
                 }
@@ -52,7 +52,7 @@ namespace MQTTTestClient
                         break;
 
                     case States.Registered:
-                        await PublishEnvironment(client, id, roomId).ConfigureAwait(false);
+                        await PublishEnvironment(client, id).ConfigureAwait(false);
                         break;
 
                     default:
@@ -78,7 +78,7 @@ namespace MQTTTestClient
             await client.PublishAsync(message, MqttQualityOfService.ExactlyOnce);
         }
 
-        static async Task PublishEnvironment(IMqttClient client, string id, string roomId)
+        static async Task PublishEnvironment(IMqttClient client, string id)
         {
             Random rnd = new Random();
             var env = new Dictionary<string, object>

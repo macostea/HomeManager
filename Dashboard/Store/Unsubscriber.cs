@@ -7,8 +7,8 @@ namespace Dashboard.Store
 {
     internal class Unsubscriber<T> : IDisposable
     {
-        private IList<IObserver<T>> observers;
-        private IObserver<T> observer;
+        private readonly IList<IObserver<T>> observers;
+        private readonly IObserver<T> observer;
 
         internal Unsubscriber(IList<IObserver<T>> observers, IObserver<T> observer)
         {

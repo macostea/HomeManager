@@ -10,7 +10,7 @@ namespace SensorListener.Controllers
     [Route("api/[controller]")]
     public class SensorsController : Controller
     {
-        private RabbitMQClient rabbitMQClient;
+        private readonly RabbitMQClient rabbitMQClient;
 
         public SensorsController(RabbitMQClient rabbitMQClient)
         {

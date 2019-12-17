@@ -468,7 +468,7 @@ namespace Common.Repository
                 this.logger.LogError(e, "Cannot insert weather");
             }
 
-            return weather;
+            return insertedWeather;
         }
 
         public async Task<bool> EditWeather(Weather weather)

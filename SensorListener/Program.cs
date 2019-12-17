@@ -7,7 +7,7 @@ using System;
 
 namespace HomeManager.SensorListener
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

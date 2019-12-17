@@ -23,7 +23,7 @@ namespace SensorServiceTests
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
             };
 
-            mockedRepo.Setup(repo => repo.EditEnvironment(environment)).ReturnsAsync(false);
+            mockedRepo.Setup(repo => repo.EditEnvironment(environment)).ReturnsAsync(true);
             var controller = new EnvironmentsController(mockedRepo.Object);
             var result = await controller.Put(environment);
             var contentResult = (result as OkObjectResult).Value;

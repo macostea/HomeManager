@@ -172,7 +172,7 @@ namespace Dashboard.Store
 
             foreach (var room in this.RoomList)
             {
-                await this.GetEnvironment(room);
+                await this.GetEnvironment(room).ConfigureAwait(false);
                 latestEnvironment[room] = this.Rooms[room].Last();
             }
 
@@ -223,10 +223,10 @@ namespace Dashboard.Store
         {
             WeatherTimer = new Timer(1 * 1000 * 60 * 60);
             WeatherTimer.AutoReset = true;
-            WeatherTimer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
+            WeatherTimer.Elapsed += async (sender, args) =>
             {
-                await this.GetWeather();
-            });
+                await this.GetWeather().ConfigureAwait(false);
+            };
 
             WeatherTimer.Start();
         }
@@ -235,11 +235,11 @@ namespace Dashboard.Store
         {
             EnvironmentTimer = new Timer(15 * 1000 * 60);
             EnvironmentTimer.AutoReset = true;
-            EnvironmentTimer.Elapsed += new ElapsedEventHandler(async (sender, args) =>
+            EnvironmentTimer.Elapsed += async (sender, args) =>
             {
-                await this.GetRooms();
-                await this.RefreshAllRooms();
-            });
+                await this.GetRooms().ConfigureAwait(false);
+                await this.RefreshAllRooms().ConfigureAwait(false);
+            };
 
             EnvironmentTimer.Start();
         }

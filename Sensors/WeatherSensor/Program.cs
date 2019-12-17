@@ -27,7 +27,7 @@ namespace WeatherSensor
 
             var messageDict = new Dictionary<string, object>
             {
-                ["homeId"] = Convert.ToInt32(Environment.GetEnvironmentVariable("HOME_ID")),
+                ["homeId"] = Environment.GetEnvironmentVariable("HOME_ID"),
                 ["weather"] = response
             };
 

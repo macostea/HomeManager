@@ -33,7 +33,7 @@ namespace MQTTTestClient
                     if (State == States.WaitingResponse)
                     {
                         var msgObj = JsonConvert.DeserializeObject<Dictionary<string, object>>(Encoding.UTF8.GetString(msg.Payload));
-                        roomId = (string)msgObj["RoomId"];
+                        roomId = (string)msgObj["RoomId"]; // Not used yet as we can get the roomId from SensorService based on sensorId
                         State = States.Registered;
                     }
                 }
@@ -44,7 +44,7 @@ namespace MQTTTestClient
                 switch (State)
                 {
                     case States.New:
-                        await PublishNewSensorMessage(client, id);
+                        await PublishNewSensorMessage(client, id).ConfigureAwait(false);
                         State = States.WaitingResponse;
                         break;
 
@@ -52,10 +52,14 @@ namespace MQTTTestClient
                         break;
 
                     case States.Registered:
-                        await PublishEnvironment(client, id, roomId);
+                        await PublishEnvironment(client, id).ConfigureAwait(false);
                         break;
+
+                    default:
+                        throw new NotImplementedException("Invalid state");
+                        
                 }
-                await Task.Delay(200);
+                await Task.Delay(200).ConfigureAwait(false);
             }
         }
 
@@ -74,7 +78,7 @@ namespace MQTTTestClient
             await client.PublishAsync(message, MqttQualityOfService.ExactlyOnce);
         }
 
-        static async Task PublishEnvironment(IMqttClient client, string id, string roomId)
+        static async Task PublishEnvironment(IMqttClient client, string id)
         {
             Random rnd = new Random();
             var env = new Dictionary<string, object>
@@ -91,7 +95,7 @@ namespace MQTTTestClient
             var message = new MqttApplicationMessage("environment", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(env)));
             await client.PublishAsync(message, MqttQualityOfService.AtMostOnce);
 
-            await Task.Delay(TimeSpan.FromMinutes(5));
+            await Task.Delay(TimeSpan.FromMinutes(5)).ConfigureAwait(false);
         }
     }
 }

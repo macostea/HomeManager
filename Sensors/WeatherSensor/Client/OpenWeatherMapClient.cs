@@ -7,10 +7,15 @@ using RestSharp;
 
 namespace WeatherSensor.Client
 {
-    public struct OpenWeatherMapResponseObject
+    public struct OpenWeatherMapResponseObject: IEquatable<OpenWeatherMapResponseObject>
     {
         public List<Dictionary<string, object>> Weather { get; set; }
         public Dictionary<string, object> Main { get; set; }
+
+        public bool Equals(OpenWeatherMapResponseObject other)
+        {
+            return this.Weather.Equals(other.Weather) && this.Main.Equals(other.Main);
+        }
     }
 
     class OpenWeatherMapClient : IWeatherClient

@@ -75,10 +75,7 @@ app {
 
                 .header-nav > li > a {
                     color: #fff;
-                    padding-top: 15px;
-                    padding-bottom: 15px;
-                    padding-right: 15px;
-                    padding-left: 15px;
+                    padding: 15px;
                     line-height: 20px;
                     background: transparent;
                     display: block;

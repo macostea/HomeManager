@@ -8,7 +8,7 @@ using WeatherSensor.Client;
 
 namespace WeatherSensor
 {
-    class Program
+    static class Program
     {
         static async Task Main(string[] args)
         {

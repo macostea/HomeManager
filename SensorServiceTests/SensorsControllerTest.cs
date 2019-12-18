@@ -15,7 +15,7 @@ namespace SensorServiceTests
 {
     public class SensorsControllerTest
     {
-        private ISensorListenerAPI listenerClient;
+        private readonly ISensorListenerAPI listenerClient;
         public SensorsControllerTest()
         {
             var mockedSensorListenerClient = new Mock<ISensorListenerAPI>();

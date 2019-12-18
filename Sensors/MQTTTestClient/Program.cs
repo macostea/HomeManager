@@ -24,7 +24,7 @@ namespace MQTTTestClient
             var credentials = new MqttClientCredentials(null, "rabbit", "rabbit");
             var sessionState = await client.ConnectAsync(credentials, null, true);
 
-            await client.SubscribeAsync(id, MqttQualityOfService.AtMostOnce);
+            await client.SubscribeAsync(id, MqttQualityOfService.AtLeastOnce);
 
             client.MessageStream.Subscribe(msg =>
             {

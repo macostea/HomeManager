@@ -20,6 +20,20 @@ jobs:
       arch: "amd64"
       runTests: "true"
 
+- job: "sensors"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+  - bash: |
+      pip install -U platformio
+      platformio update
+  - bash: |
+      platformio test -e native
+    working_directory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
+
 - job: "manifest"
   pool:
     vmImage: 'ubuntu-16.04'

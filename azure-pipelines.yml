@@ -32,7 +32,7 @@ jobs:
       platformio update
   - bash: |
       platformio test -e native
-    working_directory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
+    workingDirectory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
 
 - job: "manifest"
   pool:

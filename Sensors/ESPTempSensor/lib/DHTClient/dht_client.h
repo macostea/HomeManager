@@ -10,7 +10,8 @@ typedef struct Environment {
 
 class DHTClient {
 public:
-    virtual void getEnvironment(Environment *environment) = 0;
+    virtual bool getEnvironment(Environment *environment) = 0;
+    virtual void begin() = 0;
 };
 
 #endif

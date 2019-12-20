@@ -17,9 +17,6 @@ Sensor::Sensor(const std::string &id, const std::string &type, DHTClient *dhtCli
     this->dhtClient = dhtClient;
 
     this->state = New;
-
-    mqttClient->addDelegate(this);
-    mqttClient->subscribe(id, 1);
 }
 
 SensorState Sensor::getState() {
@@ -28,6 +25,12 @@ SensorState Sensor::getState() {
 
 const std::string &Sensor::getRoomId() {
     return this->roomId;
+}
+
+void Sensor::setup() {
+    this->dhtClient->begin();
+    this->mqttClient->setDelegate(this);
+    this->mqttClient->subscribe(id, 1);
 }
 
 void Sensor::loop() {
@@ -58,7 +61,7 @@ void Sensor::publishNewSensorMessage() {
     sensor["id"] = this->id.c_str();
     sensor["type"] = this->type.c_str();
 
-    std::string msg;
+    char msg[256];
     serializeJson(doc, msg);
 
     this->mqttClient->publish(msg, this->id, 1);
@@ -77,7 +80,7 @@ void Sensor::publishEnvironmentMessage() {
     environment["temperature"] = e.temperature;
     environment["humidity"] = e.humidity;
 
-    std::string msg;
+    char msg[256];
     serializeJson(doc, msg);
 
     this->mqttClient->publish(msg, this->id, 1);

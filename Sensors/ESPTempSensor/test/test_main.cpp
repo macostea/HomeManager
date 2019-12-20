@@ -11,32 +11,29 @@ void test_create_sensor() {
     Mock<MQTTClient> mqttMock;
     Mock<DHTClient> dhtMock;
 
-    When(Method(mqttMock, addDelegate)).Return();
+    When(Method(mqttMock, setDelegate)).Return();
     When(Method(mqttMock, subscribe)).Return();
 
     std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
 
     Sensor s(id, "temp+hum", &dhtMock.get(), &mqttMock.get());
 
-    Verify(Method(mqttMock, addDelegate)); // TODO: Find a way to add parameter verification
-    Verify(Method(mqttMock, subscribe).Using(id, 1));
     TEST_ASSERT_EQUAL(s.getState(), New);
+    VerifyNoOtherInvocations(mqttMock);
+    VerifyNoOtherInvocations(dhtMock);
 }
 
 void test_loop() {
     Mock<MQTTClient> mqttMock;
     Mock<DHTClient> dhtMock;
 
-    When(Method(mqttMock, addDelegate)).Return();
+    When(Method(mqttMock, setDelegate)).Return();
     When(Method(mqttMock, subscribe)).Return();
 
     std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
     std::string type = "temp+hum";
 
     Sensor s(id, type, &dhtMock.get(), &mqttMock.get());
-
-    Verify(Method(mqttMock, addDelegate));
-    Verify(Method(mqttMock, subscribe));
 
     When(Method(mqttMock, publish)).Return();
 
@@ -62,9 +59,11 @@ void test_loop() {
     VerifyNoOtherInvocations(mqttMock);
 
     // WaitingResponse -> Registered
-    When(Method(dhtMock, getEnvironment)).Do([](Environment *e) ->void{
+    When(Method(dhtMock, getEnvironment)).Do([](Environment *e) -> bool {
         e->humidity = 100.0;
         e->temperature = 100.0;
+
+        return 0;
     });
 
     When(Method(mqttMock, publish)).Return();

@@ -17,6 +17,7 @@ public:
     std::string type;
     Sensor(const std::string &id, const std::string &type, DHTClient *dhClient, MQTTClient *mqttClient);
 
+    void setup();
     void loop();
     SensorState getState();
     const std::string &getRoomId();
@@ -27,8 +28,6 @@ private:
     MQTTClient *mqttClient;
     DHTClient *dhtClient;
     std::string roomId;
-
-    void controlMessageCallback(const std::string &message);
 
     void publishNewSensorMessage();
     void publishEnvironmentMessage();

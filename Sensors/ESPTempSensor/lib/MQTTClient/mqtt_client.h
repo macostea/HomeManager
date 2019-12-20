@@ -12,13 +12,13 @@ public:
 
 class MQTTClient {
 public:
-    virtual void connect() = 0;
-    virtual void publish(std::string message, const std::string topic, int qos) = 0;
-    virtual void subscribe(std::string topic, int qos) = 0;
+    virtual bool connect() = 0;
+    virtual bool publish(std::string message, const std::string topic, int qos) = 0;
+    virtual bool subscribe(std::string topic, int qos) = 0;
 
-    virtual void addDelegate(const MQTTClientDelegate *delegate) = 0;
+    virtual bool setDelegate(MQTTClientDelegate *delegate) = 0;
 private:
-    const MQTTClientDelegate *delegate;
+    MQTTClientDelegate *delegate;
 };
 
 #endif

@@ -34,7 +34,7 @@ jobs:
       platformio test -e native
     workingDirectory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
   - bash: |
-      platformio run -e nodemcuv2
+      platformio run -e nodemcuv2 -v
     workingDirectory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
 
 - job: "manifest"

@@ -34,7 +34,9 @@ jobs:
       platformio test -e native
     workingDirectory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
   - bash: |
+      set +e
       platformio run -e nodemcuv2 -v
+      ls -l /home/vsts/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFi/src
     workingDirectory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
 
 - job: "manifest"

@@ -5,6 +5,7 @@
 #include "sensor.h"
 #include "arduino_dht_client.h"
 #include "arduino_mqtt_client.h"
+#include "uuid_gen.h"
 
 #define DHTPIN D5
 #define DHTTYPE DHT11
@@ -24,7 +25,7 @@ WiFiClient client;
 ArduinoDHTClient dhtClient(DHTPIN, DHTTYPE);
 ArduinoMQTTClient mqttClient(&client, MQTT_SERVER, 1883, MQTT_USERNAME, MQTT_PASS);
 
-Sensor s("id", "temp+hum", &dhtClient, &mqttClient);
+Sensor s(generateUUID(std::string(WiFi.macAddress().c_str())), "temp+hum", &dhtClient, &mqttClient);
 
 bool connect() {
   Serial.print("checking wifi...");

@@ -1,4 +1,4 @@
-#include <ESP8266Wifi.h>
+#include <ESP8266WiFi.h>
 #include <DHT.h>
 #include <DHT_U.h>
 

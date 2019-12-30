@@ -10,12 +10,12 @@
 #define DHTPIN D5
 #define DHTTYPE DHT11
 
-#define WLAN_SSID ""
-#define WLAN_PASS ""
+#define WLAN_SSID "risky click"
+#define WLAN_PASS "dinozaurulfertil"
 #define CONNECTION_ATTEMPTS 20
 #define SLEEP_TIME_SECONDS 900
 
-#define MQTT_SERVER "192.168.0.11"
+#define MQTT_SERVER "192.168.0.148"
 #define MQTT_USERNAME "rabbit"
 #define MQTT_PASS "rabbit"
 

@@ -8,7 +8,12 @@ void subscribeCallback(char *data, uint16_t len) {
 }
 
 ArduinoMQTTClient::ArduinoMQTTClient(Client *client, std::string host, int port, std::string username, std::string password) {
-    this->mqttClient = new Adafruit_MQTT_Client(client, host.c_str(), port, username.c_str(), password.c_str());
+    mqttHost = host;
+    mqttPort = port;
+    mqttUsername = username;
+    mqttPassword = password;
+
+    this->mqttClient = new Adafruit_MQTT_Client(client, mqttHost.c_str(), mqttPort, mqttUsername.c_str(), mqttPassword.c_str());
 
     globalObj = this;
 }

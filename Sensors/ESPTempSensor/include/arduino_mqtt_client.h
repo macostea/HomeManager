@@ -23,6 +23,11 @@ private:
     MQTTClientDelegate *delegate;
     Adafruit_MQTT_Client *mqttClient;
     Adafruit_MQTT_Subscribe *mqttSubscriber;
+
+    std::string mqttHost;
+    std::string mqttUsername;
+    std::string mqttPassword;
+    int mqttPort;
 };
 
 #endif

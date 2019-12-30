@@ -3,7 +3,11 @@
     "SensorListener": {
       "commandName": "Project",
       "environmentVariables": {
-        "SENSOR_SERVICE_URL": "https://localhost:5001"      }
+        "RABBITMQ_PASSWORD": "rabbit",
+        "RABBITMQ_USERNAME": "rabbit",
+        "SENSOR_SERVICE_URL": "https://localhost:5001",
+        "RABBITMQ_HOST": "foxey-lady-master.mcostea.com"
+      }
     }
   }
 }

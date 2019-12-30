@@ -22,6 +22,10 @@ spec:
       - name: sensor-listener
         image: "{{ .Values.sensor_listener.image.repository }}:{{ .Values.sensor_listener.image.tag }}"
         imagePullPolicy: {{ .Values.sensor_listener.image.pullPolicy }}
+        ports:
+        - name: web
+          containerPort: 5000
+          protocol: TCP
         env:
         - name: RABBITMQ_HOST
           value: {{ default "" .Values.rabbitmq.host | quote }}

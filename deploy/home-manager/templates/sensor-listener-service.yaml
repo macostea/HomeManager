@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "home-manager.fullname" . }}-listener-service
+  labels:
+{{ include "home-manager.labels" . | indent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      name: http
+      targetPort: 5000
+  selector:
+    app: sensor-listener

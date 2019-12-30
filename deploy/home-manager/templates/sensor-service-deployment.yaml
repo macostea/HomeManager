@@ -26,6 +26,9 @@ spec:
         - name: web
           containerPort: 80
           protocol: TCP
+        env:
+        - name: SENSOR_SERVICE_SENSOR_LISTENER
+          value: {{ .Values.sensor_service.sensor_listener_url | quote }}
         volumeMounts:
         - name: production-config-map
           mountPath: /app/appsettings.Production.json

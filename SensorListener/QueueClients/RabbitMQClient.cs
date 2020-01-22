@@ -70,6 +70,10 @@ namespace SensorListener.QueueClients
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
 
+                    Console.WriteLine("Received message:");
+                    Console.WriteLine("Routing key: {0}", ea.RoutingKey);
+                    Console.WriteLine(message);
+
                     var listenerFound = this.listeners.TryGetValue(ea.RoutingKey, out ISensorListener listener);
 
                     if (listenerFound)

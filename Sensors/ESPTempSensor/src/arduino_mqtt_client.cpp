@@ -51,11 +51,25 @@ bool ArduinoMQTTClient::publish(std::string message, const std::string topic, in
 }
 
 bool ArduinoMQTTClient::subscribe(std::string topic, int qos) {
-    this->mqttSubscriber = new Adafruit_MQTT_Subscribe(this->mqttClient, topic.c_str(), qos);
+    Serial.println("Subscribing to topic");
+    Serial.println(topic.c_str());
     this->subscribedTopic = topic;
+    this->mqttSubscriber = new Adafruit_MQTT_Subscribe(this->mqttClient, this->subscribedTopic.c_str(), qos);
     this->mqttSubscriber->setCallback(&subscribeCallback);
 
-    this->mqttClient->subscribe(this->mqttSubscriber);
+    bool res = this->mqttClient->subscribe(this->mqttSubscriber);
+    Serial.println("Subscription success");
+    Serial.println(res);
+
+    return true;
+}
+
+bool ArduinoMQTTClient::processPackets() {
+    this->mqttClient->processPackets(1000);
+
+    if (!this->mqttClient->ping()) {
+        this->mqttClient->disconnect();
+    }
 
     return true;
 }

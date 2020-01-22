@@ -42,6 +42,7 @@ void Sensor::loop() {
         break;
 
     case WaitingResponse:
+        this->mqttClient->processPackets();
         break;
 
     case Registered:
@@ -64,7 +65,7 @@ void Sensor::publishNewSensorMessage() {
     char msg[256];
     serializeJson(doc, msg);
 
-    this->mqttClient->publish(msg, this->id, 1);
+    this->mqttClient->publish(msg, "sensor", 1);
 }
 
 void Sensor::publishEnvironmentMessage() {
@@ -83,7 +84,7 @@ void Sensor::publishEnvironmentMessage() {
     char msg[256];
     serializeJson(doc, msg);
 
-    this->mqttClient->publish(msg, this->id, 1);
+    this->mqttClient->publish(msg, "environment", 1);
 }
 
 void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::string &message) {

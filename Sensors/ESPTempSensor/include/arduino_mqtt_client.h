@@ -14,6 +14,7 @@ public:
     virtual bool connect();
     virtual bool publish(std::string message, const std::string topic, int qos);
     virtual bool subscribe(std::string topic, int qos);
+    virtual bool processPackets();
 
     virtual bool setDelegate(MQTTClientDelegate *delegate);
     MQTTClientDelegate *getDelegate();

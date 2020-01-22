@@ -79,7 +79,6 @@ steps:
 
   - task: Docker@1
     displayName: 'Push images'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'Docker Hub'

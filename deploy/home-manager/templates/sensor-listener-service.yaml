@@ -9,6 +9,5 @@ spec:
   ports:
     - port: 80
       name: http
-      targetPort: 5000
   selector:
     app: sensor-listener

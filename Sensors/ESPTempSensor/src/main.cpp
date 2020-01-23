@@ -48,7 +48,7 @@ bool connect() {
   Serial.println(WiFi.localIP());
 
   Serial.print("\nconnecting...");
-  return mqttClient.connect();
+  return true;
 }
 
 void deepSleep(int seconds) {
@@ -62,10 +62,15 @@ void setup() {
   Serial.println("Device wake up");
 
   if (!connect()) {
-    Serial.println("Could not connect to MQTT broker, sleeping...");
+    Serial.println("Could not connect to WIFI, sleeping...");
     deepSleep(SLEEP_TIME_SECONDS);
   }
   s.setup();
+  if (!mqttClient.connect()) {
+    Serial.println("Could not connect to WIFI, sleeping...");
+    deepSleep(SLEEP_TIME_SECONDS);
+  }
+
   s.loop();
 
   if (s.getState() == WaitingResponse) {

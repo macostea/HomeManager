@@ -61,7 +61,7 @@ bool ArduinoMQTTClient::subscribe(std::string topic, int qos) {
     Serial.println("Subscription success");
     Serial.println(res);
 
-    return true;
+    return res;
 }
 
 bool ArduinoMQTTClient::processPackets() {

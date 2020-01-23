@@ -4,6 +4,7 @@
 
 int main() {
     RUN_TEST(test_create_sensor);
+    RUN_TEST(test_setup);
     RUN_TEST(test_loop);
 
     RUN_TEST(test_generateUUID);

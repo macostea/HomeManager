@@ -12,9 +12,6 @@ void test_create_sensor() {
     Mock<MQTTClient> mqttMock;
     Mock<DHTClient> dhtMock;
 
-    When(Method(mqttMock, setDelegate)).Return();
-    When(Method(mqttMock, subscribe)).Return();
-
     std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
 
     Sensor s(id, "temp+hum", &dhtMock.get(), &mqttMock.get());
@@ -24,12 +21,29 @@ void test_create_sensor() {
     VerifyNoOtherInvocations(dhtMock);
 }
 
-void test_loop() {
+void test_setup() {
     Mock<MQTTClient> mqttMock;
     Mock<DHTClient> dhtMock;
 
-    When(Method(mqttMock, setDelegate)).Return();
-    When(Method(mqttMock, subscribe)).Return();
+    std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
+    std::string type = "temp+hum";
+
+    Sensor s(id, type, &dhtMock.get(), &mqttMock.get());
+
+    When(Method(dhtMock, begin)).Return();
+    When(Method(mqttMock, setDelegate)).Return(true);
+    When(Method(mqttMock, subscribe)).Return(true);
+
+    s.setup();
+
+    Verify(Method(dhtMock, begin)).Once();
+    Verify(Method(mqttMock, setDelegate).Using((MQTTClientDelegate *)&s));
+    Verify(Method(mqttMock, subscribe).Using(id, 1));
+}
+
+void test_loop() {
+    Mock<MQTTClient> mqttMock;
+    Mock<DHTClient> dhtMock;
 
     std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
     std::string type = "temp+hum";
@@ -37,6 +51,7 @@ void test_loop() {
     Sensor s(id, type, &dhtMock.get(), &mqttMock.get());
 
     When(Method(mqttMock, publish)).Return();
+    When(Method(mqttMock, processPackets)).Return(true);
 
     // New -> WaitingResponse
     s.loop();
@@ -53,10 +68,12 @@ void test_loop() {
     std::string msg;
     serializeJson(doc, msg);
 
-    Verify(Method(mqttMock, publish).Using(msg, id, 1));
+    Verify(Method(mqttMock, publish).Using(msg, "sensor", 1));
 
     // WaitingResponse do nothing
     s.loop();
+
+    Verify(Method(mqttMock, processPackets)).Once();
     VerifyNoOtherInvocations(mqttMock);
 
     // WaitingResponse -> Registered
@@ -89,5 +106,5 @@ void test_loop() {
     msg.clear();
     serializeJson(doc2, msg);
 
-    Verify(Method(mqttMock, publish).Using(msg, id, 1));
+    Verify(Method(mqttMock, publish).Using(msg, "environment", 1));
 }

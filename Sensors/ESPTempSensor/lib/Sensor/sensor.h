@@ -8,7 +8,8 @@
 typedef enum SensorState {
     New,
     WaitingResponse,
-    Registered
+    Registered,
+    Sleepy
 } SensorState;
 
 class Sensor : MQTTClientDelegate {

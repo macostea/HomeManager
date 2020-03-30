@@ -3,6 +3,8 @@
 static ArduinoMQTTClient *globalObj;
 
 void subscribeCallback(char *data, uint16_t len) {
+    Serial.println("Got message");
+    Serial.println(data);
     auto delegate = globalObj->getDelegate();
     delegate->mqttClientReceivedMessage(globalObj->subscribedTopic, std::string(data));
 }
@@ -46,6 +48,9 @@ bool ArduinoMQTTClient::connect() {
 
 bool ArduinoMQTTClient::publish(std::string message, const std::string topic, int qos) {
     Adafruit_MQTT_Publish publisher(this->mqttClient, topic.c_str(), qos);
+    Serial.println("Sending message");
+    Serial.println(message.c_str());
+    Serial.println(topic.c_str());
 
     return publisher.publish(message.c_str());
 }
@@ -82,4 +87,3 @@ bool ArduinoMQTTClient::setDelegate(MQTTClientDelegate *delegate) {
 MQTTClientDelegate *ArduinoMQTTClient::getDelegate() {
     return this->delegate;
 }
-

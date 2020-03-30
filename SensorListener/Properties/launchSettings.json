@@ -5,8 +5,8 @@
       "environmentVariables": {
         "RABBITMQ_PASSWORD": "rabbit",
         "RABBITMQ_USERNAME": "rabbit",
-        "SENSOR_SERVICE_URL": "https://192.168.0.100:5001",
-        "RABBITMQ_HOST": "192.168.0.100"
+        "SENSOR_SERVICE_URL": "http://localhost:8080",
+        "RABBITMQ_HOST": "localhost"
       }
     }
   }

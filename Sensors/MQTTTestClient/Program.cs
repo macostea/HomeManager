@@ -31,8 +31,9 @@ namespace MQTTTestClient
                 if (msg.Topic == id)
                 {
                     if (State == States.WaitingResponse)
-                    {
+                    {                        
                         var msgObj = JsonConvert.DeserializeObject<Dictionary<string, object>>(Encoding.UTF8.GetString(msg.Payload));
+                        Console.WriteLine("Received newsensor response, we are now registered");
                         roomId = (string)msgObj["RoomId"]; // Not used yet as we can get the roomId from SensorService based on sensorId
                         State = States.Registered;
                     }

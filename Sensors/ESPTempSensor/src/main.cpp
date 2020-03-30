@@ -25,7 +25,14 @@ WiFiClient client;
 ArduinoDHTClient dhtClient(DHTPIN, DHTTYPE);
 ArduinoMQTTClient mqttClient(&client, MQTT_SERVER, 1883, MQTT_USERNAME, MQTT_PASS);
 
-Sensor s(generateUUID(std::string(WiFi.macAddress().c_str())), "temp+hum", &dhtClient, &mqttClient);
+std::string getUUID() {
+  String macAddr = WiFi.macAddress();
+  macAddr.toLowerCase();
+
+  return generateUUID(std::string(macAddr.c_str()));
+}
+
+Sensor s(getUUID(), "temp+hum", &dhtClient, &mqttClient);
 
 bool connect() {
   Serial.print("checking wifi...");
@@ -57,7 +64,6 @@ void deepSleep(int seconds) {
 
 void setup() {
   Serial.begin(115200);
-  Serial.setTimeout(2000);
 
   Serial.println("Device wake up");
 
@@ -65,11 +71,13 @@ void setup() {
     Serial.println("Could not connect to WIFI, sleeping...");
     deepSleep(SLEEP_TIME_SECONDS);
   }
+
   s.setup();
   if (!mqttClient.connect()) {
-    Serial.println("Could not connect to WIFI, sleeping...");
+    Serial.println("Could not connect to MQTT broker, sleeping...");
     deepSleep(SLEEP_TIME_SECONDS);
   }
+
 
   s.loop();
 
@@ -79,16 +87,17 @@ void setup() {
     return;
   }
 
-  Serial.println("Done sending, sleeping...");
-  deepSleep(SLEEP_TIME_SECONDS);
+  if (s.getState() == Sleepy) {
+    Serial.println("Done sending, sleeping...");
+    deepSleep(SLEEP_TIME_SECONDS);
+  }
 }
 
 void loop() {
   s.loop();
-  delay(1000);
 
-  if (s.getState() == Registered) {
-    // We can sleep now, the device was registered
+  if (s.getState() == Sleepy) {
+    // We can sleep now, the device was registered and data was sent
     Serial.println("Done sending, sleeping...");
     deepSleep(SLEEP_TIME_SECONDS);
   }

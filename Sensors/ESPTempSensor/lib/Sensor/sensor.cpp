@@ -85,6 +85,7 @@ void Sensor::publishEnvironmentMessage() {
     serializeJson(doc, msg);
 
     this->mqttClient->publish(msg, "environment", 1);
+    this->state = Sleepy;
 }
 
 void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::string &message) {

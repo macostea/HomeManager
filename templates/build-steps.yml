@@ -71,7 +71,7 @@ steps:
   - bash: |
       # Write your commands here
       # Use the environment variables input below to pass secret variables to this script
-      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
+      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-${{ parameters.arch }}" > images.txt
       echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
       echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
       echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt

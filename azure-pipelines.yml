@@ -64,4 +64,3 @@ jobs:
       docker --config ~/.docker manifest push mcostea/homemanager_sensor-service:$(Build.BuildId)
       docker --config ~/.docker manifest push mcostea/homemanager_sensor-listener:$(Build.BuildId)
       docker --config ~/.docker manifest push mcostea/homemanager_weather-sensor:$(Build.BuildId)
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))

@@ -21,7 +21,7 @@ namespace SensorListener.Controllers
         [HttpPost]
         public async Task<IActionResult> NotifySensorUpdate([FromBody] Sensor sensor)
         {
-            var sensorMessage = new Dictionary<string, string>()
+            var sensorMessage = new Dictionary<string, string>
             {
                 { "RoomId", sensor.RoomId.ToString() }
             };

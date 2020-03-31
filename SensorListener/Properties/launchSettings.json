@@ -5,8 +5,8 @@
       "environmentVariables": {
         "RABBITMQ_PASSWORD": "rabbit",
         "RABBITMQ_USERNAME": "rabbit",
-        "SENSOR_SERVICE_URL": "https://localhost:5001",
-        "RABBITMQ_HOST": "foxey-lady-master.mcostea.com"
+        "SENSOR_SERVICE_URL": "http://localhost:8080",
+        "RABBITMQ_HOST": "localhost"
       }
     }
   }

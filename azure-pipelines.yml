@@ -20,6 +20,24 @@ jobs:
       arch: "amd64"
       runTests: "true"
 
+- job: "sensors"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+  - bash: |
+      pip install -U platformio
+      platformio upgrade --dev
+      platformio update
+  - bash: |
+      platformio test -e native
+    workingDirectory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
+  - bash: |
+      platformio run -e nodemcuv2
+    workingDirectory: "$(Build.SourcesDirectory)/Sensors/ESPTempSensor"
+
 - job: "manifest"
   pool:
     vmImage: 'ubuntu-16.04'
@@ -46,4 +64,3 @@ jobs:
       docker --config ~/.docker manifest push mcostea/homemanager_sensor-service:$(Build.BuildId)
       docker --config ~/.docker manifest push mcostea/homemanager_sensor-listener:$(Build.BuildId)
       docker --config ~/.docker manifest push mcostea/homemanager_weather-sensor:$(Build.BuildId)
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))

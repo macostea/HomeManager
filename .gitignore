@@ -336,3 +336,5 @@ ASALocalRun/
 
 # TestResults
 TestResults/
+
+.DS_Store

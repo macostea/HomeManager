@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SensorListener.Listeners;
@@ -18,18 +19,20 @@ namespace SensorListener.QueueClients
         private readonly string queueName;
         private readonly string username;
         private readonly string password;
+        private readonly ILogger logger;
 
         private IConnection connection;
         private IModel listenChannel;
         private EventingBasicConsumer consumer;
 
-        public RabbitMQClient(string hostname, string username, string password, string exchangeName, string queueName)
+        public RabbitMQClient(string hostname, string username, string password, string exchangeName, string queueName, ILogger logger)
         {
             this.hostname = hostname;
             this.username = username;
             this.password = password;
             this.exchangeName = exchangeName;
             this.queueName = queueName;
+            this.logger = logger;
         }
 
         public void RegisterListener(ISensorListener listener)
@@ -70,6 +73,10 @@ namespace SensorListener.QueueClients
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
 
+                    this.logger.LogDebug("Received message:");
+                    this.logger.LogDebug("Routing key: {0}", ea.RoutingKey);
+                    this.logger.LogDebug(message);
+
                     var listenerFound = this.listeners.TryGetValue(ea.RoutingKey, out ISensorListener listener);
 
                     if (listenerFound)
@@ -78,7 +85,7 @@ namespace SensorListener.QueueClients
                     }
                 } catch (Exception e)
                 {
-                    Console.WriteLine(e.StackTrace);
+                    this.logger.LogWarning(e.StackTrace);
                 }
             };
 

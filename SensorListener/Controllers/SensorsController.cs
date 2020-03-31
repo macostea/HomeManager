@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,11 @@ namespace SensorListener.Controllers
         [HttpPost]
         public async Task<IActionResult> NotifySensorUpdate([FromBody] Sensor sensor)
         {
-            await this.rabbitMQClient.PublishAsync(sensor.Id.ToString(), JsonConvert.SerializeObject(sensor));
+            var sensorMessage = new Dictionary<string, string>
+            {
+                { "RoomId", sensor.RoomId.ToString() }
+            };
+            await this.rabbitMQClient.PublishAsync(sensor.Id.ToString(), JsonConvert.SerializeObject(sensorMessage));
             return Ok(sensor);
         }
     }

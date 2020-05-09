@@ -12,6 +12,7 @@ public:
     ~ArduinoMQTTClient();
     
     virtual bool connect();
+    virtual bool disconnect();
     virtual bool publish(std::string message, const std::string topic, int qos);
     virtual bool subscribe(std::string topic, int qos);
     virtual bool processPackets();

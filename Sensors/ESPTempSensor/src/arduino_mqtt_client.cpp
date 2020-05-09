@@ -46,6 +46,18 @@ bool ArduinoMQTTClient::connect() {
     return true;
 }
 
+bool ArduinoMQTTClient::disconnect() {
+    if (this->mqttSubscriber) {
+        this->mqttClient->unsubscribe(this->mqttSubscriber);
+        delete this->mqttSubscriber;
+    }
+    
+    bool disRes = this->mqttClient->disconnect();
+    delete this->mqttClient;
+
+    return disRes;
+}
+
 bool ArduinoMQTTClient::publish(std::string message, const std::string topic, int qos) {
     Adafruit_MQTT_Publish publisher(this->mqttClient, topic.c_str(), qos);
     Serial.println("Sending message");

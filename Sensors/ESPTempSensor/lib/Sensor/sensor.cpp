@@ -10,11 +10,11 @@ DynamicJsonDocument parseJson(std::string json) {
     return doc;
 }
 
-Sensor::Sensor(const std::string &id, const std::string &type, DHTClient *dhtClient, MQTTClient *mqttClient) {
+Sensor::Sensor(const std::string &id, const std::string &type, HAL *hal) {
     this->id = id;
     this->type = type;
-    this->mqttClient = mqttClient;
-    this->dhtClient = dhtClient;
+    this->hal = hal;
+    this->firstWaitTimeMillis = 0;
 
     this->state = New;
 }
@@ -28,9 +28,14 @@ const std::string &Sensor::getRoomId() {
 }
 
 void Sensor::setup() {
-    this->dhtClient->begin();
-    this->mqttClient->setDelegate(this);
-    this->mqttClient->subscribe(id, 1);
+    this->hal->getDHTClient()->begin();
+    this->hal->getMQTTClient()->setDelegate(this);
+    this->hal->getMQTTClient()->subscribe(id, 1);
+}
+
+void Sensor::stop() {
+    this->hal->getDHTClient()->end();
+    this->hal->getMQTTClient()->disconnect();
 }
 
 void Sensor::loop() {
@@ -39,10 +44,16 @@ void Sensor::loop() {
     case New:
         this->publishNewSensorMessage();
         this->state = WaitingResponse;
+        this->firstWaitTimeMillis = this->hal->getMillis();
         break;
 
     case WaitingResponse:
-        this->mqttClient->processPackets();
+        if (this->hal->getMillis() - this->firstWaitTimeMillis >= MAX_WAIT_TIME_FOR_RESPONSE_SEC * 1000) {
+            this->state = Sleepy;
+            break;
+        }
+
+        this->hal->getMQTTClient()->processPackets();
         break;
 
     case Registered:
@@ -65,12 +76,12 @@ void Sensor::publishNewSensorMessage() {
     char msg[256];
     serializeJson(doc, msg);
 
-    this->mqttClient->publish(msg, "sensor", 1);
+    this->hal->getMQTTClient()->publish(msg, "sensor", 1);
 }
 
 void Sensor::publishEnvironmentMessage() {
     Environment e;
-    this->dhtClient->getEnvironment(&e);
+    this->hal->getDHTClient()->getEnvironment(&e);
 
     const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3);
     DynamicJsonDocument doc(capacity);
@@ -84,7 +95,7 @@ void Sensor::publishEnvironmentMessage() {
     char msg[256];
     serializeJson(doc, msg);
 
-    this->mqttClient->publish(msg, "environment", 1);
+    this->hal->getMQTTClient()->publish(msg, "environment", 1);
     this->state = Sleepy;
 }
 

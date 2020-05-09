@@ -15,6 +15,10 @@ void ArduinoDHTClient::begin() {
     this->dht->begin();
 }
 
+void ArduinoDHTClient::end() {
+    delete this->dht;
+}
+
 bool ArduinoDHTClient::getEnvironment(Environment *environment) {
     sensors_event_t event;
 

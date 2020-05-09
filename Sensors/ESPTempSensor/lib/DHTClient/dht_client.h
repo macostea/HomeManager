@@ -12,6 +12,7 @@ class DHTClient {
 public:
     virtual bool getEnvironment(Environment *environment) = 0;
     virtual void begin() = 0;
+    virtual void end() = 0;
 };
 
 #endif

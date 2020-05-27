@@ -64,5 +64,18 @@ namespace Common.SensorServiceAPI
 
             return await Utilities.ExecuteRestRequest<Sensor>(this.BaseURL, newSensorRequest);
         }
+
+        public async Task<List<Weather>> GetWeather(string homeId, DateTime startDate, DateTime endDate)
+        {
+            var weatherRequest = new RestRequest
+            {
+                Resource = "api/homes/{homeId}/weather"
+            };
+            weatherRequest.AddUrlSegment("homeId", homeId);
+            weatherRequest.AddParameter("startDate", startDate);
+            weatherRequest.AddParameter("endDate", endDate);
+
+            return await Utilities.ExecuteRestRequest<List<Weather>>(this.BaseURL, weatherRequest);
+        }
     }
 }

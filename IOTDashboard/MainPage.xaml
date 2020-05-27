@@ -1,0 +1,64 @@
+﻿<Page
+    x:Class="IOTDashboard.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IOTDashboard"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{Binding LastWeather}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="118" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="51" />
+                <RowDefinition Height="51" />
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Content="Home" />
+            <Button Grid.Row="1" Content="Dashboards" />
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="460" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="210" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock Text="Welcome home!" FontSize="48" />
+                <TextBlock Text="Weather outside: Cloudy" />
+                <TextBlock Text="Outdoor temperature: 16C" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="130" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Dorobantilor" />
+                    <TextBlock Grid.Column="2" Text="23C" />
+                    <TextBlock Grid.Column="3" Text="30%" />
+                    <ComboBox Grid.Column="4" SelectedIndex="0">
+                        <ComboBoxItem Content="Living Room" />
+                        <ComboBoxItem Content="Master Bedroom" />
+                    </ComboBox>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

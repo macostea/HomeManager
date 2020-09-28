@@ -50,6 +50,7 @@ void Sensor::loop() {
         this->publishHomeyMessage();
         this->publishNewSensorMessage();
         this->state = WaitingResponse;
+        break;
 
     case WaitingResponse:
         this->mqttClient->processPackets();

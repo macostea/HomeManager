@@ -59,13 +59,38 @@ void test_loop() {
     Sensor s(id, type, &dhtMock.get(), &mqttMock.get(), &homeyMock.get());
 
     When(Method(mqttMock, publish)).Return();
-    When(Method(mqttMock, processPackets)).Return(true);
+    When(Method(mqttMock, processPackets)).AlwaysReturn(true);
     When(Method(homeyMock, loop)).Return(true);
 
-    // New -> WaitingResponse
+    When(Method(dhtMock, getEnvironment)).AlwaysDo([](Environment *e) -> bool {
+        e->humidity = 100.0;
+        e->temperature = 100.0;
+
+        return 0;
+    });
+
+    // New -> HomeyUnregistered
+    s.loop();
+    TEST_ASSERT_EQUAL(s.getState(), HomeyUnregistered);
+
+    // HomeyUnregistered
+    s.loop();
+    Verify(Method(homeyMock, loop)).Once();
+    VerifyNoOtherInvocations(mqttMock);
+    VerifyNoOtherInvocations(homeyMock);
+
+    // HomeyUnregistered -> HomeyPublished
+    When(Method(homeyMock, updateHumidity)).Return(true);
+    When(Method(homeyMock, updateTemperature)).Return(true);
+
+    s.homeyRegisterTimeout();
+    TEST_ASSERT_EQUAL(s.getState(), HomeyPublished);
+
+    // HomeyPublished -> WaitingResponse
     s.loop();
 
-    TEST_ASSERT_EQUAL(s.getState(), WaitingResponse);
+    Verify(Method(homeyMock, updateHumidity).Using(100.0));
+    Verify(Method(homeyMock, updateTemperature).Using(100.0));
 
     size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2);
     DynamicJsonDocument doc(capacity);
@@ -79,25 +104,16 @@ void test_loop() {
 
     Verify(Method(mqttMock, publish).Using(msg, "sensor", 1));
 
+    TEST_ASSERT_EQUAL(s.getState(), WaitingResponse);
     // WaitingResponse do nothing
     s.loop();
 
     Verify(Method(mqttMock, processPackets)).Once();
-    Verify(Method(homeyMock, loop)).Once();
     VerifyNoOtherInvocations(mqttMock);
     VerifyNoOtherInvocations(homeyMock);
-
     // WaitingResponse -> Registered
-    When(Method(dhtMock, getEnvironment)).AlwaysDo([](Environment *e) -> bool {
-        e->humidity = 100.0;
-        e->temperature = 100.0;
-
-        return 0;
-    });
 
     When(Method(mqttMock, publish)).Return();
-    When(Method(homeyMock, updateHumidity)).Return(true);
-    When(Method(homeyMock, updateTemperature)).Return(true);
 
     s.mqttClientReceivedMessage(id, "{\"RoomId\": \"2993FBE3-46A0-419D-83CF-C514752B4F19\"}");
     TEST_ASSERT_EQUAL(s.getState(), Registered);
@@ -120,7 +136,4 @@ void test_loop() {
     serializeJson(doc2, msg);
 
     Verify(Method(mqttMock, publish).Using(msg, "environment", 1));
-
-    Verify(Method(homeyMock, updateHumidity).Using(100.0));
-    Verify(Method(homeyMock, updateTemperature).Using(100.0));
 }

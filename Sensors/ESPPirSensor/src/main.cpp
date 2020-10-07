@@ -3,7 +3,10 @@
 #include "sensor.h"
 #include "arduino_mqtt_client.h"
 #include "arduino_homey_client.h"
+#include "arduino_pir_client.h"
 #include "uuid_gen.h"
+
+#define PIR_SLEEP_PIN D5
 
 #define WLAN_SSID ""
 #define WLAN_PASS ""
@@ -18,6 +21,7 @@ WiFiClient client;
 
 ArduinoMQTTClient mqttClient(&client, MQTT_SERVER, 1883, MQTT_USERNAME, MQTT_PASS);
 ArduinoHomeyClient homeyClient;
+ArduinoPIRClient pirClient(PIR_SLEEP_PIN);
 
 unsigned long homeyRegisterTimeoutPrevious = 0;
 const unsigned long homeyRegisterTimeoutInterval = 120000;
@@ -32,7 +36,7 @@ std::string getUUID() {
   return generateUUID(std::string(macAddr.c_str()));
 }
 
-Sensor s(getUUID(), "temp+hum", &mqttClient, &homeyClient);
+Sensor s(getUUID(), "temp+hum", &mqttClient, &homeyClient, &pirClient);
 
 bool connect() {
   Serial.print("checking wifi...");

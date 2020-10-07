@@ -10,11 +10,12 @@ DynamicJsonDocument parseJson(std::string json) {
     return doc;
 }
 
-Sensor::Sensor(const std::string &id, const std::string &type, MQTTClient *mqttClient, HomeyClient *homeyClient) {
+Sensor::Sensor(const std::string &id, const std::string &type, MQTTClient *mqttClient, HomeyClient *homeyClient, PIRClient *pirClient) {
     this->id = id;
     this->type = type;
     this->mqttClient = mqttClient;
     this->homeyClient = homeyClient;
+    this->pirClient = pirClient;
 
     this->state = New;
 }
@@ -38,6 +39,7 @@ void Sensor::loop() {
     {
     case New:
         this->state = HomeyUnregistered;
+        this->pirClient->preventSleep(true);
         break;
 
     case HomeyUnregistered:
@@ -45,7 +47,7 @@ void Sensor::loop() {
         break;
 
     case HomeyPublished:
-        this->publishHomeyMessage();
+        this->publishHomeyMessage(true);
         this->publishNewSensorMessage();
         this->state = WaitingResponse;
         break;
@@ -55,8 +57,14 @@ void Sensor::loop() {
         break;
 
     case Registered:
-        this->publishEnvironmentMessage();
+        this->publishEnvironmentMessage(true);
         this->state = Sleepy;
+        break;
+
+    case Sleepy:
+        this->pirClient->preventSleep(false);
+        this->publishHomeyMessage(false);
+        this->publishEnvironmentMessage(false);
         break;
 
     default:
@@ -78,9 +86,8 @@ void Sensor::publishNewSensorMessage() {
     this->mqttClient->publish(msg, "sensor", 1);
 }
 
-void Sensor::publishEnvironmentMessage() {
+void Sensor::publishEnvironmentMessage(bool motion) {
     Environment e;
-    this->dhtClient->getEnvironment(&e);
 
     const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3);
     DynamicJsonDocument doc(capacity);
@@ -88,8 +95,7 @@ void Sensor::publishEnvironmentMessage() {
     doc["sensorId"] = this->id.c_str();
 
     JsonObject environment = doc.createNestedObject("environment");
-    environment["temperature"] = e.temperature;
-    environment["humidity"] = e.humidity;
+    environment["motion"] = motion;
 
     char msg[256];
     serializeJson(doc, msg);
@@ -97,12 +103,10 @@ void Sensor::publishEnvironmentMessage() {
     this->mqttClient->publish(msg, "environment", 1);
 }
 
-void Sensor::publishHomeyMessage() {
+void Sensor::publishHomeyMessage(bool motion) {
     Environment e;
-    this->dhtClient->getEnvironment(&e);
 
-    this->homeyClient->updateHumidity(e.humidity);
-    this->homeyClient->updateTemperature(e.temperature);
+    this->homeyClient->updateMotion(motion);
 }
 
 void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::string &message) {

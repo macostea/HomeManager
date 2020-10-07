@@ -5,9 +5,10 @@
 #include "sensor.h"
 #include "arduino_dht_client.h"
 #include "arduino_mqtt_client.h"
+#include "arduino_homey_client.h"
 #include "uuid_gen.h"
 
-#define DHTPIN D5
+#define DHTPIN D7
 #define DHTTYPE DHT11
 
 #define WLAN_SSID ""
@@ -21,9 +22,15 @@
 
 WiFiClient client;
 
-
 ArduinoDHTClient dhtClient(DHTPIN, DHTTYPE);
 ArduinoMQTTClient mqttClient(&client, MQTT_SERVER, 1883, MQTT_USERNAME, MQTT_PASS);
+ArduinoHomeyClient homeyClient;
+
+unsigned long homeyRegisterTimeoutPrevious = 0;
+const unsigned long homeyRegisterTimeoutInterval = 120000;
+
+unsigned long mqttWaitTimeoutPrevious = 0;
+const unsigned long mqttWaitTimeoutInterval = 30000;
 
 std::string getUUID() {
   String macAddr = WiFi.macAddress();
@@ -32,7 +39,7 @@ std::string getUUID() {
   return generateUUID(std::string(macAddr.c_str()));
 }
 
-Sensor s(getUUID(), "temp+hum", &dhtClient, &mqttClient);
+Sensor s(getUUID(), "temp+hum", &dhtClient, &mqttClient, &homeyClient);
 
 bool connect() {
   Serial.print("checking wifi...");
@@ -74,12 +81,13 @@ void setup() {
 
   s.setup();
   if (!mqttClient.connect()) {
-    Serial.println("Could not connect to MQTT broker, sleeping...");
-    deepSleep(SLEEP_TIME_SECONDS);
+    Serial.println("Could not connect to MQTT broker, moving on...");
+    // TODO: Check here if we can continue because homey publish makes sense but mqtt does not. It will always fail
   }
 
-
   s.loop();
+
+  homeyRegisterTimeoutPrevious = millis();
 
   if (s.getState() == WaitingResponse) {
     // Don't sleep until we are registered
@@ -95,6 +103,24 @@ void setup() {
 
 void loop() {
   s.loop();
+
+  if (s.getState() == HomeyUnregistered) {
+    unsigned long currentMillis = millis();
+    if (currentMillis - homeyRegisterTimeoutPrevious > homeyRegisterTimeoutInterval) {
+      s.homeyRegisterTimeout();
+    }
+  }
+
+  if (s.getState() == WaitingResponse) {
+    if (mqttWaitTimeoutPrevious == 0) {
+      mqttWaitTimeoutPrevious = millis();
+    } else {
+      unsigned long currentMillis = millis();
+      if (currentMillis - mqttWaitTimeoutPrevious > mqttWaitTimeoutInterval) {
+        s.becomeSleepy();
+      }
+    }
+  }
 
   if (s.getState() == Sleepy) {
     // We can sleep now, the device was registered and data was sent

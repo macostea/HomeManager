@@ -20,6 +20,7 @@ bool ArduinoDHTClient::getEnvironment(Environment *environment) {
 
     this->dht->temperature().getEvent(&event);
     if (isnan(event.temperature)) {
+        Serial.println("Could not get temperature");
         return false;
     } else {
         environment->temperature = event.temperature;
@@ -27,10 +28,14 @@ bool ArduinoDHTClient::getEnvironment(Environment *environment) {
 
     this->dht->humidity().getEvent(&event);
     if (isnan(event.relative_humidity)) {
+        Serial.println("Could not get humidity");
         return false;
     } else {
         environment->humidity = event.relative_humidity;
     }
+
+    Serial.println("Got environment reading:");
+    Serial.printf("Temp %f; Hum %f", environment->temperature, environment->humidity);
 
     return true;
 }

@@ -10,11 +10,12 @@ DynamicJsonDocument parseJson(std::string json) {
     return doc;
 }
 
-Sensor::Sensor(const std::string &id, const std::string &type, DHTClient *dhtClient, MQTTClient *mqttClient) {
+Sensor::Sensor(const std::string &id, const std::string &type, DHTClient *dhtClient, MQTTClient *mqttClient, HomeyClient *homeyClient) {
     this->id = id;
     this->type = type;
     this->mqttClient = mqttClient;
     this->dhtClient = dhtClient;
+    this->homeyClient = homeyClient;
 
     this->state = New;
 }
@@ -31,12 +32,22 @@ void Sensor::setup() {
     this->dhtClient->begin();
     this->mqttClient->setDelegate(this);
     this->mqttClient->subscribe(id, 1);
+    this->homeyClient->begin(id);
 }
 
 void Sensor::loop() {
     switch (this->state)
     {
     case New:
+        this->state = HomeyUnregistered;
+        break;
+
+    case HomeyUnregistered:
+        this->homeyClient->loop();
+        break;
+
+    case HomeyPublished:
+        this->publishHomeyMessage();
         this->publishNewSensorMessage();
         this->state = WaitingResponse;
         break;
@@ -47,6 +58,7 @@ void Sensor::loop() {
 
     case Registered:
         this->publishEnvironmentMessage();
+        this->state = Sleepy;
         break;
 
     default:
@@ -85,7 +97,14 @@ void Sensor::publishEnvironmentMessage() {
     serializeJson(doc, msg);
 
     this->mqttClient->publish(msg, "environment", 1);
-    this->state = Sleepy;
+}
+
+void Sensor::publishHomeyMessage() {
+    Environment e;
+    this->dhtClient->getEnvironment(&e);
+
+    this->homeyClient->updateHumidity(e.humidity);
+    this->homeyClient->updateTemperature(e.temperature);
 }
 
 void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::string &message) {
@@ -95,4 +114,12 @@ void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::stri
         this->roomId = std::string((const char *)doc["RoomId"]);
         this->state = Registered;
     }
+}
+
+void Sensor::becomeSleepy() {
+    this->state = Sleepy;
+}
+
+void Sensor::homeyRegisterTimeout() {
+    this->state = HomeyPublished;
 }

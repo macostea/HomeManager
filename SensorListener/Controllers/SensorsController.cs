@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
 using SensorListener.QueueClients;
 
 namespace SensorListener.Controllers
@@ -12,10 +13,12 @@ namespace SensorListener.Controllers
     public class SensorsController : Controller
     {
         private readonly RabbitMQClient rabbitMQClient;
+        private readonly string homeyTopic;
 
         public SensorsController(RabbitMQClient rabbitMQClient)
         {
             this.rabbitMQClient = rabbitMQClient;
+            this.homeyTopic = "homie";
         }
 
         [HttpPost]
@@ -27,6 +30,13 @@ namespace SensorListener.Controllers
             };
             await this.rabbitMQClient.PublishAsync(sensor.Id.ToString(), JsonConvert.SerializeObject(sensorMessage));
             return Ok(sensor);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PublishHomeyMessage<T>(string topic, T message)
+        {
+            await this.rabbitMQClient.PublishAsync($"{this.homeyTopic}/{topic}", message.ToString());
+            return Ok(message);
         }
     }
 }

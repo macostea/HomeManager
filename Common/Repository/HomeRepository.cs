@@ -420,6 +420,22 @@ namespace Common.Repository
             return sensors;
         }
 
+        public async Task<HomeyMapping> GetHomeyMapping(Sensor sensor)
+        {
+            var sql = "SELECT * FROM \"homeyMappings\" WHERE sensor_id = @SensorId LIMIT 1";
+            HomeyMapping mapping = null;
+            try
+            {
+                mapping = await dbConnection.QueryFirstAsync<HomeyMapping>(sql, new { SensorId = sensor.Id });
+            }
+            catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get Homey Mappings");
+            }
+
+            return mapping;
+        }
+
         public async Task<IEnumerable<Weather>> GetWeather(Guid homeId, DateTime startDate, DateTime endDate)
         {
             var sql = "SELECT * FROM weather WHERE home_id = @HomeId AND timestamp >= @StartDate AND timestamp <= @EndDate";

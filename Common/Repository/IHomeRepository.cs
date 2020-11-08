@@ -33,6 +33,7 @@ namespace Common.Repository
         Task<IEnumerable<Sensor>> GetSensors();
         Task<Sensor> AddSensor(Guid roomId, Sensor sensor);
         Task<Sensor> AddSensor(Sensor sensor);
+        Task<HomeyMapping> GetHomeyMapping(Sensor sensor);
 
         Task<bool> EditWeather(Weather weather);
 
@@ -50,5 +51,6 @@ namespace Common.Repository
         Task<bool> EditEnvironment(Environment environment);
         Task<Environment> GetEnvironment(Guid id);
         Task<bool> DeleteEnvironment(Guid id);
+
     }
 }

@@ -18,6 +18,7 @@ bool ArduinoHomeyClient::begin(std::string id) {
 }
 
 bool ArduinoHomeyClient::updateMotion(bool motion) {
+    Serial.printf("[HOMEY] Sending motion: %d\n", motion);
     return this->client->setCapabilityValue("alarm_motion", motion);
 }
 

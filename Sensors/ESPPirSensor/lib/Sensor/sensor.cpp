@@ -32,6 +32,13 @@ void Sensor::setup() {
     this->mqttClient->setDelegate(this);
     this->mqttClient->subscribe(id, 1);
     this->homeyClient->begin(id);
+    this->pirClient->begin();
+    this->pirClient->preventSleep(true);
+
+    this->homeyClient->loop();
+    this->homeyClient->loop();
+
+    this->publishHomeyMessage(true);
 }
 
 void Sensor::loop() {
@@ -39,7 +46,6 @@ void Sensor::loop() {
     {
     case New:
         this->state = HomeyUnregistered;
-        this->pirClient->preventSleep(true);
         break;
 
     case HomeyUnregistered:
@@ -58,13 +64,18 @@ void Sensor::loop() {
 
     case Registered:
         this->publishEnvironmentMessage(true);
-        this->state = Sleepy;
+        this->state = PIRTimeout;
+        break;
+
+    case PIRTimeout:
+        this->homeyClient->loop();
         break;
 
     case Sleepy:
-        this->pirClient->preventSleep(false);
         this->publishHomeyMessage(false);
         this->publishEnvironmentMessage(false);
+
+        this->pirClient->preventSleep(false);
         break;
 
     default:
@@ -87,8 +98,6 @@ void Sensor::publishNewSensorMessage() {
 }
 
 void Sensor::publishEnvironmentMessage(bool motion) {
-    Environment e;
-
     const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3);
     DynamicJsonDocument doc(capacity);
 
@@ -104,8 +113,6 @@ void Sensor::publishEnvironmentMessage(bool motion) {
 }
 
 void Sensor::publishHomeyMessage(bool motion) {
-    Environment e;
-
     this->homeyClient->updateMotion(motion);
 }
 
@@ -120,6 +127,7 @@ void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::stri
 
 void Sensor::becomeSleepy() {
     this->state = Sleepy;
+    this->loop();
 }
 
 void Sensor::homeyRegisterTimeout() {

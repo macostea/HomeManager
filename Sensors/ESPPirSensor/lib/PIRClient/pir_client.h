@@ -1,12 +1,9 @@
 #ifndef PIRCLIENT_H
 #define PIRCLIENT_H
 
-typedef struct Environment {
-    bool motion;
-} Environment;
-
 class PIRClient {
-public:   
+public:
+    virtual void begin() = 0;
     virtual void preventSleep(bool prevent) = 0;
 };
 

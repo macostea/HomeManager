@@ -11,7 +11,7 @@
 #define WLAN_SSID ""
 #define WLAN_PASS ""
 #define CONNECTION_ATTEMPTS 20
-#define SLEEP_TIME_SECONDS 900
+#define SLEEP_TIME_SECONDS 0  // Sleep until PIR wakes us up
 
 #define MQTT_SERVER ""
 #define MQTT_USERNAME ""
@@ -24,7 +24,7 @@ ArduinoHomeyClient homeyClient;
 ArduinoPIRClient pirClient(PIR_SLEEP_PIN);
 
 unsigned long homeyRegisterTimeoutPrevious = 0;
-const unsigned long homeyRegisterTimeoutInterval = 120000;
+const unsigned long homeyRegisterTimeoutInterval = 5000;
 
 unsigned long mqttWaitTimeoutPrevious = 0;
 const unsigned long mqttWaitTimeoutInterval = 30000;
@@ -36,7 +36,7 @@ std::string getUUID() {
   return generateUUID(std::string(macAddr.c_str()));
 }
 
-Sensor s(getUUID(), "temp+hum", &mqttClient, &homeyClient, &pirClient);
+Sensor s(getUUID(), "pir", &mqttClient, &homeyClient, &pirClient);
 
 bool connect() {
   Serial.print("checking wifi...");
@@ -70,6 +70,7 @@ void setup() {
   Serial.begin(115200);
 
   Serial.println("Device wake up");
+  Serial.println(ESP.getResetReason());
 
   if (!connect()) {
     Serial.println("Could not connect to WIFI, sleeping...");
@@ -108,7 +109,7 @@ void loop() {
     }
   }
 
-  if (s.getState() == WaitingResponse) {
+  if (s.getState() == WaitingResponse || s.getState() == PIRTimeout) {
     if (mqttWaitTimeoutPrevious == 0) {
       mqttWaitTimeoutPrevious = millis();
     } else {

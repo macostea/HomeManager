@@ -8,6 +8,7 @@ public:
     ArduinoPIRClient(int pin);
     ~ArduinoPIRClient();
     
+    virtual void begin();
     virtual void preventSleep(bool prevent);
 
 private:

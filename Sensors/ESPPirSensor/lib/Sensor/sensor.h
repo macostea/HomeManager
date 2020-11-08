@@ -10,6 +10,7 @@ typedef enum SensorState {
     New,
     WaitingResponse,
     Registered,
+    PIRTimeout,
     Sleepy,
     HomeyUnregistered,
     HomeyPublished

@@ -8,7 +8,7 @@
 #include "arduino_homey_client.h"
 #include "uuid_gen.h"
 
-#define DHTPIN D7
+#define DHTPIN D5
 #define DHTTYPE DHT11
 
 #define WLAN_SSID ""

@@ -1,5 +1,5 @@
-﻿using Common.SensorServiceAPI;
-using Domain.Entities;
+﻿using IOTDashboard.Infrastructure.Services;
+using IOTDashboard.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,21 +25,17 @@ namespace IOTDashboard
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public Weather LastWeather { get; set; }
+        private MainPageVM ViewModel;
+
         public MainPage()
         {
+            ViewModel = ServiceLocator.Current.GetService<MainPageVM>();
             this.InitializeComponent();
-            this.GetWeather();
         }
 
-        private async void GetWeather()
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var client = new SensorServiceAPI("http://sensor-service.mcostea.com");
-            var weatherList = await client.GetWeather("24039b7c-bf70-4a7d-b562-96ff4382ba78", DateTime.Today, DateTime.Now);
-
-            weatherList.Sort((w1, w2) => w1.Timestamp.CompareTo(w2.Timestamp));
-
-            this.LastWeather = weatherList.Last();
+            await ViewModel.LoadAsync();
         }
     }
 }

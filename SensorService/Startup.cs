@@ -47,6 +47,7 @@ namespace SensorService
                 config.AddMap(new SensorMap());
             });
             SqlMapper.AddTypeHandler(new UriTypeHandler());
+            SqlMapper.AddTypeHandler(new DateTimeTypeHandler());
 
             services.AddSwaggerGen(c =>
             {

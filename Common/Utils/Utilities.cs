@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Common.Utils
             {
                 BaseUrl = BaseURL
             };
-            var response = await client.ExecuteTaskAsync<T>(request);
+            var response = await client.ExecuteTaskAsync(request);
 
             if (response.ErrorException != null)
             {
@@ -22,7 +23,10 @@ namespace Common.Utils
                 var exception = new ApplicationException(message, response.ErrorException);
                 throw exception;
             }
-            return response.Data;
+            return JsonConvert.DeserializeObject<T>(response.Content, new JsonSerializerSettings
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            });
         }
     }
 }

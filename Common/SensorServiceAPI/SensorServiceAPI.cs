@@ -77,5 +77,29 @@ namespace Common.SensorServiceAPI
 
             return await Utilities.ExecuteRestRequest<List<Weather>>(this.BaseURL, weatherRequest);
         }
+
+        public async Task<List<Room>> GetRooms(string homeId)
+        {
+            var roomsRequest = new RestRequest
+            {
+                Resource = "api/homes/{homeId}/room"
+            };
+            roomsRequest.AddUrlSegment("homeId", homeId);
+
+            return await Utilities.ExecuteRestRequest<List<Room>>(this.BaseURL, roomsRequest);
+        }
+
+        public async Task<List<Environment>> GetEnvironment(string roomId, DateTime startDate, DateTime endDate)
+        {
+            var envRequest = new RestRequest
+            {
+                Resource = "api/rooms/{roomId}/environment"
+            };
+            envRequest.AddUrlSegment("roomId", roomId);
+            envRequest.AddParameter("startDate", startDate);
+            envRequest.AddParameter("endDate", endDate);
+
+            return await Utilities.ExecuteRestRequest<List<Environment>>(this.BaseURL, envRequest);
+        }
     }
 }

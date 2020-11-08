@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace IOTDashboard
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -45,6 +46,7 @@ namespace IOTDashboard
             // just ensure that the window is active
             if (rootFrame == null)
             {
+                await Startup.ConfigureAsync();
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
 
@@ -71,6 +73,7 @@ namespace IOTDashboard
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+
         }
 
         /// <summary>

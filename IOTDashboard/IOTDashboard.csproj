@@ -119,7 +119,23 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Infrastructure\Base\ObservableObject.cs" />
+    <Compile Include="Infrastructure\Base\ViewModelBase.cs" />
+    <Compile Include="Infrastructure\Logging\AppLog.cs" />
+    <Compile Include="Infrastructure\Services\CommonServices.cs" />
+    <Compile Include="Infrastructure\Services\ContextService.cs" />
+    <Compile Include="Infrastructure\Services\ICommonServices.cs" />
+    <Compile Include="Infrastructure\Services\IContextService.cs" />
+    <Compile Include="Infrastructure\Services\ILogService.cs" />
+    <Compile Include="Infrastructure\Services\INavigationService.cs" />
+    <Compile Include="Infrastructure\Services\LogService.cs" />
+    <Compile Include="Infrastructure\Services\NavigationService.cs" />
+    <Compile Include="Infrastructure\Services\ServiceLocator.cs" />
+    <Compile Include="Infrastructure\Services\DataService.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Utils\NotifyTaskCompletion.cs" />
+    <Compile Include="ViewModels\MainPageVM.cs" />
+    <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -144,14 +160,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+      <Version>3.1.7</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.9</Version>
+    </PackageReference>
+    <PackageReference Include="OxyPlot.Windows">
+      <Version>2.0.0-unstable1035</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +185,9 @@
       <Project>{8c43edb4-7008-43ea-9136-7f17d36aeeef}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

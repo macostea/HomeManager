@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Repository;
+using Common.SensorListenerAPI;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,12 @@ namespace SensorService.Controllers
     public class RoomsController : Controller
     {
         private readonly IHomeRepository homeRepository;
+        private readonly ISensorListenerAPI listenerClient;
 
-        public RoomsController(IHomeRepository homeRepository)
+        public RoomsController(IHomeRepository homeRepository, ISensorListenerAPI listenerClient)
         {
             this.homeRepository = homeRepository;
+            this.listenerClient = listenerClient;
         }
 
         // GET api/values/5
@@ -144,6 +147,24 @@ namespace SensorService.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+
+            var homeyMapping = await this.homeRepository.GetHomeyMapping(sensor);
+            if (homeyMapping != null)
+            {
+                if (homeyMapping.HumTopic != null && insertedEnvironment.Humidity != 0)
+                {
+                    await this.listenerClient.NotifyHomeyTopic<double>(homeyMapping.HumTopic, insertedEnvironment.Humidity);
+                }
+                if (homeyMapping.TempTopic != null && insertedEnvironment.Temperature != 0)
+                {
+                    await this.listenerClient.NotifyHomeyTopic<double>(homeyMapping.TempTopic, insertedEnvironment.Temperature);
+                }
+                if (homeyMapping.MotionTopic != null)
+                {
+                    await this.listenerClient.NotifyHomeyTopic<bool>(homeyMapping.MotionTopic, insertedEnvironment.Motion);
+                }
+            }
+
             return Ok(insertedEnvironment);
         }
     }

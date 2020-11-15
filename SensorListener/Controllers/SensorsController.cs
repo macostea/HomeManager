@@ -32,11 +32,12 @@ namespace SensorListener.Controllers
             return Ok(sensor);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PublishHomeyMessage<T>(string topic, T message)
+        [HttpPost("homey/{topic}")]
+        public async Task<IActionResult> PublishHomeyMessage(string topic)
         {
-            await this.rabbitMQClient.PublishAsync($"{this.homeyTopic}/{topic}", message.ToString());
-            return Ok(message);
+            object msg = HttpContext.Request.Form["message"];
+            await this.rabbitMQClient.PublishAsync($"{this.homeyTopic}.{topic}", msg.ToString());
+            return Ok(msg);
         }
     }
 }

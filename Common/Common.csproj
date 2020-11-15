@@ -30,7 +30,6 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Mappings\" />
     <Folder Include="SensorListenerAPI\" />
   </ItemGroup>
 </Project>

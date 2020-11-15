@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Utils;
 using Domain.Entities;
@@ -26,6 +27,19 @@ namespace Common.SensorListenerAPI
             sensorRequest.AddJsonBody(sensor);
 
             return await Utilities.ExecuteRestRequest<Sensor>(this.BaseURL, sensorRequest);
+        }
+
+        public async Task NotifyHomeyTopic<T>(string topic, T message)
+        {
+            var sensorRequest = new RestRequest
+            {
+                Resource = "api/sensors/homey/{topic}"
+            };
+            sensorRequest.Method = Method.POST;
+            sensorRequest.AddUrlSegment("topic", topic);
+            sensorRequest.AddParameter("message", message);
+            
+            await Utilities.ExecuteRestRequest(this.BaseURL, sensorRequest);
         }
     }
 }

@@ -436,6 +436,29 @@ namespace Common.Repository
             return mapping;
         }
 
+        public async Task<HomeyMapping> AddHomeyMapping(Guid sensorId, HomeyMapping mapping)
+        {
+            var sql = "INSERT INTO \"homeyMappings\" (sensor_id, temp_topic, hum_topic, motion_topic) " +
+                "VALUES (@SensorId, @TempTopic, @HumTopic, @MotionTopic) " +
+                "RETURNING *";
+            HomeyMapping insertedMapping = null;
+            try
+            {
+                insertedMapping = await dbConnection.QueryFirstAsync<HomeyMapping>(sql, new
+                {
+                    sensorId,
+                    mapping.TempTopic,
+                    mapping.HumTopic,
+                    mapping.MotionTopic
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert homey mapping");
+            }
+
+            return insertedMapping;
+        }
+
         public async Task<IEnumerable<Weather>> GetWeather(Guid homeId, DateTime startDate, DateTime endDate)
         {
             var sql = "SELECT * FROM weather WHERE home_id = @HomeId AND timestamp >= @StartDate AND timestamp <= @EndDate";

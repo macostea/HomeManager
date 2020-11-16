@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Repository;
+using Common.SensorListenerAPI;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,10 @@ namespace SensorServiceTests
 
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(rooms[0]);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.Get("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value as Room;
 
@@ -52,7 +56,10 @@ namespace SensorServiceTests
 
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(rooms[0]);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.Get("00000000-0000-0000-0000-000000000002");
             var contentResult = result as NotFoundResult;
 
@@ -69,7 +76,11 @@ namespace SensorServiceTests
             };
 
             mockedRepo.Setup(repo => repo.EditRoom(room)).ReturnsAsync(true);
-            var controller = new RoomsController(mockedRepo.Object);
+
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.Put(room);
             var contentResult = (result as OkObjectResult).Value;
 
@@ -87,7 +98,11 @@ namespace SensorServiceTests
             };
 
             mockedRepo.Setup(repo => repo.EditRoom(room)).ReturnsAsync(false);
-            var controller = new RoomsController(mockedRepo.Object);
+
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.Put(room);
             var contentResult = result as BadRequestResult;
 
@@ -104,7 +119,10 @@ namespace SensorServiceTests
             };
             mockedRepo.Setup(repo => repo.GetRoomBySensorId(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.GetBySensor("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value;
 
@@ -122,7 +140,10 @@ namespace SensorServiceTests
             };
             mockedRepo.Setup(repo => repo.GetRoomBySensorId(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync((Room)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.GetBySensor("00000000-0000-0000-0000-000000000001");
             var contentResult = result as NotFoundResult;
 
@@ -140,7 +161,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.DeleteRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(true);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.Delete("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value;
 
@@ -159,7 +183,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync((Room)null);
             mockedRepo.Setup(repo => repo.DeleteRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(false);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.Delete("00000000-0000-0000-0000-000000000001");
             var contentResult = result as NotFoundResult;
 
@@ -177,7 +204,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.DeleteRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(false);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.Delete("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as StatusCodeResult).StatusCode;
 
@@ -207,7 +237,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.GetSensors(room)).ReturnsAsync(sensors);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.GetSensors("00000000-0000-0000-0000-000000000001");
             var contentResult = (result as OkObjectResult).Value;
 
@@ -238,7 +271,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Room)null);
             mockedRepo.Setup(repo => repo.GetSensors(room)).ReturnsAsync(sensors);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.GetSensors("00000000-0000-0000-0000-000000000002");
             var contentResult = result as NotFoundResult;
 
@@ -262,7 +298,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.AddSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"), sensor)).ReturnsAsync(sensor);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.PostSensor("00000000-0000-0000-0000-000000000001", sensor);
             var contentResult = (result as OkObjectResult).Value;
 
@@ -287,7 +326,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Room)null);
             mockedRepo.Setup(repo => repo.AddSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"), sensor)).ReturnsAsync((Sensor)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.PostSensor("00000000-0000-0000-0000-000000000002", sensor);
             var contentResult = result as NotFoundResult;
 
@@ -311,7 +353,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.AddSensor(Guid.Parse("00000000-0000-0000-0000-000000000001"), sensor)).ReturnsAsync((Sensor)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.PostSensor("00000000-0000-0000-0000-000000000001", sensor);
             var contentResult = (result as StatusCodeResult).StatusCode;
 
@@ -346,7 +391,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.GetEnvironmentReadings(Guid.Parse("00000000-0000-0000-0000-000000000001"), startDate, endDate)).ReturnsAsync(environment);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.GetEnvironment("00000000-0000-0000-0000-000000000001", startDate, endDate);
             var contentResult = (result as OkObjectResult).Value;
 
@@ -371,7 +419,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync((Room)null);
             mockedRepo.Setup(repo => repo.GetEnvironmentReadings(Guid.Parse("00000000-0000-0000-0000-000000000001"), startDate, endDate)).ReturnsAsync((List<Environment>)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.GetEnvironment("00000000-0000-0000-0000-000000000001", startDate, endDate);
             var contentResult = result as NotFoundResult;
 
@@ -395,7 +446,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.GetEnvironmentReadings(Guid.Parse("00000000-0000-0000-0000-000000000001"), startDate, endDate)).ReturnsAsync((List<Environment>)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.GetEnvironment("00000000-0000-0000-0000-000000000001", startDate, endDate);
             var contentResult = result as BadRequestResult;
 
@@ -427,7 +481,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
             mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync(environment);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = (result as OkObjectResult).Value;
 
@@ -460,7 +517,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
             mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync((Environment)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = result as NotFoundResult;
 
@@ -492,7 +552,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync((Sensor)null);
             mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync((Environment)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = result as NotFoundResult;
 
@@ -524,7 +587,10 @@ namespace SensorServiceTests
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
             mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync((Environment)null);
 
-            var controller = new RoomsController(mockedRepo.Object);
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
             var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
             var contentResult = (result as StatusCodeResult).StatusCode;
 

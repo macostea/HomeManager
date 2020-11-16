@@ -12,7 +12,10 @@ steps:
       configMode: manual
       cliProjectKey: 'mihaiandreicostea_HomeManager'
       cliProjectName: HomeManager
-   condition: eq('${{ parameters.runTests }}', 'true')
+    condition: eq('${{ parameters.runTests }}', 'true')
+  
+  - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+    displayName: 'Run Code Analysis'
       
   - task: Docker@1
     displayName: 'Build RabbitMQ'

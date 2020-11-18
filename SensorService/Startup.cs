@@ -45,6 +45,7 @@ namespace SensorService
             {
                 config.AddMap(new WeatherMap());
                 config.AddMap(new SensorMap());
+                config.AddMap(new HomeyMappingMap());
             });
             SqlMapper.AddTypeHandler(new UriTypeHandler());
 

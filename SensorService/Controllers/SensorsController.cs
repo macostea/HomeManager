@@ -36,7 +36,10 @@ namespace SensorService.Controllers
             if (insertedSensor.RoomId != Guid.Empty)
             {
                 var s = await listenerClient.NotifySensorUpdate(insertedSensor);
-                return Ok(s);
+                if (s == null)
+                {
+                    // TODO: Log warning
+                }
             }
 
             return Ok(insertedSensor);
@@ -92,6 +95,37 @@ namespace SensorService.Controllers
             }
 
             return Ok(sensor);
+        }
+
+        [HttpGet("{id}/homeymapping")]
+        public async Task<IActionResult> GetHomeyMapping(string id)
+        {
+            var sensor = await this.repository.GetSensor(Guid.Parse(id));
+            if (sensor == null)
+            {
+                return NotFound();
+            }
+
+            var homeyMapping = await this.repository.GetHomeyMapping(sensor);
+            return Ok(homeyMapping);
+        }
+
+        [HttpPost("{id}/homeymapping")]
+        public async Task<IActionResult> PostHomeyMapping(string id, [FromBody] HomeyMapping mapping)
+        {
+            var sensor = await this.repository.GetSensor(Guid.Parse(id));
+            if (sensor == null)
+            {
+                return NotFound();
+            }
+
+            var insertedMapping = await this.repository.AddHomeyMapping(Guid.Parse(id), mapping);
+            if (insertedMapping == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(insertedMapping);
         }
     }
 }

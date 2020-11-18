@@ -69,12 +69,14 @@ steps:
         buildContext: '$(System.DefaultWorkingDirectory)'
 
   - task: Docker@1
-    displayName: 'Build SonarCloud scan container'
+    displayName: 'Build SonarCloud scan image'
     inputs:
         containerregistrytype: 'Container Registry'
         dockerRegistryEndpoint: 'Docker Hub'
         dockerFile: scripts/sonarcloud/Dockerfile
         imageName: 'mcostea/homemanager-sonarcloud'
+        useDefaultContext: false
+        buildContext: '$(System.DefaultWorkingDirectory)'
     condition: eq('${{ parameters.runTests }}', 'true')
 
   - task: Docker@1

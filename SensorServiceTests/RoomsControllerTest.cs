@@ -474,12 +474,23 @@ namespace SensorServiceTests
 
             var environment = new Environment()
             {
-                Id = Guid.Parse("00000000-0000-0000-0000-000000000000")
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000"),
+                Temperature = 12.0,
+                Humidity = 13.0,
+                Motion = true
+            };
+
+            var newMapping = new HomeyMapping()
+            {
+                HumTopic = "humTopic",
+                TempTopic = "tempTopic",
+                MotionTopic = "motionTopic"
             };
 
             mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
             mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
             mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync(environment);
+            mockedRepo.Setup(repo => repo.GetHomeyMapping(sensor)).ReturnsAsync(newMapping);
 
             var mockedListenerClient = new Mock<ISensorListenerAPI>();
             mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
@@ -490,6 +501,9 @@ namespace SensorServiceTests
 
             Assert.NotNull(contentResult);
             Assert.Equal(environment, contentResult);
+            mockedListenerClient.Verify(client => client.NotifyHomeyTopic(newMapping.HumTopic, environment.Humidity));
+            mockedListenerClient.Verify(client => client.NotifyHomeyTopic(newMapping.TempTopic, environment.Temperature));
+            mockedListenerClient.Verify(client => client.NotifyHomeyTopic(newMapping.MotionTopic, environment.Motion));
         }
 
         [Fact]
@@ -595,6 +609,47 @@ namespace SensorServiceTests
             var contentResult = (result as StatusCodeResult).StatusCode;
 
             Assert.Equal(StatusCodes.Status500InternalServerError, contentResult);
+        }
+
+        [Fact]
+        public async Task PostEnvironment_WhenCalled_NoHomeyMapping_ReturnsOk_NoNotification()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var room = new Room()
+            {
+                Name = "test_room_1",
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000001")
+            };
+
+            var sensor = new Sensor()
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002")
+            };
+
+            var environment = new Environment()
+            {
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000000"),
+                Temperature = 12.0,
+                Humidity = 13.0,
+                Motion = true
+            };
+
+            mockedRepo.Setup(repo => repo.GetRoom(Guid.Parse("00000000-0000-0000-0000-000000000001"))).ReturnsAsync(room);
+            mockedRepo.Setup(repo => repo.GetSensor(Guid.Parse("00000000-0000-0000-0000-000000000002"))).ReturnsAsync(sensor);
+            mockedRepo.Setup(repo => repo.AddEnvironmentReading(Guid.Parse("00000000-0000-0000-0000-000000000001"), Guid.Parse("00000000-0000-0000-0000-000000000002"), environment)).ReturnsAsync(environment);
+            mockedRepo.Setup(repo => repo.GetHomeyMapping(sensor)).ReturnsAsync((HomeyMapping)null);
+
+            var mockedListenerClient = new Mock<ISensorListenerAPI>();
+            mockedListenerClient.Setup(client => client.NotifyHomeyTopic<double>("test", 0));
+
+            var controller = new RoomsController(mockedRepo.Object, mockedListenerClient.Object);
+            var result = await controller.PostEnvironment("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", environment);
+            var contentResult = (result as OkObjectResult).Value;
+
+            Assert.NotNull(contentResult);
+            Assert.Equal(environment, contentResult);
+            mockedListenerClient.VerifyNoOtherCalls();
         }
     }
 }

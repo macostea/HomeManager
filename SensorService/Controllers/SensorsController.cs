@@ -36,7 +36,10 @@ namespace SensorService.Controllers
             if (insertedSensor.RoomId != Guid.Empty)
             {
                 var s = await listenerClient.NotifySensorUpdate(insertedSensor);
-                return Ok(s);
+                if (s == null)
+                {
+                    // TODO: Log warning
+                }
             }
 
             return Ok(insertedSensor);
@@ -119,7 +122,7 @@ namespace SensorService.Controllers
             var insertedMapping = await this.repository.AddHomeyMapping(Guid.Parse(id), mapping);
             if (insertedMapping == null)
             {
-                StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return Ok(insertedMapping);

@@ -16,11 +16,13 @@ namespace SensorServiceTests
     public class SensorsControllerTest
     {
         private readonly ISensorListenerAPI listenerClient;
+        private readonly Mock<ISensorListenerAPI> listenerMock;
         public SensorsControllerTest()
         {
             var mockedSensorListenerClient = new Mock<ISensorListenerAPI>();
             mockedSensorListenerClient.Setup(listener => listener.NotifySensorUpdate(It.IsAny<Sensor>())).ReturnsAsync(new Sensor());
 
+            this.listenerMock = mockedSensorListenerClient;
             this.listenerClient = mockedSensorListenerClient.Object;
         }
 
@@ -132,6 +134,25 @@ namespace SensorServiceTests
         }
 
         [Fact]
+        public async Task GetAll_WhenCalled_ReturnsOk()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003")
+            };
+            mockedRepo.Setup(r => r.GetSensors()).ReturnsAsync(new List<Sensor> { newSensor });
+
+            var result = await controller.GetAll();
+            var contentResult = (List<Sensor>)(result as OkObjectResult).Value;
+
+            Assert.Single(contentResult);
+            Assert.Equal(newSensor, contentResult[0]);
+        }
+
+        [Fact]
         public async Task Delete_WhenCalled_ReturnsOk()
         {
             var mockedRepo = new Mock<IHomeRepository>();
@@ -209,7 +230,8 @@ namespace SensorServiceTests
             {
                 Name = "test_sensor_1",
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
-                Type = "test_type"
+                Type = "test_type",
+                RoomId = Guid.Parse("00000000-0000-0000-0000-000000000001")
             };
 
             mockedRepo.Setup(repo => repo.AddSensor(newSensor)).ReturnsAsync(newSensor);
@@ -217,6 +239,8 @@ namespace SensorServiceTests
             var result = await controller.Post(newSensor);
             var contentResult = (result as OkObjectResult).Value;
 
+            this.listenerMock.Verify(client => client.NotifySensorUpdate(newSensor), Times.Once);
+            
             Assert.NotNull(contentResult);
             Assert.Equal(newSensor, contentResult);
         }
@@ -240,7 +264,143 @@ namespace SensorServiceTests
             var result = await controller.Post(newSensor);
             var contentResult = (result as StatusCodeResult).StatusCode;
 
+            this.listenerMock.VerifyNoOtherCalls();
             Assert.Equal(StatusCodes.Status500InternalServerError, contentResult);
+        }
+
+        [Fact]
+        public async Task GetHomeyMapping_WhenCalled_ReturnsOk()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                Type = "test_type"
+            };
+
+            mockedRepo.Setup(repo => repo.GetSensor(newSensor.Id)).ReturnsAsync(newSensor);
+
+            var newMapping = new HomeyMapping()
+            {
+                HumTopic = "humTopic",
+                TempTopic = "tempTopic",
+                MotionTopic = "motionTopic"
+            };
+
+            mockedRepo.Setup(repo => repo.GetHomeyMapping(newSensor)).ReturnsAsync(newMapping);
+
+            var result = await controller.GetHomeyMapping(newSensor.Id.ToString());
+            var contentResult = (result as OkObjectResult).Value;
+
+            Assert.Equal(newMapping, contentResult);
+        }
+
+        [Fact]
+        public async Task GetHomeyMapping_WhenCalled_WrongSensor_ReturnsNotFound()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
+            var sensorId = Guid.Parse("00000000-0000-0000-0000-000000000003");
+
+            mockedRepo.Setup(repo => repo.GetSensor(sensorId)).ReturnsAsync((Sensor)null);
+
+            var result = await controller.GetHomeyMapping(sensorId.ToString());
+            var contentResult = result as NotFoundResult;
+
+            Assert.NotNull(contentResult);
+            mockedRepo.Verify(repo => repo.GetSensor(sensorId));
+            mockedRepo.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task PostHomeyMapping_WhenCalled_ReturnsOk()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                Type = "test_type"
+            };
+
+            var newMapping = new HomeyMapping()
+            {
+                HumTopic = "humTopic",
+                TempTopic = "tempTopic",
+                MotionTopic = "motionTopic"
+            };
+
+            mockedRepo.Setup(repo => repo.GetSensor(newSensor.Id)).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.AddHomeyMapping(newSensor.Id, newMapping)).ReturnsAsync(newMapping);
+
+            var result = await controller.PostHomeyMapping(newSensor.Id.ToString(), newMapping);
+            var contentResult = (result as OkObjectResult).Value;
+
+            Assert.Equal(newMapping, contentResult);
+        }
+
+        [Fact]
+        public async Task PostHomeyMapping_WhenCalled_WrongSensor_ReturnsNotFound()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
+
+            var sensorId = Guid.Parse("00000000-0000-0000-0000-000000000003");
+
+            var newMapping = new HomeyMapping()
+            {
+                HumTopic = "humTopic",
+                TempTopic = "tempTopic",
+                MotionTopic = "motionTopic"
+            };
+
+            mockedRepo.Setup(repo => repo.GetSensor(sensorId)).ReturnsAsync((Sensor)null);
+
+            var result = await controller.PostHomeyMapping(sensorId.ToString(), newMapping);
+            var contentResult = (result as NotFoundResult);
+
+            Assert.NotNull(contentResult);
+            mockedRepo.Verify(repo => repo.GetSensor(sensorId));
+            mockedRepo.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task PostHomeyMapping_WhenCalled_AddFailed_Returns500()
+        {
+            var mockedRepo = new Mock<IHomeRepository>();
+
+            var controller = new SensorsController(mockedRepo.Object, listenerClient);
+
+            var newSensor = new Sensor()
+            {
+                Name = "test_sensor_1",
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                Type = "test_type"
+            };
+
+            var newMapping = new HomeyMapping()
+            {
+                HumTopic = "humTopic",
+                TempTopic = "tempTopic",
+                MotionTopic = "motionTopic"
+            };
+
+            mockedRepo.Setup(repo => repo.GetSensor(newSensor.Id)).ReturnsAsync(newSensor);
+            mockedRepo.Setup(repo => repo.AddHomeyMapping(newSensor.Id, newMapping)).ReturnsAsync((HomeyMapping)null);
+
+            var result = await controller.PostHomeyMapping(newSensor.Id.ToString(), newMapping);
+            var contentResult = (result as StatusCodeResult);
+
+            Assert.Equal(StatusCodes.Status500InternalServerError, contentResult.StatusCode);
         }
     }
 }

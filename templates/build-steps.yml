@@ -15,11 +15,11 @@ steps:
     displayName: 'Setup buildx'
 
   - bash: |
-      docker buildx build --platform linux/arm/v7,linux/arm/v6,linux/arm64,linux/amd64 -t mcostea/homemanager_rabbitmq:$(Build.BuildId) -f deploy/rabbitmq/Dockerfile --push deploy/rabbitmq
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_rabbitmq:$(Build.BuildId) -f deploy/rabbitmq/Dockerfile --push deploy/rabbitmq
     displayName: 'Build RabbitMQ'
     
   - bash: |
-      docker buildx build --platform linux/arm/v7,linux/arm/v6,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-service:$(Build.BuildId) -f SensorService/Dockerfile --push .
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-service:$(Build.BuildId) -f SensorService/Dockerfile --push .
     displayName: 'Build sensor service'
 
   - task: Docker@1
@@ -46,11 +46,11 @@ steps:
     condition: eq('${{ parameters.runTests }}', 'true')
 
   - bash: |
-      docker buildx build --platform linux/arm/v7,linux/arm/v6,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-listener:$(Build.BuildId) -f SensorListener/Dockerfile --push .
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-listener:$(Build.BuildId) -f SensorListener/Dockerfile --push .
     displayName: 'Build sensor listener'
   
   - bash: |
-      docker buildx build --platform linux/arm/v7,linux/arm/v6,linux/arm64,linux/amd64 -t mcostea/homemanager_weather-sensor:$(Build.BuildId) -f Sensors/WeatherSensor/Dockerfile --push .
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_weather-sensor:$(Build.BuildId) -f Sensors/WeatherSensor/Dockerfile --push .
     displayName: 'Build weather sensor'
 
   - task: Docker@1

@@ -14,7 +14,7 @@ namespace Common.Utils
             {
                 BaseUrl = BaseURL
             };
-            var response = await client.ExecuteTaskAsync<T>(request);
+            var response = await client.ExecuteAsync<T>(request);
 
             if (response.ErrorException != null)
             {
@@ -31,7 +31,7 @@ namespace Common.Utils
             {
                 BaseUrl = BaseURL
             };
-            var response = await client.ExecuteTaskAsync(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.ErrorException != null)
             {

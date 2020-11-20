@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Common.SensorListenerAPI;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,11 +17,13 @@ namespace SensorService.Controllers
     {
         private readonly IHomeRepository repository;
         private readonly ISensorListenerAPI listenerClient;
+        private readonly ILogger<SensorsController> logger;
 
-        public SensorsController(IHomeRepository repository, ISensorListenerAPI listenerClient)
+        public SensorsController(IHomeRepository repository, ISensorListenerAPI listenerClient, ILogger<SensorsController> logger)
         {
             this.repository = repository;
             this.listenerClient = listenerClient;
+            this.logger = logger;
         }
 
         // POST api/sensor
@@ -38,7 +41,7 @@ namespace SensorService.Controllers
                 var s = await listenerClient.NotifySensorUpdate(insertedSensor);
                 if (s == null)
                 {
-                    // TODO: Log warning
+                    this.logger.LogWarning("Failed to notify sensor change on queue client");
                 }
             }
 

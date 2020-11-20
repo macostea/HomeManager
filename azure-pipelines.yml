@@ -2,7 +2,7 @@ trigger:
 - master
 
 jobs:
-- job: "multi-platform-build"
+- job: "multi_platform_build"
   pool:
     vmImage: 'ubuntu-20.04'
   steps:

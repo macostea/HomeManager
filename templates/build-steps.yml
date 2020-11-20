@@ -59,7 +59,7 @@ steps:
       docker buildx build --platform linux/amd64 -t mcostea/homemanager_sensor-listener:$(Build.BuildId) -f SensorListener/Dockerfile --push .
     displayName: 'Build sensor listener - amd64'
 
-    - bash: |
+  - bash: |
       docker build -t mcostea/homemanager_sensor-listener-arm -f SensorListener/Dockerfile.build.arm .
       docker run -d --name sensor-listener-arm mcostea/homemanager_sensor-listener-arm tail -f /dev/null
       mkdir -p publish-output/SensorListener/arm

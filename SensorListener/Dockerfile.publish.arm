@@ -1,0 +1,4 @@
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+COPY publish-output/SensorListener/arm/app .
+ENTRYPOINT ["dotnet", "SensorListener.dll"]

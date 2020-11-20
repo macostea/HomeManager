@@ -19,8 +19,18 @@ steps:
     displayName: 'Build RabbitMQ'
     
   - bash: |
-      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-service:$(Build.BuildId) -f SensorService/Dockerfile --push .
-    displayName: 'Build sensor service'
+      docker buildx build --platform linux/amd64 -t mcostea/homemanager_sensor-service:$(Build.BuildId) -f SensorService/Dockerfile --push .
+    displayName: 'Build sensor service - amd64'
+
+  - bash: |
+      docker build -t mcostea/homemanager_sensor-service-arm -f SensorService/Dockerfile.build.arm .
+      docker run -d --name sensor-service-arm mcostea/homemanager_sensor-service-arm tail -f /dev/null
+      mkdir -p publish-output/SensorService/arm
+      docker cp sensor-service-arm:/app publish-output/SensorService/arm
+      docker rm -f sensor-service-arm
+      docker buildx build --platform linux/arm -t mcostea/homemanager_sensor-service:$(Build.BuildId) -f SensorService/Dockerfile.publish.arm --push .
+      rm -rf publish-output/SensorService/arm
+    displayName: 'Build sensor service - arm'
 
   - task: Docker@1
     displayName: 'Build sensor service tests'
@@ -46,12 +56,32 @@ steps:
     condition: eq('${{ parameters.runTests }}', 'true')
 
   - bash: |
-      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-listener:$(Build.BuildId) -f SensorListener/Dockerfile --push .
-    displayName: 'Build sensor listener'
+      docker buildx build --platform linux/amd64 -t mcostea/homemanager_sensor-listener:$(Build.BuildId) -f SensorListener/Dockerfile --push .
+    displayName: 'Build sensor listener - amd64'
+
+    - bash: |
+      docker build -t mcostea/homemanager_sensor-listener-arm -f SensorListener/Dockerfile.build.arm .
+      docker run -d --name sensor-listener-arm mcostea/homemanager_sensor-listener-arm tail -f /dev/null
+      mkdir -p publish-output/SensorListener/arm
+      docker cp sensor-listener-arm:/app publish-output/SensorListener/arm
+      docker rm -f sensor-listener-arm
+      docker buildx build --platform linux/arm -t mcostea/homemanager_sensor-listener:$(Build.BuildId) -f SensorListener/Dockerfile.publish.arm --push .
+      rm -rf publish-output/SensorListener/arm
+    displayName: 'Build sensor listener - arm'
   
   - bash: |
-      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_weather-sensor:$(Build.BuildId) -f Sensors/WeatherSensor/Dockerfile --push .
-    displayName: 'Build weather sensor'
+      docker buildx build --platform linux/amd64 -t mcostea/homemanager_weather-sensor:$(Build.BuildId) -f Sensors/WeatherSensor/Dockerfile --push .
+    displayName: 'Build weather sensor - amd64'
+
+  - bash: |
+      docker build -t mcostea/homemanager_weather-sensor-arm -f Sensors/WeatherSensor/Dockerfile.build.arm .
+      docker run -d --name weather-sensor-arm mcostea/homemanager_weather-sensor-arm tail -f /dev/null
+      mkdir -p publish-output/WeatherSensor/arm
+      docker cp weather-sensor-arm:/app publish-output/WeatherSensor/arm
+      docker rm -f weather-sensor-arm
+      docker buildx build --platform linux/arm -t mcostea/homemanager_weather-sensor:$(Build.BuildId) -f Sensors/WeatherSensor/Dockerfile.publish.arm --push .
+      rm -rf publish-output/WeatherSensor/arm
+    displayName: 'Build weather sensor - arm'
 
   - task: Docker@1
     displayName: 'Build SonarCloud scan image'

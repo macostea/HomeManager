@@ -20,14 +20,6 @@ WORKDIR /src/SensorService
 FROM build AS publish
 RUN [ "bash", "-c", "if [ $TARGETPLATFORM == \"linux/arm/v7\" ]; then export ARCH_ARG=\"-r linux-arm --self-contained\"; else export ARCH_ARG=\"\"; fi; echo \"BUILDING FOR $ARCH_ARG\"; dotnet publish \"SensorService.csproj\" $ARCH_ARG -c Release -o /app" ]
 
-# Test
-FROM build AS testrunner
-WORKDIR /src/SensorServiceTests
-RUN curl -s https://codecov.io/bash > codecov && \
-	chmod +x codecov
-RUN chmod 744 docker-entrypoint.sh
-ENTRYPOINT ["sh", "-c", "/src/SensorServiceTests/docker-entrypoint.sh"]
-
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .

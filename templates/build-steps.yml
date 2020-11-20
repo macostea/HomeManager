@@ -27,7 +27,7 @@ steps:
     inputs:
       containerregistrytype: 'Container Registry'
       dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: SensorService/Dockerfile
+      dockerFile: SensorService/Dockerfile.test
       arguments: '--pull --target testrunner'
       imageName: 'mcostea/homemanager_sensor-service:test'
       useDefaultContext: false

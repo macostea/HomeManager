@@ -151,11 +151,11 @@ namespace SensorService.Controllers
             var homeyMapping = await this.homeRepository.GetHomeyMapping(sensor);
             if (homeyMapping != null)
             {
-                if (homeyMapping.HumTopic != null && insertedEnvironment.Humidity != 0)
+                if (homeyMapping.HumTopic != null)
                 {
                     await this.listenerClient.NotifyHomeyTopic<double>(homeyMapping.HumTopic, insertedEnvironment.Humidity);
                 }
-                if (homeyMapping.TempTopic != null && insertedEnvironment.Temperature != 0)
+                if (homeyMapping.TempTopic != null)
                 {
                     await this.listenerClient.NotifyHomeyTopic<double>(homeyMapping.TempTopic, insertedEnvironment.Temperature);
                 }

@@ -338,3 +338,4 @@ ASALocalRun/
 TestResults/
 
 .DS_Store
+.sonarqube/

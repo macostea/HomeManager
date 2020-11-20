@@ -1,27 +1,20 @@
 parameters:
-  arch: 'amd64'
   runTests: 'true'
 
 steps:
-  - task: Docker@1
-    displayName: 'Build RabbitMQ'
-    inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: deploy/rabbitmq/Dockerfile
-      imageName: 'mcostea/homemanager_rabbitmq:$(Build.BuildId)-${{ parameters.arch }}'
-      includeLatestTag: true
+  - bash: |
+      docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+      docker buildx create --name mybuilder
+      docker buildx use mybuilderdocker buildx inspect --bootstrap
+    displayName: 'Setup buildx'
 
-  - task: Docker@1
+  - bash: |
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_rabbitmq:$(Build.BuildId) -f deploy/rabbitmq/Dockerfile --push deploy/rabbitmq
+    displayName: 'Build RabbitMQ'
+    
+  - bash: |
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-service:$(Build.BuildId) -f SensorService/Dockerfile --push .
     displayName: 'Build sensor service'
-    inputs:
-      containerregistrytype: 'Container Registry'
-      dockerRegistryEndpoint: 'Docker Hub'
-      dockerFile: SensorService/Dockerfile
-      imageName: 'mcostea/homemanager_sensor-service:$(Build.BuildId)-${{ parameters.arch }}'
-      includeLatestTag: true
-      useDefaultContext: false
-      buildContext: '$(System.DefaultWorkingDirectory)'
 
   - task: Docker@1
     displayName: 'Build sensor service tests'
@@ -46,27 +39,13 @@ steps:
         runInBackground: false
     condition: eq('${{ parameters.runTests }}', 'true')
 
-  - task: Docker@1
+  - bash: |
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_sensor-listener:$(Build.BuildId) -f SensorListener/Dockerfile --push .
     displayName: 'Build sensor listener'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        dockerFile: SensorListener/Dockerfile
-        imageName: 'mcostea/homemanager_sensor-listener:$(Build.BuildId)-${{ parameters.arch }}'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)'
-
-  - task: Docker@1
+  
+  - bash: |
+      docker buildx build --platform linux/arm,linux/arm64,linux/amd64 -t mcostea/homemanager_weather-sensor:$(Build.BuildId) -f Sensors/WeatherSensor/Dockerfile --push .
     displayName: 'Build weather sensor'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        dockerFile: Sensors/WeatherSensor/Dockerfile
-        imageName: 'mcostea/homemanager_weather-sensor:$(Build.BuildId)-${{ parameters.arch }}'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)'
 
   - task: Docker@1
     displayName: 'Build SonarCloud scan image'
@@ -89,21 +68,3 @@ steps:
         envVars: 'SONAR_TOKEN=$(SONAR_TOKEN)'
         runInBackground: false
     condition: eq('${{ parameters.runTests }}', 'true')
-
-  - bash: |
-      # Write your commands here
-      # Use the environment variables input below to pass secret variables to this script
-      echo "mcostea/homemanager_rabbitmq:$(Build.BuildId)-${{ parameters.arch }}" > images.txt
-      echo "mcostea/homemanager_sensor-service:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
-      echo "mcostea/homemanager_sensor-listener:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
-      echo "mcostea/homemanager_weather-sensor:$(Build.BuildId)-${{ parameters.arch }}" >> images.txt
-    displayName: 'Bash Script'
-
-  - task: Docker@1
-    displayName: 'Push images'
-    inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Push an image'
-        pushMultipleImages: true
-        imageNamesPath: images.txt

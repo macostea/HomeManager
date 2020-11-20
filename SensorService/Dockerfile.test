@@ -1,0 +1,17 @@
+# Dependencies
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["SensorService/SensorService.csproj", "SensorService/"]
+COPY ["Common/Common.csproj", "Common/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+RUN dotnet restore "SensorService/SensorService.csproj"
+COPY . .
+WORKDIR /src/SensorService
+
+# Test
+FROM build AS testrunner
+WORKDIR /src/SensorServiceTests
+RUN curl -s https://codecov.io/bash > codecov && \
+	chmod +x codecov
+RUN chmod 744 docker-entrypoint.sh
+ENTRYPOINT ["sh", "-c", "/src/SensorServiceTests/docker-entrypoint.sh"]

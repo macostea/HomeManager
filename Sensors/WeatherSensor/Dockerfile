@@ -1,7 +1,7 @@
-FROM microsoft/dotnet:2.1-runtime AS base
+FROM mcr.microsoft.com/dotnet/runtime:5.0 AS base
 WORKDIR /app
 
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY Sensors/WeatherSensor/WeatherSensor.csproj Sensors/WeatherSensor/
 COPY Common/Common.csproj Common/

@@ -71,7 +71,7 @@ namespace SensorListener.QueueClients
                 try
                 {
                     var body = ea.Body;
-                    var message = Encoding.UTF8.GetString(body);
+                    var message = Encoding.UTF8.GetString(body.ToArray());
 
                     this.logger.LogDebug("Received message:");
                     this.logger.LogDebug("Routing key: {0}", ea.RoutingKey);

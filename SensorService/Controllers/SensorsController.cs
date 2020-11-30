@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Common.SensorListenerAPI;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,11 +17,13 @@ namespace SensorService.Controllers
     {
         private readonly IHomeRepository repository;
         private readonly ISensorListenerAPI listenerClient;
+        private readonly ILogger<SensorsController> logger;
 
-        public SensorsController(IHomeRepository repository, ISensorListenerAPI listenerClient)
+        public SensorsController(IHomeRepository repository, ISensorListenerAPI listenerClient, ILogger<SensorsController> logger)
         {
             this.repository = repository;
             this.listenerClient = listenerClient;
+            this.logger = logger;
         }
 
         // POST api/sensor
@@ -36,7 +39,10 @@ namespace SensorService.Controllers
             if (insertedSensor.RoomId != Guid.Empty)
             {
                 var s = await listenerClient.NotifySensorUpdate(insertedSensor);
-                return Ok(s);
+                if (s == null)
+                {
+                    this.logger.LogWarning("Failed to notify sensor change on queue client");
+                }
             }
 
             return Ok(insertedSensor);
@@ -92,6 +98,37 @@ namespace SensorService.Controllers
             }
 
             return Ok(sensor);
+        }
+
+        [HttpGet("{id}/homeymapping")]
+        public async Task<IActionResult> GetHomeyMapping(string id)
+        {
+            var sensor = await this.repository.GetSensor(Guid.Parse(id));
+            if (sensor == null)
+            {
+                return NotFound();
+            }
+
+            var homeyMapping = await this.repository.GetHomeyMapping(sensor);
+            return Ok(homeyMapping);
+        }
+
+        [HttpPost("{id}/homeymapping")]
+        public async Task<IActionResult> PostHomeyMapping(string id, [FromBody] HomeyMapping mapping)
+        {
+            var sensor = await this.repository.GetSensor(Guid.Parse(id));
+            if (sensor == null)
+            {
+                return NotFound();
+            }
+
+            var insertedMapping = await this.repository.AddHomeyMapping(Guid.Parse(id), mapping);
+            if (insertedMapping == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(insertedMapping);
         }
     }
 }

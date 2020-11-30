@@ -34,7 +34,7 @@ namespace WeatherSensor
             var configuration = new MqttConfiguration();
             var rabbitmqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST");
             var mqttClient = await MqttClient.CreateAsync(rabbitmqHost, configuration);
-            var clientId = "weathersensor";
+            const string clientId = "weathersensor";
             var username = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME");
             var password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD");
 

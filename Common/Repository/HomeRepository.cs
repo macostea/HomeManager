@@ -27,7 +27,7 @@ namespace Common.Repository
 
         public async Task<Environment> AddEnvironmentReading(Guid roomId, Guid sensorId, Environment environment)
         {
-            string sql = "INSERT INTO environment (timestamp, temperature, humidity, motion, sensor_id, room_id) VALUES (@Timestamp, @Temperature, @Humidity, @Motion, @SensorId, @RoomId) RETURNING *";
+            const string sql = "INSERT INTO environment (timestamp, temperature, humidity, motion, sensor_id, room_id) VALUES (@Timestamp, @Temperature, @Humidity, @Motion, @SensorId, @RoomId) RETURNING *";
 
             Environment insertedEnvironment = null;
             try
@@ -51,7 +51,7 @@ namespace Common.Repository
 
         public async Task<Home> AddHome(Home home)
         {
-            string sql = "INSERT INTO homes (name, address, city, country) VALUES (@Name, @Address, @City, @Country) RETURNING *";
+            const string sql = "INSERT INTO homes (name, address, city, country) VALUES (@Name, @Address, @City, @Country) RETURNING *";
 
             Home insertedHome = null;
             try
@@ -73,7 +73,7 @@ namespace Common.Repository
 
         public async Task<Room> AddRoom(Guid homeId, Room room)
         {
-            var sql = "INSERT INTO rooms (name, home_id) VALUES (@Name, @HomeId) RETURNING *";
+            const string sql = "INSERT INTO rooms (name, home_id) VALUES (@Name, @HomeId) RETURNING *";
 
             Room insertedRoom = null;
             try
@@ -93,7 +93,7 @@ namespace Common.Repository
 
         public async Task<Sensor> AddSensor(Guid roomId, Sensor sensor)
         {
-            var sql = "INSERT INTO sensors (type, room_id) VALUES (@Type, @RoomId) RETURNING *";
+            const string sql = "INSERT INTO sensors (type, room_id) VALUES (@Type, @RoomId) RETURNING *";
 
             Sensor insertedSensor = null;
             try
@@ -143,7 +143,7 @@ namespace Common.Repository
 
         public async Task<bool> DeleteEnvironment(Guid id)
         {
-            var sql = "DELETE FROM environment WHERE id = @Id";
+            const string sql = "DELETE FROM environment WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new { Id = id });
 
@@ -152,7 +152,7 @@ namespace Common.Repository
 
         public async Task<bool> DeleteHome(Guid id)
         {
-            var sql = "DELETE FROM homes WHERE id = @Id";
+            const string sql = "DELETE FROM homes WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new { Id = id });
 
@@ -161,7 +161,7 @@ namespace Common.Repository
 
         public async Task<bool> DeleteRoom(Guid id)
         {
-            var sql = "DELETE FROM rooms WHERE id = @Id";
+            const string sql = "DELETE FROM rooms WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new { Id = id });
 
@@ -170,7 +170,7 @@ namespace Common.Repository
 
         public async Task<bool> DeleteSensor(Guid id)
         {
-            var sql = "DELETE FROM sensors WHERE id = @Id";
+            const string sql = "DELETE FROM sensors WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new { Id = id });
 
@@ -179,7 +179,7 @@ namespace Common.Repository
 
         public async Task<bool> EditEnvironment(Environment environment)
         {
-            var sql = "UPDATE environment SET " +
+            const string sql = "UPDATE environment SET " +
             	"timestamp = @Timestamp, " +
             	"temperature = @Temperature, " +
             	"humidity = @Humidity, " +
@@ -200,7 +200,7 @@ namespace Common.Repository
 
         public async Task<bool> EditHome(Home home)
         {
-            var sql = "UPDATE homes SET " +
+            const string sql = "UPDATE homes SET " +
                 "name = @Name, " +
                 "address = @Address, " +
                 "city = @City, " +
@@ -221,7 +221,7 @@ namespace Common.Repository
 
         public async Task<bool> EditRoom(Room room)
         {
-            var sql = "UPDATE rooms SET " +
+            const string sql = "UPDATE rooms SET " +
                 "name = @Name " +
                 "WHERE id = @Id";
 
@@ -236,7 +236,7 @@ namespace Common.Repository
 
         public async Task<bool> EditSensor(Sensor sensor)
         {
-            var sql = "UPDATE sensors SET " +
+            const string sql = "UPDATE sensors SET " +
                 "type = @Type, " +
                 "room_id = @RoomId " +
                 "WHERE id = @Id";
@@ -253,7 +253,7 @@ namespace Common.Repository
 
         public async Task<Environment> GetEnvironment(Guid id)
         {
-            var sql = "SELECT * FROM environment WHERE id = @Id";
+            const string sql = "SELECT * FROM environment WHERE id = @Id";
 
             Environment env = null;
             try
@@ -269,7 +269,7 @@ namespace Common.Repository
 
         public async Task<IEnumerable<Environment>> GetEnvironmentReadings(Guid roomId, DateTime startDate, DateTime endDate)
         {
-            var sql = "SELECT * FROM environment WHERE room_id = @RoomId AND timestamp >= @StartDate AND timestamp <= @EndDate";
+            const string sql = "SELECT * FROM environment WHERE room_id = @RoomId AND timestamp >= @StartDate AND timestamp <= @EndDate";
 
             IEnumerable<Environment> envs = null;
             try
@@ -290,7 +290,7 @@ namespace Common.Repository
 
         public async Task<Home> GetHome(Guid id)
         {
-            var sql = "SELECT * FROM homes WHERE id = @Id";
+            const string sql = "SELECT * FROM homes WHERE id = @Id";
 
             Home home = null;
             try
@@ -306,7 +306,7 @@ namespace Common.Repository
 
         public async Task<IEnumerable<Home>> GetHomes()
         {
-            var sql = "SELECT * FROM homes";
+            const string sql = "SELECT * FROM homes";
 
             IEnumerable<Home> homes = null;
             try
@@ -322,7 +322,7 @@ namespace Common.Repository
 
         public async Task<Room> GetRoom(Guid id)
         {
-            var sql = "SELECT * FROM rooms WHERE id = @Id";
+            const string sql = "SELECT * FROM rooms WHERE id = @Id";
 
             Room room = null;
             try
@@ -338,7 +338,7 @@ namespace Common.Repository
 
         public async Task<IEnumerable<Room>> GetRooms(Home home)
         {
-            var sql = "SELECT * FROM rooms WHERE home_id = @HomeId";
+            const string sql = "SELECT * FROM rooms WHERE home_id = @HomeId";
 
             IEnumerable<Room> rooms = null;
             try
@@ -354,7 +354,7 @@ namespace Common.Repository
 
         public async Task<Room> GetRoomBySensorId(Guid sensorId)
         {
-            var sql = "SELECT rooms.id, name, home_id FROM rooms " +
+            const string sql = "SELECT rooms.id, name, home_id FROM rooms " +
                 "JOIN sensors " +
                 "ON rooms.id = sensors.room_id " +
                 "WHERE sensors.id = @Id";
@@ -373,7 +373,7 @@ namespace Common.Repository
 
         public async Task<Sensor> GetSensor(Guid id)
         {
-            var sql = "SELECT * FROM sensors WHERE id = @Id";
+            const string sql = "SELECT * FROM sensors WHERE id = @Id";
 
             Sensor sensor = null;
             try
@@ -389,7 +389,7 @@ namespace Common.Repository
 
         public async Task<IEnumerable<Sensor>> GetSensors(Room room)
         {
-            var sql = "SELECT * FROM sensors WHERE room_id = @RoomId";
+            const string sql = "SELECT * FROM sensors WHERE room_id = @RoomId";
 
             IEnumerable<Sensor> sensors = null;
             try
@@ -405,7 +405,7 @@ namespace Common.Repository
 
         public async Task<IEnumerable<Sensor>> GetSensors()
         {
-            var sql = "SELECT * FROM sensors";
+            const string sql = "SELECT * FROM sensors";
 
             IEnumerable<Sensor> sensors = null;
             try
@@ -420,9 +420,48 @@ namespace Common.Repository
             return sensors;
         }
 
+        public async Task<HomeyMapping> GetHomeyMapping(Sensor sensor)
+        {
+            const string sql = "SELECT * FROM \"homeyMappings\" WHERE sensor_id = @SensorId LIMIT 1";
+            HomeyMapping mapping = null;
+            try
+            {
+                mapping = await dbConnection.QueryFirstAsync<HomeyMapping>(sql, new { SensorId = sensor.Id });
+            }
+            catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot get Homey Mappings");
+            }
+
+            return mapping;
+        }
+
+        public async Task<HomeyMapping> AddHomeyMapping(Guid sensorId, HomeyMapping mapping)
+        {
+            const string sql = "INSERT INTO \"homeyMappings\" (sensor_id, temp_topic, hum_topic, motion_topic) " +
+                "VALUES (@SensorId, @TempTopic, @HumTopic, @MotionTopic) " +
+                "RETURNING *";
+            HomeyMapping insertedMapping = null;
+            try
+            {
+                insertedMapping = await dbConnection.QueryFirstAsync<HomeyMapping>(sql, new
+                {
+                    sensorId,
+                    mapping.TempTopic,
+                    mapping.HumTopic,
+                    mapping.MotionTopic
+                });
+            } catch (InvalidOperationException e)
+            {
+                this.logger.LogError(e, "Cannot insert homey mapping");
+            }
+
+            return insertedMapping;
+        }
+
         public async Task<IEnumerable<Weather>> GetWeather(Guid homeId, DateTime startDate, DateTime endDate)
         {
-            var sql = "SELECT * FROM weather WHERE home_id = @HomeId AND timestamp >= @StartDate AND timestamp <= @EndDate";
+            const string sql = "SELECT * FROM weather WHERE home_id = @HomeId AND timestamp >= @StartDate AND timestamp <= @EndDate";
 
             IEnumerable<Weather> weather = null;
             try
@@ -443,7 +482,7 @@ namespace Common.Repository
 
         public async Task<Weather> AddWeather(Guid homeId, Weather weather)
         {
-            var sql = "INSERT INTO weather (timestamp, temperature, pressure, humidity, minimum_temperature, maximum_temperature, condition_code, condition, icon_url, home_id) " +
+            const string sql = "INSERT INTO weather (timestamp, temperature, pressure, humidity, minimum_temperature, maximum_temperature, condition_code, condition, icon_url, home_id) " +
                 "VALUES (@Timestamp, @Temperature, @Pressure, @Humidity, @MinimumTemperature, @MaximumTemperature, @ConditionCode, @Condition, @IconURL, @HomeId) " +
                 "RETURNING *";
 
@@ -473,7 +512,7 @@ namespace Common.Repository
 
         public async Task<bool> EditWeather(Weather weather)
         {
-            var sql = "UPDATE weather SET " +
+            const string sql = "UPDATE weather SET " +
                 "timestamp = @Timestamp, " +
                 "temperature = @Temperature, " +
                 "pressure = @Pressure, " +
@@ -503,7 +542,7 @@ namespace Common.Repository
 
         public async Task<Weather> GetWeather(Guid id)
         {
-            var sql = "SELECT * FROM weather WHERE id = @Id";
+            const string sql = "SELECT * FROM weather WHERE id = @Id";
 
             Weather weather = null;
             try
@@ -519,7 +558,7 @@ namespace Common.Repository
 
         public async Task<bool> DeleteWeather(Guid id)
         {
-            var sql = "DELETE FROM weather WHERE id = @Id";
+            const string sql = "DELETE FROM weather WHERE id = @Id";
 
             var affectedRows = await dbConnection.ExecuteAsync(sql, new { Id = id });
 

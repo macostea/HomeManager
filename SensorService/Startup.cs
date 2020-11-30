@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Npgsql;
 using SensorService.Validation;
 using Swashbuckle.AspNetCore.Swagger;
@@ -27,12 +29,12 @@ namespace SensorService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(config =>
+
+            services.AddControllers(options =>
             {
-                config.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
+                options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
             })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(options =>
+                .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 });
@@ -45,17 +47,18 @@ namespace SensorService
             {
                 config.AddMap(new WeatherMap());
                 config.AddMap(new SensorMap());
+                config.AddMap(new HomeyMappingMap());
             });
             SqlMapper.AddTypeHandler(new UriTypeHandler());
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "SensorService API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SensorService API", Version = "v1" });
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -66,13 +69,19 @@ namespace SensorService
                 app.UseHsts();
             }
 
+            app.UseRouting();
+
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "SensorService API v1");
             });
-            app.UseMvc();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

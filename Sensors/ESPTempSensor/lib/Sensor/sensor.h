@@ -24,7 +24,6 @@ public:
     const std::string &getRoomId();
 
     void becomeSleepy();
-    void homeyRegisterTimeout();
 
     virtual void mqttClientReceivedMessage(const std::string &topic, const std::string &message);
 private:
@@ -35,7 +34,6 @@ private:
 
     void publishNewSensorMessage();
     void publishEnvironmentMessage();
-    void publishHomeyMessage();
 };
 
 #endif

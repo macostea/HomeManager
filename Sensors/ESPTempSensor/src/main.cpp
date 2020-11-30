@@ -33,7 +33,8 @@
   #error "MQTT_PASS must be defined"
 #endif
 
-#define MKSTR( x ) #x
+#define MKSTR( x ) STR(x)
+#define STR( x ) #x
 
 WiFiClient client;
 

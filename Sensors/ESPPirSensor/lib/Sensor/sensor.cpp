@@ -10,11 +10,10 @@ DynamicJsonDocument parseJson(std::string json) {
     return doc;
 }
 
-Sensor::Sensor(const std::string &id, const std::string &type, MQTTClient *mqttClient, HomeyClient *homeyClient, PIRClient *pirClient) {
+Sensor::Sensor(const std::string &id, const std::string &type, MQTTClient *mqttClient, PIRClient *pirClient) {
     this->id = id;
     this->type = type;
     this->mqttClient = mqttClient;
-    this->homeyClient = homeyClient;
     this->pirClient = pirClient;
 
     this->state = New;
@@ -31,29 +30,14 @@ const std::string &Sensor::getRoomId() {
 void Sensor::setup() {
     this->mqttClient->setDelegate(this);
     this->mqttClient->subscribe(id, 1);
-    this->homeyClient->begin(id);
     this->pirClient->begin();
     this->pirClient->preventSleep(true);
-
-    this->homeyClient->loop();
-    this->homeyClient->loop();
-
-    this->publishHomeyMessage(true);
 }
 
 void Sensor::loop() {
     switch (this->state)
     {
     case New:
-        this->state = HomeyUnregistered;
-        break;
-
-    case HomeyUnregistered:
-        this->homeyClient->loop();
-        break;
-
-    case HomeyPublished:
-        this->publishHomeyMessage(true);
         this->publishNewSensorMessage();
         this->state = WaitingResponse;
         break;
@@ -67,12 +51,7 @@ void Sensor::loop() {
         this->state = PIRTimeout;
         break;
 
-    case PIRTimeout:
-        this->homeyClient->loop();
-        break;
-
     case Sleepy:
-        this->publishHomeyMessage(false);
         this->publishEnvironmentMessage(false);
 
         this->pirClient->preventSleep(false);
@@ -112,10 +91,6 @@ void Sensor::publishEnvironmentMessage(bool motion) {
     this->mqttClient->publish(msg, "environment", 1);
 }
 
-void Sensor::publishHomeyMessage(bool motion) {
-    this->homeyClient->updateMotion(motion);
-}
-
 void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::string &message) {
     DynamicJsonDocument doc = parseJson(message);
 
@@ -128,8 +103,4 @@ void Sensor::mqttClientReceivedMessage(const std::string &topic, const std::stri
 void Sensor::becomeSleepy() {
     this->state = Sleepy;
     this->loop();
-}
-
-void Sensor::homeyRegisterTimeout() {
-    this->state = HomeyPublished;
 }

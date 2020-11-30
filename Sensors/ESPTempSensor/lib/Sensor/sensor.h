@@ -1,7 +1,6 @@
 #include <string>
 #include "mqtt_client.h"
 #include "dht_client.h"
-#include "homey_client.h"
 
 #ifndef SENSOR_H
 #define SENSOR_H
@@ -10,16 +9,14 @@ typedef enum SensorState {
     New,
     WaitingResponse,
     Registered,
-    Sleepy,
-    HomeyUnregistered,
-    HomeyPublished
+    Sleepy
 } SensorState;
 
 class Sensor : MQTTClientDelegate {
 public:
     std::string id;
     std::string type;
-    Sensor(const std::string &id, const std::string &type, DHTClient *dhClient, MQTTClient *mqttClient, HomeyClient *homeyClient);
+    Sensor(const std::string &id, const std::string &type, DHTClient *dhClient, MQTTClient *mqttClient);
 
     void setup();
     void loop();
@@ -34,7 +31,6 @@ private:
     SensorState state;
     MQTTClient *mqttClient;
     DHTClient *dhtClient;
-    HomeyClient *homeyClient;
     std::string roomId;
 
     void publishNewSensorMessage();

@@ -3,7 +3,6 @@
 #include "ArduinoJson.h"
 #include "mqtt_client.h"
 #include "dht_client.h"
-#include "homey_client.h"
 #include "sensor.h"
 #include "fakeit.hpp"
 
@@ -12,55 +11,48 @@ using namespace fakeit;
 void test_create_sensor() {
     Mock<MQTTClient> mqttMock;
     Mock<DHTClient> dhtMock;
-    Mock<HomeyClient> homeyMock;
 
     std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
 
-    Sensor s(id, "temp+hum", &dhtMock.get(), &mqttMock.get(), &homeyMock.get());
+    Sensor s(id, "temp+hum", &dhtMock.get(), &mqttMock.get());
 
     TEST_ASSERT_EQUAL(s.getState(), New);
     VerifyNoOtherInvocations(mqttMock);
     VerifyNoOtherInvocations(dhtMock);
-    VerifyNoOtherInvocations(homeyMock);
 }
 
 void test_setup() {
     Mock<MQTTClient> mqttMock;
     Mock<DHTClient> dhtMock;
-    Mock<HomeyClient> homeyMock;
 
     std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
     std::string type = "temp+hum";
 
-    Sensor s(id, type, &dhtMock.get(), &mqttMock.get(), &homeyMock.get());
+    Sensor s(id, type, &dhtMock.get(), &mqttMock.get());
 
     When(Method(dhtMock, begin)).Return();
     When(Method(mqttMock, setDelegate)).Return(true);
     When(Method(mqttMock, subscribe)).Return(true);
-    When(Method(homeyMock, begin)).Return(true);
 
     s.setup();
 
     Verify(Method(dhtMock, begin)).Once();
     Verify(Method(mqttMock, setDelegate).Using((MQTTClientDelegate *)&s));
     Verify(Method(mqttMock, subscribe).Using(id, 1));
-    Verify(Method(homeyMock, begin).Using(id));
 }
 
 void test_loop() {
     Mock<MQTTClient> mqttMock;
     Mock<DHTClient> dhtMock;
-    Mock<HomeyClient> homeyMock;
 
 
     std::string id = "15D9083F-1349-4D67-921F-E186FC539E6C";
     std::string type = "temp+hum";
 
-    Sensor s(id, type, &dhtMock.get(), &mqttMock.get(), &homeyMock.get());
+    Sensor s(id, type, &dhtMock.get(), &mqttMock.get());
 
     When(Method(mqttMock, publish)).Return();
     When(Method(mqttMock, processPackets)).AlwaysReturn(true);
-    When(Method(homeyMock, loop)).Return(true);
 
     When(Method(dhtMock, getEnvironment)).AlwaysDo([](Environment *e) -> bool {
         e->humidity = 100.0;
@@ -69,28 +61,8 @@ void test_loop() {
         return 0;
     });
 
-    // New -> HomeyUnregistered
+    // New -> WaitingResponse
     s.loop();
-    TEST_ASSERT_EQUAL(s.getState(), HomeyUnregistered);
-
-    // HomeyUnregistered
-    s.loop();
-    Verify(Method(homeyMock, loop)).Once();
-    VerifyNoOtherInvocations(mqttMock);
-    VerifyNoOtherInvocations(homeyMock);
-
-    // HomeyUnregistered -> HomeyPublished
-    When(Method(homeyMock, updateHumidity)).Return(true);
-    When(Method(homeyMock, updateTemperature)).Return(true);
-
-    s.homeyRegisterTimeout();
-    TEST_ASSERT_EQUAL(s.getState(), HomeyPublished);
-
-    // HomeyPublished -> WaitingResponse
-    s.loop();
-
-    Verify(Method(homeyMock, updateHumidity).Using(100.0));
-    Verify(Method(homeyMock, updateTemperature).Using(100.0));
 
     size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2);
     DynamicJsonDocument doc(capacity);
@@ -110,7 +82,6 @@ void test_loop() {
 
     Verify(Method(mqttMock, processPackets)).Once();
     VerifyNoOtherInvocations(mqttMock);
-    VerifyNoOtherInvocations(homeyMock);
     // WaitingResponse -> Registered
 
     When(Method(mqttMock, publish)).Return();

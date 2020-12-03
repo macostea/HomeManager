@@ -7,7 +7,7 @@
 #include "arduino_mqtt_client.h"
 #include "uuid_gen.h"
 
-#define DHTPIN D5
+#define DHTPIN D7
 #define DHTTYPE DHT11
 
 #ifndef WLAN_SSID

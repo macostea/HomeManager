@@ -16,4 +16,7 @@
   <ItemGroup>
     <None Include="wwwroot\bootstrap\css\bootstrap.min.css" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\fonts\" />
+  </ItemGroup>
 </Project>

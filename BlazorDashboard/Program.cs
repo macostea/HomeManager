@@ -18,8 +18,8 @@ namespace BlazorDashboard
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://sensor-service.mcostea.com/api") });
-            builder.Services.AddSingleton(sp => new SensorServiceClient(new HttpClient { BaseAddress = new Uri("https://sensor-service.mcostea.com/api") }));
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://sensor-service.mcostea.com") });
+            builder.Services.AddSingleton(sp => new SensorServiceClient(new HttpClient { BaseAddress = new Uri("http://sensor-service.mcostea.com") }));
 
             await builder.Build().RunAsync();
         }

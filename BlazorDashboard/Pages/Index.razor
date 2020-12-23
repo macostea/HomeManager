@@ -14,8 +14,13 @@
 
             <div class="widget-content">
                 <p class="info-detail">Welcome home!</p>
-                <p><i class="fas fa-thermometer-half"></i> 3.2C</p>
-                <p><i class="fas fa-cloud"></i> Kinda cloudy</p>
+                @if (Weather != null)
+                {
+            <p>
+                <i class="fas fa-thermometer-half"></i> @(Weather.Temperature)°C
+            </p>
+                    <p><i class="fas fa-cloud"></i> Kinda cloudy</p>
+                }
 
             </div>
 
@@ -68,6 +73,8 @@
     public Home Home { get; set; }
     public List<Room> Rooms { get; set; }
 
+    public Weather Weather { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         var homes = await this.client.GetHomes();
@@ -75,5 +82,8 @@
 
         var rooms = await this.client.GetRooms(this.Home);
         this.Rooms = rooms;
+
+        var weather = await this.client.GetWeatherToday(this.Home);
+        this.Weather = weather.Last();
     }
 }

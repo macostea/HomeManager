@@ -18,5 +18,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\assets\fonts\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>

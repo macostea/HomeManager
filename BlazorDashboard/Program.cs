@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using BlazorDashboard.Services;
 
 namespace BlazorDashboard
 {
@@ -17,7 +18,8 @@ namespace BlazorDashboard
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://sensor-service.mcostea.com/api") });
+            builder.Services.AddSingleton(sp => new SensorServiceClient(new HttpClient { BaseAddress = new Uri("https://sensor-service.mcostea.com/api") }));
 
             await builder.Build().RunAsync();
         }

@@ -20,7 +20,7 @@ sensor_listener:
 
 postgres:
   image:
-    repository: mcostea/timescaledb
+    repository: timescale/timescaledb
     tag: latest-pg10
     pullPolicy: Always
 

@@ -2,9 +2,11 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ include "home-manager.fullname" . }}-sensor-service-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
   rules:
-  - host: sensor-service.mcostea.com
+  - host: {{ .Values.sensor_service.ingress.host }}
     http:
       paths:
       - path: /

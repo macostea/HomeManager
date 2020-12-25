@@ -70,6 +70,7 @@ namespace SensorService
             }
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseHttpsRedirection();
             app.UseSwagger();

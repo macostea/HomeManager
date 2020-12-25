@@ -1,0 +1,89 @@
+﻿@using Services;
+@using Domain.Entities;
+
+@inject SensorServiceClient client;
+
+@page "/"
+
+<div class="row sales layout-top-spacing">
+    <div class="col-xl-12 col-lg-12 col-md-8 col-8">
+        <div class="widget">
+            <div class="widget-heading">
+                <h5>Hi there!</h5>
+            </div>
+
+            <div class="widget-content">
+                <p class="info-detail">Welcome home!</p>
+                @if (Weather != null)
+                {
+            <p>
+                <i class="fas fa-thermometer-half"></i> @(Weather.Temperature)°C
+            </p>
+                    <p><i class="fas fa-cloud"></i> Kinda cloudy</p>
+                }
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-xl-12 col-lg-12 col-md-4 col-4">
+        <div class="widget">
+            <div class="widget-heading">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-12 col-lg-12 col-md-8 col-8 layout-top-spacing">
+        <div class="widget widget-chart-one">
+            <div class="widget-heading">
+                @if (Home != null)
+                {
+                    <h5>@Home.Name</h5>
+                    <ul class="tabs tab-pills">
+                        <li>
+                            <i class="fas fa-thermometer-half"></i> 23.2C
+                        </li>
+                        <li>
+                            <i class="fas fa-tint"></i> 52%H
+                        </li>
+                        <li>
+                            <select>
+                                @foreach (var room in Rooms)
+                                {
+                                    <option value="@room.Id">@room.Name</option>
+                                }
+                            </select>
+                        </li>
+                    </ul>
+                }
+
+            </div>
+
+            <div class="widget-content">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public Home Home { get; set; }
+    public List<Room> Rooms { get; set; }
+
+    public Weather Weather { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var homes = await this.client.GetHomes();
+        this.Home = homes[0];
+
+        var rooms = await this.client.GetRooms(this.Home);
+        this.Rooms = rooms;
+
+        var weather = await this.client.GetWeatherToday(this.Home);
+        this.Weather = weather.Last();
+    }
+}

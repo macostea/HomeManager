@@ -9,6 +9,8 @@ sensor_service:
     repository: mcostea/homemanager_sensor-service
     tag: stable
     pullPolicy: Always
+  ingress:
+    host: sensor-service.mcostea.com
   sensor_listener_url: "http://home-manager-listener-service.default.svc.cluster.local"
 
 sensor_listener:
@@ -46,3 +48,5 @@ persistence:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+

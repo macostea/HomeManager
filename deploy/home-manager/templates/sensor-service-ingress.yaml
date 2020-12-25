@@ -6,7 +6,7 @@ metadata:
     nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
   rules:
-  - host: sensor-service.mcostea.com
+  - host: {{ .Values.sensor_service.ingress.host }}
     http:
       paths:
       - path: /
